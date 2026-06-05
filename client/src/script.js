@@ -164,7 +164,7 @@ function markup(text) {
         }
     }
 
-	while (stack.length > 0) {
+        while (stack.length > 0) {
         let token = stack.pop();
         result += `</${rules[token]}>`;
     }
@@ -1587,7 +1587,7 @@ function sendInput() {
             } else {
                 socket.emit("command", {
                     command: list[0],
-					args: list.slice(1).join(" "),
+                                        args: list.slice(1).join(" "),
                 });
             }
         } else {
@@ -1774,12 +1774,12 @@ class Dialog {
                 </div>
             `,
         });
-		let ok = dialog.element.querySelector(".ok");
+                let ok = dialog.element.querySelector(".ok");
         ok.onclick = () => {
             dialog.element.remove();
             cb();
         };
-		ok.focus();
+                ok.focus();
         return dialog;
     }
 }
@@ -2213,11 +2213,11 @@ async function dolphin() {
 }
 
 function cmd(str) {
-	let [command, ...args] = str.split(" ");
+        let [command, ...args] = str.split(" ");
     socket.emit("command", {
-		command,
-		args: args.join(" "),
-	});
+                command,
+                args: args.join(" "),
+        });
 }
 
 function blessedPopup() {
@@ -2480,8 +2480,7 @@ function uploadPopup(initialFile) {
             method: "POST",
             body: formData,
         });
-        let url = await response.text();
-        console.log(url);
+        let url = (await response.text()).trim();
         cmd(`img ${url}`);
         dialog.element.remove();
     };
