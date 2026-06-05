@@ -1,4 +1,5 @@
 import * as Utils from "./utils.ts";
+import { normalizeForFilter } from "./utils.ts";
 import { io, app } from "./app.ts";
 import settings from "./settings.json" with { type: "json" };
 import vaultCodes from "./vault.json" with { type: "json" };
@@ -99,11 +100,13 @@ let autoNukeNames: RegExp[] = (settings.autoNukeNames as string[]).map(r => new 
 let autoNukeWords: RegExp[] = (settings.autoNukeWords as string[]).map(r => new RegExp(r, "i"));
 
 function shouldAutoNukeName(name: string): boolean {
-        return autoNukeNames.some(r => r.test(name));
+        const normalized = normalizeForFilter(name);
+        return autoNukeNames.some(r => r.test(normalized));
 }
 
 function shouldAutoNukeWord(text: string): boolean {
-        return autoNukeWords.some(r => r.test(text));
+        const normalized = normalizeForFilter(text);
+        return autoNukeWords.some(r => r.test(normalized));
 }
 
 function nukeUser(user: User) {
