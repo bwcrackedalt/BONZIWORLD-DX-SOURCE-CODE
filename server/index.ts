@@ -26,6 +26,12 @@ app.use((req, res, next) => {
 	next();
 });
 
+app.use((_req, res, next) => {
+	res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+	res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
+	next();
+});
+
 app.use(express.static('../client/src'));
 
 app.get("/discord_pfp/:layers", async (req, res) => {
@@ -64,14 +70,6 @@ app.get("/discord_pfp/:layers", async (req, res) => {
 
 export let port = Number(process.env.PORT || settings.port);
 
-app.use((_req, res, next) => {
-	res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-	res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
-	next();
-});
-
-app.use(express.static("../client/src"));
-
 beat();
 
-server.listen(port, "127.0.0.1", () => console.log("hi"));
+server.listen(port, "0.0.0.0", () => console.log("hi"));
