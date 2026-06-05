@@ -31,7 +31,13 @@
         "<div>Why would you think <i>that</i> would work?",
         { "tag": "f1", "text": "Fun Fact&trade;: The skript kiddie of this site didn't check if the text that goes into the vault is HTML code." },
         "Why are you here? To fuck me?",
-        "go away. the server begs you."
+        "go away. the server begs you.",
+        "<font color=orange>How many perfect numbers are there?",
+        "<font color=orange>Skid: Type cod3breaker to get skid!",
+        "<font color=orange><marquee>Who was a pedo who owns bw.org and posted gore in bw servers?",
+        "<font color=orange>What is UnrealSticky's favorite word?",
+        "<font color=orange>What is the name of this quimic? </font><br><font style='background-color: gray'>Al</font>",
+        "<font color=orange>change my mind, i am a golden"
     ],
     "codes": [
         {
@@ -96,7 +102,8 @@
         },
         {
             "matches": "^18480$",
-            "response": "<font style=color: green;> good one, take that hat"
+            "response": "<font style=color: green;> good one, take that hat",
+            "unlocks": "greenhat"
         },
         {
             "matches": "^topjej$",
@@ -109,6 +116,39 @@
         {
             "matches": "^voodoovoodoo$",
             "response": "Wrong! Try again!"
+        },
+        {
+            "matches": "^52$",
+            "response": "<marquee>Right, the last perfect number had more than 22 million digits. and the next one is unknown. We do'nt already know the 53rd Mersenne prime to make it.",
+            "unlocks": "purplehat"
+        },
+        {
+            "matches": "^horror nano$",
+            "response": "I think he's 404's friend or not",
+            "unlocks": "redhat"
+        },
+        {
+            "matches": "^numberblocks sucks$",
+            "response": "<marquee>SHITBOX- OH WAIT NO ITS NUMBERBLOCKS RUN AWAY HELP MEEEEEEEEEEEEEEEEE"
+        },
+        {
+            "matches": "^seamus$",
+            "response": "Knew it. He's a pedo in bonziworld servers and he posts gore in bw.gay, i renember.",
+            "unlocks": "yellowhat"
+        },
+        {
+            "matches": "^eatbot$",
+            "response": "Muted"
+        },
+        {
+            "matches": "^behh$",
+            "response": "<marquee>Behh is the best message. It warms my heart- OH NO ITS THE NUMBERBLOCKS GET EM OFF ME HELP",
+            "unlocks": "whitehat"
+        },
+        {
+            "matches": "^aluminium$",
+            "response": "<marquee>You learnt the pedioric table, bro? BW USERS DONT GO TO SCHOOL EPBUT YOU GO TO SCHOOL- OH NO AGAIN ITS THE NUMBERBLO-",
+            "unlocks": "bluehat"
         },
         {
             "tag": "d1",

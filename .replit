@@ -37,3 +37,12 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow]]
+name = "Stop"
+mode = "sequential"
+author = 54246837
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pkill node"

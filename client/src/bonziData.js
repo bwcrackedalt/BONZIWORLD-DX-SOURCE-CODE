@@ -64,6 +64,7 @@ window.BonziData = {
 			"mustache",
 			"sprout",
 			"glitch",
+			"greenhat", "purplehat", "yellowhat", "redhat", "whitehat", "bluehat",
 		],
 		holidays: {
 			halloween: {
@@ -91,14 +92,7 @@ window.BonziData = {
 			"headphones2",
 			"diamondchain",
 		],
-		event: [
-			"greenhat",
-			"purplehat",
-			"yellowhat",
-			"redhat",
-			"whitehat",
-			"bluehat",
-			"goldhat",
+		event: ["goldhat"
 		]
 	},
 
