@@ -1,8 +1,18 @@
 {
-        "autoNukeNames": [],
-        "autoNukeWords": [],
+        "autoNukeNames": [
+                "nigger",
+                "goanimate",
+                "niggur",
+                "gada"
+        ],
+        "autoNukeWords": [
+                "numbercuck",
+                "nigger",
+                "fag",
+                "skybox"
+        ],
         "nameLimit": 25,
-        "charLimit": 1000,
+        "charLimit": 2000,
         "pitch": {
                 "max": 125,
                 "min": 15

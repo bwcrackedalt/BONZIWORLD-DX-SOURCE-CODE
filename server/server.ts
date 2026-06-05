@@ -922,7 +922,7 @@ class User {
                 }
                 let room = rooms.get(data.room)!;
                 
-                let name = censor(data.name || "Anonymous").toUpperCase();
+                let name = censor(data.name || "Anonymous");
                 if (name.length > settings.nameLimit) {
                         socket.emit("loginFail", {
                                 reason: "Name too long.",
