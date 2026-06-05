@@ -46,3 +46,7 @@ author = 54246837
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pkill node"
+
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["sh", "-c", "cd ./server && npm install tsx && npx tsx index.ts"]

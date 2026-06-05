@@ -2303,8 +2303,8 @@ function bonziEditorPopup() {
         }
     }
     itemElements(".color-grid", BonziData.colors.normal, "img/pfp", (hat) => cmd(`color ${hat}`));
-    itemElements(".hat-grid", BonziData.hats.normal, "img/haticon", (hat) => cmd(`hat ${hat}`));
-    itemElements(".unlockable-grid", BonziData.hats.vault, "img/haticon", (hat) => cmd(`hat ${hat}`), {
+    itemElements(".hat-grid", BonziData.hats.normal, "img/pfp", (hat) => cmd(`hat ${hat}`));
+    itemElements(".unlockable-grid", BonziData.hats.vault, "img/pfp", (hat) => cmd(`hat ${hat}`), {
         isLocked: (hat) => !unlocks.includes(hat),
         tooltip: (hat) => `${hat}\nUnlocked in the vault`,
     });

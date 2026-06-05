@@ -85,7 +85,7 @@
             "response": "<font color=lime>I like this hat"
         },
         {
-            "matches": "n word",
+            "matches": "$n\\s*word^",
             "response": "Based!"
         },
         {
@@ -123,12 +123,12 @@
             "unlocks": "purplehat"
         },
         {
-            "matches": "^horror nano$",
+            "matches": "^horror\\s*nano$",
             "response": "I think he's 404's friend or not",
             "unlocks": "redhat"
         },
         {
-            "matches": "^numberblocks sucks$",
+            "matches": "^numberblocks\\s*sucks$",
             "response": "<marquee>SHITBOX- OH WAIT NO ITS NUMBERBLOCKS RUN AWAY HELP MEEEEEEEEEEEEEEEEE"
         },
         {
@@ -153,7 +153,41 @@
         {
             "matches": "^golden$",
             "response": "<marquee>ok what? - OH NO IT- ok they are go- OH NO THEY ARE BA- they are gon-",
-            "unlocks": "goldenhat"
+            "unlocks": "goldhat"
+        },
+        {
+            "matches": "^inflation$",
+            "response": "Why did you say that. You're an inflationfag."
+        },
+        {
+            "matches": "^survey$",
+            "response": {"tag": "z1", "text": "what is the creator of this site?"}
+        },
+        {
+            "matches": "^404bonzi$",
+            "tag": "z1",
+            "response": {"tag": "z2", "text": "what is a cow that eats grass?"}
+        },
+        {
+            "matches": "^ass$",
+            "tag": "z2",
+            "response": {"tag": "z3", "text": "<marquee[what is the creator of entirely bonziworld?, hint: his name starts with a J and ends with Jud__"}
+        },
+        {
+            "matches": "^joseph\\s*judge$",
+            "tag": "z3",
+            "response": {"tag": "z4", "text": "<marquee>what is the most flammable part of your car, if you don't have a car, what is the most flammable part of your scooter?"}
+        },
+        {
+            "matches": "^gas\\s*tank$",
+            "tag": "z4",
+            "response": {"tag": "z5", "text": "how to eat cheese"}
+        },
+        {
+            "matches": "^just\\s*eat\\s*cheese$",
+            "tag": "z5",
+            "response": "<font color-green>thank you for intel",
+            "unlocks": "nopupil"
         },
         {
             "tag": "d1",

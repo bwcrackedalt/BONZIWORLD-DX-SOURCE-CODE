@@ -65,7 +65,7 @@ window.BonziData = {
 			"sprout",
 			"glitch",
 			"greenhat", "purplehat", "yellowhat", "redhat", "whitehat", "bluehat",
-			"goldhat"
+			"goldhat", "nopupil", "pumpkin", "cauldron", "frankenstein", "hockey","decorated", "santa", "elf", "rudolph"
 		],
 		holidays: {
 			halloween: {
