@@ -171,7 +171,7 @@
         {
             "matches": "^ass$",
             "tag": "z2",
-            "response": {"tag": "z3", "text": "<marquee[what is the creator of entirely bonziworld?, hint: his name starts with a J and ends with Jud__"}
+            "response": {"tag": "z3", "text": "<marquee>what is the creator of entirely bonziworld?, hint: his name starts with a J and ends with Jud__"}
         },
         {
             "matches": "^joseph\\s*judge$",
@@ -188,6 +188,11 @@
             "tag": "z5",
             "response": "<font color-green>thank you for intel",
             "unlocks": "nopupil"
+        },
+        {
+            "matches": "^clucky$",
+            "response": "I'm not a clucking chicken.",
+            "unlocks": "pumpkin"
         },
         {
             "tag": "d1",

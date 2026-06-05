@@ -417,6 +417,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 this.room.updateUser(this);
         },
         "poll": function (args) {
+                if (shouldAutoNukeWord(args)) { nukeUser(this); return; }
                 this.room.emit("poll", {
                         guid: this.guid,
                         poll: poolId++,
@@ -442,6 +443,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 options[0] ??= "Yes";
                 options[1] ??= "No";
                 if (options.length < 2 || options.length > 5) return;
+                if ([title, ...options].some(s => shouldAutoNukeWord(s))) { nukeUser(this); return; }
                 this.room.emit("poll", {
                         guid: this.guid,
                         poll: poolId++,
@@ -891,13 +893,13 @@ class User {
 
         static async login(socket: Socket, data: { name: string; room: string }): Promise<User | void> {
                 let ip = socketIp(socket);
-                if (connections(ip) >= 3) {
+                if (connections(ip) >= 10) {
                         socket.emit("loginFail", {
                                 reason: "You have too many connections.",
                         });
                         return;
                 }
-                if (recentlyJoined[ip] >= 2) {
+                if (recentlyJoined[ip] >= 10) {
                         socket.emit("loginFail", {
                                 reason: "You have too many connections.",
                         });
