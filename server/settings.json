@@ -1,4 +1,6 @@
 {
+        "autoNukeNames": [],
+        "autoNukeWords": [],
         "nameLimit": 25,
         "charLimit": 1000,
         "pitch": {

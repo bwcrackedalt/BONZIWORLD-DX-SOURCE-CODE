@@ -37,7 +37,7 @@
         "<font color=orange><marquee>Who was a pedo who owns bw.org and posted gore in bw servers?",
         "<font color=orange>What is UnrealSticky's favorite word?",
         "<font color=orange>What is the name of this quimic? </font><br><font style='background-color: gray'>Al</font>",
-        "<font color=orange>change my mind, i am a golden"
+        "<font color=orange>change my mind, i am a golden, and what is my favorite hat?"
     ],
     "codes": [
         {
@@ -149,6 +149,11 @@
             "matches": "^aluminium$",
             "response": "<marquee>You learnt the pedioric table, bro? BW USERS DONT GO TO SCHOOL EPBUT YOU GO TO SCHOOL- OH NO AGAIN ITS THE NUMBERBLO-",
             "unlocks": "bluehat"
+        },
+        {
+            "matches": "^golden$",
+            "response": "<marquee>ok what? - OH NO IT- ok they are go- OH NO THEY ARE BA- they are gon-",
+            "unlocks": "goldenhat"
         },
         {
             "tag": "d1",

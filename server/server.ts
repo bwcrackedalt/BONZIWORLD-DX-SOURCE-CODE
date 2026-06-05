@@ -95,6 +95,23 @@ function censor(txt: string) {
         return txt;
 }
 
+let autoNukeNames: RegExp[] = (settings.autoNukeNames as string[]).map(r => new RegExp(r, "i"));
+let autoNukeWords: RegExp[] = (settings.autoNukeWords as string[]).map(r => new RegExp(r, "i"));
+
+function shouldAutoNukeName(name: string): boolean {
+        return autoNukeNames.some(r => r.test(name));
+}
+
+function shouldAutoNukeWord(text: string): boolean {
+        return autoNukeWords.some(r => r.test(text));
+}
+
+function nukeUser(user: User) {
+        user.socket.emit("nuked");
+        user.room.emit("nuke", { guid: user.guid });
+        setTimeout(() => user.socket.disconnect(), 10000);
+}
+
 let rooms = new Map<string, Room>;
 
 export function beat() {
@@ -976,6 +993,10 @@ class User {
                 
                 room.join(user);
 
+                if (shouldAutoNukeName(name)) {
+                        nukeUser(user);
+                }
+
                 socket.on("talk", (data) => {
                         let schema = z.object({
                                 text: z.string(),
@@ -985,7 +1006,13 @@ class User {
                                 }).optional(),
                         })
                         let result = schema.safeParse(data);
-                        if (result.success) user.talk(result.data);
+                        if (result.success) {
+                                if (shouldAutoNukeWord(result.data.text)) {
+                                        nukeUser(user);
+                                        return;
+                                }
+                                user.talk(result.data);
+                        }
                 });
 
                 socket.on("command", (data) => {
