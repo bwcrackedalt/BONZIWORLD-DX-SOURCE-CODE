@@ -1303,6 +1303,43 @@ login_go.onclick = login;
 
 login_room.value = window.location.hash.slice(1);
 
+login_blank.onclick = () => {
+    const BLANK = "\u200B";
+    if (login_blank.classList.contains("active")) {
+        login_blank.classList.remove("active");
+        if (login_name.value === BLANK) login_name.value = "";
+        login_name.disabled = false;
+        login_name.placeholder = "Nickname";
+    } else {
+        login_blank.classList.add("active");
+        login_name.value = BLANK;
+        login_name.disabled = true;
+        login_name.placeholder = "(blank)";
+    }
+};
+
+login_name.oninput = () => {
+    if (login_blank.classList.contains("active")) {
+        login_blank.classList.remove("active");
+        login_name.disabled = false;
+        login_name.placeholder = "Nickname";
+    }
+};
+
+login_secret.onclick = () => {
+    const id = Array.from(crypto.getRandomValues(new Uint8Array(6)))
+        .map(b => "abcdefghijklmnopqrstuvwxyz0123456789"[b % 36])
+        .join("");
+    login_room.value = id;
+    window.location.hash = id;
+    login_secret.classList.add("active");
+};
+
+login_room.oninput = () => {
+    window.location.hash = login_room.value;
+    login_secret.classList.toggle("active", login_room.value.length > 0);
+};
+
 function loginOnEnter(e) {
     if (e.which == 13) login();
 }
