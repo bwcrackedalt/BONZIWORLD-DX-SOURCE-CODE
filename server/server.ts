@@ -246,11 +246,11 @@ class Room {
 
 function setupBehhRoom(room: Room) {
         const colors = settings.bonziColors;
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 80; i++) {
                 const guid = `behh_bot_${i}`;
                 room.botUsers[guid] = {
                         name: "BEHH",
-                        color: colors[i % colors.length],
+                        color: colors[i % colors.length] + " " + settings.hats[Math.floor(Math.random() * settings.hats.length)],
                         pitch: Utils.randomInt(settings.pitch.min, settings.pitch.max),
                         speed: Utils.randomInt(settings.speed.min, settings.speed.max),
                         tag: "",
@@ -264,7 +264,7 @@ function setupBehhRoom(room: Room) {
                                 room.emit("talk", { guid, text: "BEHH BEHH BEHH BEHH BEHH" });
                         }, i * 60);
                 });
-        }, 3000);
+        }, 1500);
 }
 
 function newRoom(rid: string): Room {
