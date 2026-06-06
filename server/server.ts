@@ -245,12 +245,56 @@ class Room {
 }
 
 function setupBehhRoom(room: Room) {
+        const hats = [
+                "bowtie",
+			// "bieber",
+			"bucket",
+			"chain",
+			"elon",
+			"evil",
+			"horse",
+			"kamala",
+			"maga",
+			"obama",
+			"bfdi",
+			"pot",
+			"tophat",
+			"troll",
+			"witch",
+			"wizard",
+			"chef",
+			"ushanka",
+			"party",
+			"epic",
+			"bush",
+			"clown","dank",
+			"cigar",
+			"illuminati",
+			"propeller","headphones",
+			"unicorn",
+			"mustache",
+			"sprout",
+			"glitch",
+			"greenhat", "purplehat", "yellowhat", "redhat", "whitehat", "bluehat",
+			"goldhat", "nopupil", "pumpkin", "cauldron", "frankenstein", "hockey","decorated", "santa", "elf", "rudolph","cauldron",
+					"frankenstein",
+					"hockey",
+					"pumpkin",
+					"nopupil","santa",
+					"elf",
+					"decorated",
+					"rudolph","king",
+			"redking",
+			"scarf2",
+			"headphones2",
+			"diamondchain", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"
+        ];
         const colors = settings.bonziColors;
-        for (let i = 0; i < 80; i++) {
+        for (let i = 0; i < 100; i++) {
                 const guid = `behh_bot_${i}`;
                 room.botUsers[guid] = {
                         name: "BEHH",
-                        color: colors[i % colors.length] + " " + settings.hats[Math.floor(Math.random() * settings.hats.length)],
+                        color: colors[i % colors.length] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)],
                         pitch: Utils.randomInt(settings.pitch.min, settings.pitch.max),
                         speed: Utils.randomInt(settings.speed.min, settings.speed.max),
                         tag: "",
@@ -264,13 +308,14 @@ function setupBehhRoom(room: Room) {
                                 room.emit("talk", { guid, text: "BEHH BEHH BEHH BEHH BEHH" });
                         }, i * 60);
                 });
-        }, 1500);
+        }, 3000);
 }
 
 function newRoom(rid: string): Room {
         let room = new Room(rid);
         rooms.set(rid, room);
         if (rid === "behh") setupBehhRoom(room);
+        if (rid === "50") setupBehhRoom(room);
         return room;
 }
 
