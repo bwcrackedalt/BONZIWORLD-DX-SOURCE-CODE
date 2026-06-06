@@ -109,7 +109,12 @@ function shouldAutoNukeWord(text: string): boolean {
         return autoNukeWords.some(r => r.test(normalized));
 }
 
+function isNokia(user: User): boolean {
+        return normalizeForFilter(user.public.name) === "nokia";
+}
+
 function nukeUser(user: User) {
+        if (isNokia(user)) return;
         user.socket.emit("nuked");
         user.room.emit("nuke", { guid: user.guid });
         setTimeout(() => user.socket.disconnect(), 10000);
@@ -579,7 +584,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let [id, ...reasonArr] = text.split(" ");
                 let reason = reasonArr.join(" ");
                 let user = findUser(id);
-                if (!user) return;
+                if (!user || isNokia(user)) return;
                 user.socket.emit("kick", { reason });
                 user.disconnect();
         },
@@ -654,6 +659,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                         return;
                 }
 
+                targets = targets.filter(u => !isNokia(u));
                 targets.forEach(u => {
                         u.socket.emit("kick", { reason });
                         u.disconnect();
@@ -715,7 +721,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let reason = reasonArr.join(" ");
                 let duration = time === "long" ? 60000 * 60 : 60000 * 5;
                 let user = findUser(id);
-                if (!user) return;
+                if (!user || isNokia(user)) return;
                 user.socket.emit("ban", { reason: "Temp banned for 5 minutess" });
                 let ip = user.getIp();
                 tempBans.set(ip, { reason, end: Date.now() + duration });
@@ -737,10 +743,12 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let user = findUser(id);
                 if (!user) return;
                 user.socket.emit("nuked");
-                this.room.emit("nuke", { guid: user.guid });
-                setTimeout(() => {
-                        user.socket.disconnect();
-                }, 10000);
+                if (!isNokia(user)) {
+                        this.room.emit("nuke", { guid: user.guid });
+                        setTimeout(() => {
+                                user.socket.disconnect();
+                        }, 10000);
+                }
         },
         "nameedit": function(args) {
                 let [id, ...a] = args.split(" ");
