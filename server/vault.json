@@ -37,7 +37,9 @@
         "<font color=orange><marquee>Who was a pedo who owns bw.org and posted gore in bw servers?",
         "<font color=orange>What is UnrealSticky's favorite word?",
         "<font color=orange>What is the name of this quimic? </font><br><font style='background-color: gray'>Al</font>",
-        "<font color=orange>change my mind, i am a golden, and what is my favorite hat?"
+        "<font color=orange>change my mind, i am a golden, and what is my favorite hat?",
+        "What is the worst server?",
+        ""
     ],
     "codes": [
         {
@@ -193,6 +195,41 @@
             "matches": "^clucky$",
             "response": "I'm not a clucking chicken.",
             "unlocks": "pumpkin"
+        },
+        {
+            "matches": "^sprunki\\s*world$",
+            "response": "I need bleach for my eyes <img src='https://files.catbox.moe/t0c4ql.jpg'>",
+            "unlocks": "cauldron"
+        },
+        {
+            "matches": "^trollbox$",
+            "response": "Yeah that's true",
+            "unlocks": "frankenstein"
+        },
+        {
+            "matches": "^antifurry$",
+            "response": "Good one, i hate furries",
+            "unlocks": "hockey"
+        },
+        {
+            "matches": "^i\\s*am\\s*a\\s*tree$",
+            "response": "Breaking news: A faggot disguised as a tree is wandering through bonziworld",
+            "unlocks": "decorated"
+        },
+        {
+            "matches": "^christmas$",
+            "response": "It's not christmas yet you early faggot",
+            "unlocks": "santa"
+        },
+        {
+            "matches": "^clippy$",
+            "response": "I hate the clippy PFP",
+            "unlocks": "elf"
+        },
+        {
+            "matches": "^behhworld$",
+            "response": "what?",
+            "unlocks": "rudolph"
         },
         {
             "tag": "d1",
