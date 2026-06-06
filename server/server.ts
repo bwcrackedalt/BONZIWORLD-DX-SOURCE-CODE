@@ -182,15 +182,20 @@ class Room {
         users: User[];
         owner?: string;
 
+        botUsers: Record<string, userPublic>;
+        botInterval?: NodeJS.Timeout;
+
         constructor(roomId: string) {
                 this.id = roomId;
                 this.users = [];
+                this.botUsers = {};
         }
 
         deconstruct() {
                 this.users.forEach((user) => {
                         user.disconnect();
                 });
+                if (this.botInterval) clearInterval(this.botInterval);
         }
 
         join(user: User) {
@@ -217,7 +222,7 @@ class Room {
         }
 
         getUsersPublic() {
-                let usersPublic: Record<string, userPublic> = {};
+                let usersPublic: Record<string, userPublic> = { ...this.botUsers };
                 this.users.forEach((user) => {
                         usersPublic[user.guid] = user.public;
                 });
@@ -234,9 +239,33 @@ class Room {
         }
 }
 
+function setupBehhRoom(room: Room) {
+        const colors = settings.bonziColors;
+        for (let i = 0; i < 20; i++) {
+                const guid = `behh_bot_${i}`;
+                room.botUsers[guid] = {
+                        name: "BEHH",
+                        color: colors[i % colors.length],
+                        pitch: Utils.randomInt(settings.pitch.min, settings.pitch.max),
+                        speed: Utils.randomInt(settings.speed.min, settings.speed.max),
+                        tag: "",
+                        typing: "",
+                };
+        }
+        room.botInterval = setInterval(() => {
+                const guids = Object.keys(room.botUsers);
+                guids.forEach((guid, i) => {
+                        setTimeout(() => {
+                                room.emit("talk", { guid, text: "BEHH BEHH BEHH BEHH BEHH" });
+                        }, i * 60);
+                });
+        }, 3000);
+}
+
 function newRoom(rid: string): Room {
         let room = new Room(rid);
         rooms.set(rid, room);
+        if (rid === "behh") setupBehhRoom(room);
         return room;
 }
 
@@ -834,8 +863,8 @@ class User {
                 this.databaseId = databaseId;
 
                 this.idleTimer = setInterval(() => {
-                        if (Date.now() - this.lastActive >= 1200000) {
-                                this.socket.emit("kick2", { reason: "You have been disconnected for being inactive for 20 minutes." });
+                        if (Date.now() - this.lastActive >= 3600000) {
+                                this.socket.emit("kick2", { reason: "You have been disconnected for being inactive for an hour." });
                                 this.socket.disconnect(true);
                         }
                 }, 60000);
@@ -893,13 +922,13 @@ class User {
 
         static async login(socket: Socket, data: { name: string; room: string }): Promise<User | void> {
                 let ip = socketIp(socket);
-                if (connections(ip) >= 10) {
+                if (connections(ip) >= 120) {
                         socket.emit("loginFail", {
                                 reason: "You have too many connections.",
                         });
                         return;
                 }
-                if (recentlyJoined[ip] >= 10) {
+                if (recentlyJoined[ip] >= 120) {
                         socket.emit("loginFail", {
                                 reason: "You have too many connections.",
                         });
@@ -916,6 +945,7 @@ class User {
                 if (data.room === "") data.room = "default";
                 data.room = censor(data.room);
                 let runlevel = data.room === "default" ? 0 : 1;
+                if (data.room === "shop") runlevel = 2;
                 if (!rooms.has(data.room)) {
                         let room = newRoom(data.room);
                         if (data.room !== "default") {
@@ -997,6 +1027,8 @@ class User {
                 user.updateAdmin();
                 
                 room.join(user);
+
+                if (room.id === "trip") socket.emit("trip");
 
                 if (shouldAutoNukeName(name)) {
                         nukeUser(user);

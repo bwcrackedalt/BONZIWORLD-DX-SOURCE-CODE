@@ -10,7 +10,10 @@
         ],
         "autoNukeWords": [
                 "numbercuck",
-                "skybox"
+                "skybox",
+                "i dont have this food in de fridge",
+                "commands: !foods , !digest , =dougest",
+                "eatbot ready! feed me food."
         ],
         "nameLimit": 25,
         "charLimit": 2000,

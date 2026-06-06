@@ -645,6 +645,15 @@ body.vaporwave #chat_send:active {
     border-color: #fff;
 }
 
+body.trip-mode {
+    animation: trip-hue 2s linear infinite;
+}
+
+@keyframes trip-hue {
+    from { filter: hue-rotate(0deg) saturate(3) brightness(1.1); }
+    to   { filter: hue-rotate(360deg) saturate(3) brightness(1.1); }
+}
+
 /* css spec blunder */
 [hidden] {
     display: none !important;

@@ -1347,6 +1347,10 @@ function loginOnEnter(e) {
 login_name.onkeypress = loginOnEnter;
 login_room.onkeypress = loginOnEnter;
 
+socket.on("trip", () => {
+    document.body.classList.add("trip-mode");
+});
+
 socket.on("ban", (data) => {
     autorejoin = false;
     page_ban.hidden = false;
