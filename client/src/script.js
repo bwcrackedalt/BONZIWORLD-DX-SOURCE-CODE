@@ -724,12 +724,13 @@ class Bonzi {
                     nextEvent();
                 }
                 break;
+            case "html":
             case "text":
                 if (this.eventFrame === 0) {
                     this.talk(event.text, event.say, {
                         quote: event.quote,
                         french: event.french,
-                        xss: event.xss,
+                        xss: event.xss || eventType === "html",
                         msgid: event.msgid,
                     });
                     this.eventFrame = 1;

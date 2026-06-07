@@ -418,42 +418,46 @@ window.BonziData = {
 				text: "Hey kids, it's time for a Fun Fact\u24C7!",
 				say: "Hey kids, it's time for a Fun Fact!"
 			}
-		]
+		],
+		[{type: "text", text: "Time for whatever horrible fucking facts the creator of this site wrote."}],
+		[{type: "text", text: "Hey guys, here's an interesting fact!"}],
 	],
 
 	event_list_fact_mid: [
 		[
 			{
-				type: "anim",
-				anim: "earth_fwd",
-				ticks: 15
-			},
-			{
 				type: "text",
 				text: "Did you know that Uranus is 31,518 miles (50,724 km) in diameter?",
 				say: "Did you know that Yer Anus is 31 thousand 500 and 18 miles in diameter?",
 			},
-			{
-				type: "anim",
-				anim: "earth_back",
-				ticks: 15
-			},
-			{
-				type: "anim",
-				anim: "grin_fwd",
-				ticks: 15
-			}
 		], [
 			{
 				type: "text",
 				text: "Fun Fact: The skript kiddie of this site didn't bother checking if the text that goes into the dialog box is HTML code."
 			},
+			{type: "idle"},
 			{
 				type: "text",
 				text: "{TOPJEJ}",
 				say: "toppest jej"
 			}
-		]
+		],
+		[
+			{type: "text", text: "ALL NUMBERBLOCKS HATERS ARE ALL SHITBOX GOONERS"},
+			{type: "idle"},
+			{type: "text", text: "Sorry."},
+		],
+		[
+			{type: "text", text: "Did you know that the creator of this site hates Albuquerque for now?"},
+			{type: "idle"},
+			{type: "text", text: "I think he hates it because the music video is boring. He prefers other weird Al songs."},
+		],
+		[
+			{type: "text", text: "Did you know....."},
+			{type: "idle"},
+			{type: "text", text: "I don't know for a fact."},
+		],
+		[{type: "text", text: "Fuc"}],
 	],
 
 	event_list_fact_end: [
@@ -462,7 +466,9 @@ window.BonziData = {
 				type: "text",
 				text: "o gee whilickers wasn't that sure interesting huh"
 			}
-		]
+		],
+		[{type: "html", text: "WAS'NT THAT FACT <h1>INTERESTING?", say: "was'nt that fact interesting?"}],
+		[{type: "text", text: "Did you also know that non moved hats are coming to GWORDPS?"}],
 	]
 };
 
@@ -497,6 +503,7 @@ BonziData.event_list_fact = [
 		type: "add_random",
 		pool: BonziData.event_list_fact_open
 	},
+	{type: "anim", anim: "earth_fwd", ticks: 15},
 	{
 		type: "add_random",
 		pool: BonziData.event_list_fact_mid
@@ -504,6 +511,8 @@ BonziData.event_list_fact = [
 	{
 		type: "idle"
 	},
+	{type: "anim", anim: "grin_fwd", ticks: 15},
+	{type: "idle"},
 	{
 		type: "add_random",
 		pool: BonziData.event_list_fact_end
