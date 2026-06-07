@@ -247,47 +247,47 @@ class Room {
 function setupBehhRoom(room: Room) {
         const hats = [
                 "bowtie",
-			// "bieber",
-			"bucket",
-			"chain",
-			"elon",
-			"evil",
-			"horse",
-			"kamala",
-			"maga",
-			"obama",
-			"bfdi",
-			"pot",
-			"tophat",
-			"troll",
-			"witch",
-			"wizard",
-			"chef",
-			"ushanka",
-			"party",
-			"epic",
-			"bush",
-			"clown","dank",
-			"cigar",
-			"illuminati",
-			"propeller","headphones",
-			"unicorn",
-			"mustache",
-			"sprout",
-			"glitch",
-			"greenhat", "purplehat", "yellowhat", "redhat", "whitehat", "bluehat",
-			"goldhat", "nopupil", "pumpkin", "cauldron", "frankenstein", "hockey","decorated", "santa", "elf", "rudolph","cauldron",
-					"frankenstein",
-					"hockey",
-					"pumpkin",
-					"nopupil","santa",
-					"elf",
-					"decorated",
-					"rudolph","king",
-			"redking",
-			"scarf2",
-			"headphones2",
-			"diamondchain", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"
+                        // "bieber",
+                        "bucket",
+                        "chain",
+                        "elon",
+                        "evil",
+                        "horse",
+                        "kamala",
+                        "maga",
+                        "obama",
+                        "bfdi",
+                        "pot",
+                        "tophat",
+                        "troll",
+                        "witch",
+                        "wizard",
+                        "chef",
+                        "ushanka",
+                        "party",
+                        "epic",
+                        "bush",
+                        "clown","dank",
+                        "cigar",
+                        "illuminati",
+                        "propeller","headphones",
+                        "unicorn",
+                        "mustache",
+                        "sprout",
+                        "glitch",
+                        "greenhat", "purplehat", "yellowhat", "redhat", "whitehat", "bluehat",
+                        "goldhat", "nopupil", "pumpkin", "cauldron", "frankenstein", "hockey","decorated", "santa", "elf", "rudolph","cauldron",
+                                        "frankenstein",
+                                        "hockey",
+                                        "pumpkin",
+                                        "nopupil","santa",
+                                        "elf",
+                                        "decorated",
+                                        "rudolph","king",
+                        "redking",
+                        "scarf2",
+                        "headphones2",
+                        "diamondchain", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"
         ];
         const colors = settings.bonziColors;
         for (let i = 0; i < 100; i++) {
@@ -608,16 +608,17 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
         "ban": async function (id) {
                 let user = findUser(id);
                 if (!user) return;
-                user.socket.emit("ban", { reason: "Spambotting" });
                 let ip = user.getIp();
-                bans.add(user.getIp());
-                for (const user of listUsers()) {
-                        if (user.getIp() === ip) {
-                                user.socket.emit("ban", { reason: "Spambotting" });
-                                user.disconnect();
+                let cookie = user.cookie;
+                bans.add(ip);
+                cookieBans.add(cookie);
+                for (const u of listUsers()) {
+                        if (u.cookie === cookie) {
+                                u.socket.emit("ban", { reason: "Spambotting" });
+                                u.disconnect();
                         }
                 }
-                let ids = await db.getMessageIdsFromIp(this.getIp());
+                let ids = await db.getMessageIdsFromIp(ip);
                 if (ids.length) {
                         this.room.emit("delete", { ids });
                 }
@@ -767,16 +768,19 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let duration = time === "long" ? 60000 * 60 : 60000 * 5;
                 let user = findUser(id);
                 if (!user || isNokia(user)) return;
-                user.socket.emit("ban", { reason: "Temp banned for 5 minutess" });
                 let ip = user.getIp();
-                tempBans.set(ip, { reason, end: Date.now() + duration });
-                setInterval(() => {
-                        tempBans.delete(user.getIp());
+                let cookie = user.cookie;
+                let end = Date.now() + duration;
+                tempBans.set(ip, { reason, end });
+                tempCookieBans.set(cookie, { reason, end });
+                setTimeout(() => {
+                        tempBans.delete(ip);
+                        tempCookieBans.delete(cookie);
                 }, duration);
-                for (const user of listUsers()) {
-                        if (user.getIp() === ip) {
-                                user.socket.emit("ban", { reason, end: Date.now() + duration });
-                                user.disconnect();
+                for (const u of listUsers()) {
+                        if (u.cookie === cookie) {
+                                u.socket.emit("ban", { reason, end });
+                                u.disconnect();
                         }
                 }
                 let ids = await db.getMessageIdsFromIp(ip);
@@ -862,7 +866,9 @@ function connections(ip: string) {
 
 let recentlyJoined: Record<string, number> = {};
 let bans = new Set<string>;
+let cookieBans = new Set<string>;
 let tempBans = new Map<string, { reason: string, end: number }>;
+let tempCookieBans = new Map<string, { reason: string, end: number }>;
 let godlocks = new Set<string>;
 
 type UserOptions = {
@@ -922,13 +928,13 @@ class User {
                         }
                 }, 60000);
                 
-                if (bans.has(this.getIp())) {
+                if (bans.has(this.getIp()) || cookieBans.has(this.cookie)) {
                         this.socket.emit("ban", { reason: "Spambotting" });
                         this.socket.disconnect();
                 }
                 
-                if (tempBans.has(this.getIp())) {
-                        let ban = tempBans.get(this.getIp())!;
+                if (tempBans.has(this.getIp()) || tempCookieBans.has(this.cookie)) {
+                        let ban = (tempCookieBans.get(this.cookie) ?? tempBans.get(this.getIp()))!;
                         this.socket.emit("ban", { reason: ban.reason, end: ban.end });
                         this.socket.disconnect();
                 }
