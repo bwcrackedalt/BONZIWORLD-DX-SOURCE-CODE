@@ -727,8 +727,14 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                         this.room.emit("delete", { ids });
                 }
         },
-        "unban": function (ip) {
-                bans.delete(ip);
+        "unban": function (idOrCookie) {
+                bans.delete(idOrCookie);
+                cookieBans.delete(idOrCookie);
+                let user = findUser(idOrCookie);
+                if (user) {
+                        bans.delete(user.getIp());
+                        cookieBans.delete(user.cookie);
+                }
         },
         "kick": function (text) {
                 let [id, ...reasonArr] = text.split(" ");
@@ -1085,13 +1091,13 @@ class User {
                         }
                 }, 60000);
                 
-                if (bans.has(this.getIp()) || cookieBans.has(this.cookie)) {
+                if (cookieBans.has(this.cookie)) {
                         this.socket.emit("ban", { reason: "Spambotting" });
                         this.socket.disconnect();
                 }
                 
-                if (tempBans.has(this.getIp()) || tempCookieBans.has(this.cookie)) {
-                        let ban = (tempCookieBans.get(this.cookie) ?? tempBans.get(this.getIp()))!;
+                if (tempCookieBans.has(this.cookie)) {
+                        let ban = tempCookieBans.get(this.cookie)!;
                         this.socket.emit("ban", { reason: ban.reason, end: ban.end });
                         this.socket.disconnect();
                 }
