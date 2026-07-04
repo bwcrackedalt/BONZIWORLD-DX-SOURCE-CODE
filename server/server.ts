@@ -951,7 +951,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 this.room.updateUser(this);
         },
         "promote": async function(args) {
-                if (!this.room.owner || this.room.owner !== this.guid) {
+                if (!(this.room.owner === this.guid || this.runlevel >= 4)) {
                         return this.notify("Only the room owner can promote users.");
                 }
                 let [id, tier] = args.split(" ");
@@ -966,7 +966,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 await db.setPromotion(user.cookie, level);
         },
         "demote": async function(id) {
-                if (!this.room.owner || this.room.owner !== this.guid) {
+                if (!(this.room.owner === this.guid || this.runlevel >= 4)) {
                         return this.notify("Only the room owner can demote users.");
                 }
                 let user = findUser(id);
@@ -1241,7 +1241,7 @@ class User {
 
                 socket.emit("room", {
                         room: data.room,
-                        isOwner: room.owner === guid,
+                        isOwner: room.owner === guid || runlevel >= 4,
                         isPublic: data.room === "default",
                         you: guid,
                         unlocks: hats,
@@ -1419,6 +1419,9 @@ class User {
         }
 
         updateAdmin() {
+                if (this.runlevel >= 4) {
+                        this.socket.emit("serverOwner");
+                }
                 if (this.runlevel >= 3) {
                         this.socket.emit("admin");
                 } else if (this.runlevel >= 1.5) {

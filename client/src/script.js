@@ -2834,6 +2834,7 @@ start_menu_vault.onclick = () => {
 socket.on("blessed", blessedPopup);
 socket.on("king", () => king = true);
 socket.on("admin", () => admin = true);
+socket.on("serverOwner", () => isOwner = true);
 socket.on("promoted", (data) => {
     king = true;
     if (data.tier === "high") admin = true;
