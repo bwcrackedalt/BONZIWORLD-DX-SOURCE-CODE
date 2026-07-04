@@ -59,6 +59,28 @@ export async function deleteGodword(cookie: string): Promise<void> {
         `, [sanitizeUnicode(cookie)]);
 }
 
+export async function setPromotion(cookie: string, level: number): Promise<void> {
+        await client.query(`
+                INSERT INTO promotions (cookie, level)
+                VALUES ($1, $2) ON CONFLICT (cookie) DO UPDATE
+                SET level = excluded.level
+        `, [sanitizeUnicode(cookie), level]);
+}
+
+export async function getPromotion(cookie: string): Promise<number | null> {
+        let result = await client.query<{ level: number }>(`
+                SELECT level FROM promotions WHERE cookie = $1
+        `, [sanitizeUnicode(cookie)]);
+        let row = result.rows[0];
+        return row?.level ?? null;
+}
+
+export async function deletePromotion(cookie: string): Promise<void> {
+        await client.query(`
+                DELETE FROM promotions WHERE cookie = $1
+        `, [sanitizeUnicode(cookie)]);
+}
+
 export async function getImageBlockReason(url: string): Promise<string | null> {
         let res = await client.query<{ reason: string }>(`
                 SELECT reason FROM blocked_images

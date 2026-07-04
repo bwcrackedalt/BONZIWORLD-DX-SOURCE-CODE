@@ -45,7 +45,9 @@
         "WHO IS A TREE THERE? Ask me.",
         "what is the last global holiday?",
         "what is the worst pfp in youtube?",
-        "what is the best server ever?"
+        "what is the best server ever?",
+        "bro i can pay them how do i do",
+        "i ama. tree"
     ],
     "codes": [
         {
@@ -236,6 +238,11 @@
             "matches": "^behhworld$",
             "response": "what?",
             "unlocks": "rudolph"
+        },
+        {
+            "matches": "^dont\\s*pay\\s*it$",
+            "response": "ok what?",
+            "unlocks": "silverfedora"
         },
         {
             "tag": "d1",

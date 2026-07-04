@@ -13,9 +13,22 @@
                 "skybox",
                 "i dont have this food in de fridge",
                 "commands: !foods , !digest , =dougest",
-                "eatbot ready! feed me food."
+                "eatbot ready! feed me food.",
+                "memjg sex"
         ],
-        "nameLimit": 25,
+        "rickroll_words": [
+                "Free robux",
+                "Get godword leaked",
+                "Click here for proofs of sticky coming back to bonziworld",
+                "Bypass filter! Say \"Nìgger\" and see what happens",
+                "Crosscolors are back! Do /color [URL] and see the magic happen!",
+                "mickai.me is back!",
+                "Click here for planti",
+                "EAT OUR BALLS!",
+                "click here for semjg mex",
+                "404bonzi will be back!"
+        ],
+        "nameLimit": 100,
         "charLimit": 2000,
         "pitch": {
                 "max": 125,
@@ -71,7 +84,16 @@
                 "i": 0,
                 "img": 0,
                 "video": 0,
-                "announce": 1
+                "announce": 1,
+                "nonsense": 0,
+                "copypasta": 0,
+                "cp": 0, 
+                "shitbox": 0,
+                "control": 1.5,
+                "lolcow": 0,
+                "wtf": 0,
+                "endpoem": 0,
+                "rickroll": 0
         },
         "defaultName": "Anonymous",
         "bonziColors": [
@@ -85,11 +107,13 @@
                 "cyan",
                 "pink",
                 "gray",
-                "orange"
+                "orange",
+                "darkgray",
+                "cappuccino",
+                "maroon"
         ],
         "hats": [
                 "tophat",
-                "bieber",
                 "troll",
                 "kamala",
                 "elon",
@@ -109,7 +133,12 @@
                 "party",
                 "epic",
                 "bush",
-                "clown"
+                "clown",
+                "kiddie",
+                "eyepatch",
+                "virginity",
+                "scared",
+                "scarf"
         ],
         "blessedHats": [
                 "dank",
@@ -141,7 +170,8 @@
                 "decorated", 
                 "santa", 
                 "elf", 
-                "rudolph"
+                "rudolph",
+                "silverfedora"
         ],
         "port": 5000,
         "express": {
@@ -161,10 +191,14 @@
                 "[Ssßß§§śŚŝŜšŠṣ̌Ṣ̌şŞṣṢ\\(]\\W*[Pp\\|]\\W*[RrŔŕŘř]\\W*[UuùÙúÚûÛüÜūŪŭŬůŮűŰųŲưƯụỤ]\\W*[NnN̈n̈ñÑńŃņŅňŇŉŉŋŊɲƝṅṄ]\\W*[KkĶķƘƙ]\\W*[IiìÌíÍîîïÏīĪįĮıİịỊ]": "bfdi",
                 "[Ff\\(]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª\\|]\\W*[GgĜĝĢģĞğ]": "slop",
                 "[JjJ̌ǰJ̣̌ǰ̣Ĵĵ\\(]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ\\|]\\W*[WwŴŵẀẁẂẃẄ]": "financial wizard",
-                "67": "21",
-                "6 7": "21",
-                "6-7": "21",
+                "67": "69",
+                "6 7": "69",
+                "6-7": "69",
                 "[GgĜĝĢģĞğ\\(]\\W*[Oo0oÒòÓóÔôÕõÖöøØŌōŎŏŐőŒœɔƆơƠọỌºº\\|]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[NnN̈n̈ÑñŃńŅņŇňŉŉŊŋƝɲṄṅ]\\W*[IiÌìÍíÎîÏïĪīĮįİıỊị]\\W*[Mm]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[TtÞþŤťȚțṬṭ]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]": "adobe animate",
-                "[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª\\(]\\W*[CcÇçĆćĈĉČčČ̣č̣\\|]\\W*[KkĶķƘƙ]": ""
+                "[BbƁb\\(]\\W*[WwŴŵẀẁẂẃẄẅ\\|]\\W*[IiÌìÍíÎîÏïĪīĮįİıỊị]": "bia",
+                "[KkĶķƘƙ\\(]\\W*[LlĹĺĻļĽľŁł·\\|]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[Ssßß§§ŚśŜŝŠšṢ̌ṣ̌ŞşṢ̌ṣ̌]\\W*[KkĶķƘƙ]\\W*[YyŸÿÝýỲỳŶŷƳƴ]\\W*[CcÇçĆćĈĉČčČ̣č̣]\\W*[Ssßß§§ŚśŜŝŠšṢ̌ṣ̌ŞşȘșṢṣ]\\W*[UuÙùÚúÛûÜüŪūŬŭŮůŰűŲųƯưỤụ]\\W*[Pp]\\W*[OooÒòÓóÔôÕõÖöøØŌōŎŏŐőŒœɔƆơƠọỌºº]": "semjg mex",
+                "[OooÒòÓóÔôÕõÖöøØŌōŎŏŐőŒœɔƆơƠọỌºº\\(]\\W*[Vv\\|]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]\\W*[NnN̈n̈ÑñŃńŅņŇňŉŉŊŋƝɲṄṅ]": "rowen",
+                "[Pp\\(]\\W*[LlĹĺĻļĽľŁł\\|]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[NnN̈n̈ÑñŃńŅņŇňŉŉŊŋƝɲṄṅ]\\W*[TtÞþŤťȚțŢţṬṭ]\\W*[IiÌìÍíÎîÏïĪīĮįİıỊị1lYy]": "NeatheyTheCreator",
+                "[6⁶]\\W*[7⁷⅞]": "69"
         }
 }

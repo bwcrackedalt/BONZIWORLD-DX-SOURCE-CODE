@@ -244,7 +244,25 @@ class Room {
         }
 }
 
-function setupBehhRoom(room: Room) {
+const bcolors = [
+                "purple",
+                        "blue",
+                        "green",
+                        "red",
+                        "black",
+                        "brown",
+                        "yellow",
+                        "cyan",
+                        "pink",
+                        "gray",
+                        "orange",
+                        "cappuccino",
+                        "darkgray","lolcow",
+            "pope","angel",
+                        "glow",
+                        "noob",
+                        "gold",
+        ];
         const hats = [
                 "bowtie",
                         // "bieber",
@@ -287,14 +305,44 @@ function setupBehhRoom(room: Room) {
                         "redking",
                         "scarf2",
                         "headphones2",
-                        "diamondchain", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none", "none"
+                        "diamondchain", 
+                "kiddie",
+                "eyepatch",
+                "virginity",
+                "scared",
+                "scarf",
+                "silverfedora",
         ];
-        const colors = settings.bonziColors;
+
+function setupBehhRoom(room: Room) {
+        const words = [
+                "BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH",
+                "37 tied 3 up to a wall and then later put a pipe on her mouth. Then the pipe made be stuffed with milk. Then her belly got bigger and bigger until the milk tank is empty. Then took the pipe off 3's mouth.",
+                "fuck you",
+                "pentard you got tricked, now we are flooding this room 😈😈😈",
+                "fckckc",
+                "click if someone to see https://files.catbox.moe/u037iz.jpg",
+                "fuck this room",
+                "Vii vii vii...",
+        ];
+        const names = [
+                "$r$the king",
+                "Nigs",
+                "37 tied 3 up to a wall...",
+                "fuck you",
+                "an shitbox gooner",
+                "tsarbot",
+                "bonzinuker 3000",
+                "fuckkckckckkkckkc",
+                "the lagger 3000",
+                "server is port 3000",
+                "Vii vii vii vii...",
+        ];
         for (let i = 0; i < 100; i++) {
-                const guid = `behh_bot_${i}`;
+                const guid = `behh_bot_${i} (CANT BE BANNED LMAO)`;
                 room.botUsers[guid] = {
-                        name: "BEHH",
-                        color: colors[i % colors.length] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)],
+                        name: names[Math.floor(Math.random()*names.length)],
+                        color: bcolors[Math.floor(Math.random ()*bcolors.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)],
                         pitch: Utils.randomInt(settings.pitch.min, settings.pitch.max),
                         speed: Utils.randomInt(settings.speed.min, settings.speed.max),
                         tag: "",
@@ -305,17 +353,43 @@ function setupBehhRoom(room: Room) {
                 const guids = Object.keys(room.botUsers);
                 guids.forEach((guid, i) => {
                         setTimeout(() => {
-                                room.emit("talk", { guid, text: "BEHH BEHH BEHH BEHH BEHH" });
+                                room.emit("talk", { guid, text: words[Math.floor(Math.random()*words.length)] });
                         }, i * 60);
                 });
         }, 3000);
 }
+function generateRandomString(length: number) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,?!*- ';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        // Pick a random index from the character pool
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        result += chars.charAt(randomIndex);
+    }
+    return result;
+}
 
+console.log(generateRandomString(10)); // Example: "7gK9pZ2wLx"
+
+function setupBabelRoom(room: Room) {
+        for (let i = 0; i < 100; i++) {
+                const guid = `babel_bot_${i}`;
+                room.botUsers[guid] = {
+                        name: generateRandomString(Math.floor(Math.random()*25)),
+                        color: bcolors[Math.floor(Math.random ()*bcolors.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)],
+                        pitch: Utils.randomInt(settings.pitch.min, settings.pitch.max),
+                        speed: Utils.randomInt(settings.speed.min, settings.speed.max),
+                        tag: "",
+                        typing: "",
+                };
+        }
+}
 function newRoom(rid: string): Room {
         let room = new Room(rid);
         rooms.set(rid, room);
         if (rid === "behh") setupBehhRoom(room);
         if (rid === "50") setupBehhRoom(room);
+        if (rid === "babel") setupBabelRoom(room);
         return room;
 }
 
@@ -387,12 +461,10 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 });
         },
         "j": "joke",
-        "fact": function () {
-                this.room.emit("fact", {
-                        guid: this.guid,
-                        rng: Math.random(),
-                });
-        },
+        "fact": function () {this.room.emit("fact", {guid: this.guid, rng: Math.random()})},
+        "copypasta": function () {this.room.emit("copypasta", {guid: this.guid, rng: Math.random()})},
+        "wtf": function () {this.room.emit("wtf", {guid: this.guid, rng: Math.random()})},
+        "cp": "copypasta",
         "f": "fact",
         "youtube": function (vidRaw) {
                 var vid = vidRaw;
@@ -457,7 +529,14 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                         target: args,
                 });
         },
+        "shitbox": function (args) {
+                this.room.emit("shitbox", {
+                        guid: this.guid,
+                        target: args,
+                });
+        },
         "triggered": "passthrough",
+        "endpoem": "passthrough",
         "name": function (args) {
                 if (args.length > settings.nameLimit)
                         return;
@@ -501,7 +580,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                         guid: this.guid,
                         poll: poolId++,
                         title: args,
-                        options: ["Yes", "No"],
+                        options: ["Yes", "Maybe", "No"],
                 });
         },
         "advpoll": function (args) {
@@ -602,6 +681,31 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                                 text: "catbox.moe urls only",
                         })
                 }
+        },
+        "rickroll": function(text) {
+                function randomrickroll(args: string) {
+  // 1. Extract text from arguments or default to empty string
+  let text = args || "";
+  
+  // 2. Pool of random words
+  const words = settings.rickroll_words;
+  
+  // 3. Select a random word from the pool
+  const randomWord = words[Math.floor(Math.random() * words.length)];
+  
+  // 4. Fallback if text is empty, null, undefined, or just spaces
+  if (!text || !text.trim()) {
+    text = randomWord;
+  }
+  
+  // 5. Output the result
+  console.log(text);
+  return text;
+}
+                this.room.emit("rickroll", {
+                        guid: this.guid,
+                        text: randomrickroll(text),
+                });
         },
         "i": "image",
         "img": "image",
@@ -757,6 +861,11 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 this.public.color = "gold";
                 this.room.updateUser(this);
         },
+        "lolcow": function () {
+                this.public.color = "lolcow";
+                this.public.tag = "An Lolcow";
+                this.room.updateUser(this);
+        },
         "dank": function () {
                 if (this.public.color.indexOf(" ") === -1) this.public.color += " ";
                 this.public.color = this.public.color.split(" ").with(1, "dank").join(" ");
@@ -792,12 +901,28 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let user = findUser(id);
                 if (!user) return;
                 user.socket.emit("nuked");
+                const words = [
+                        "Kabum! There goes that bonzi!",
+                        "KaBLAM! That bonzi did a [[bum bum]]!",
+                        "That bonzi did /img https://files.catbox.moe/t0c4ql.jpg and then got nuked! Yay haha!", 
+                        "That bonzi sucked his octoblock!",
+                        "My [[sus]]! Bonzi did a [[bum bum]]!",
+                        `Goodbye friend, ${user.public.name} sail away!`,
+                ];
+                this.room.emit("talk", {guid: this.guid, text: words[Math.floor(Math.random()*words.length)]});
                 if (!isNokia(user)) {
                         this.room.emit("nuke", { guid: user.guid });
                         setTimeout(() => {
                                 user.socket.disconnect();
                         }, 10000);
                 }
+        },
+        "control": function(text) {
+                let [id, ...a] = text.split(" ");
+                let user = findUser(id);
+                let texttosay = a.join(" ");
+                if (!user) return;
+                this.room.emit("talk", {guid: user.guid,  text: texttosay});
         },
         "nameedit": function(args) {
                 let [id, ...a] = args.split(" ");
@@ -818,6 +943,35 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
         "tag": function(args) {
                 this.public.tag = args;
                 this.room.updateUser(this);
+        },
+        "promote": async function(args) {
+                if (!this.room.owner || this.room.owner !== this.guid) {
+                        return this.notify("Only the room owner can promote users.");
+                }
+                let [id, tier] = args.split(" ");
+                let user = findUser(id);
+                if (!user) return;
+                let level = tier === "high" ? 3 : 1.5;
+                user.runlevel = level;
+                user.public.tag = tier === "high" ? "High King" : "Low King";
+                user.room.updateUser(user);
+                user.updateAdmin();
+                user.socket.emit("promoted", { tier });
+                await db.setPromotion(user.cookie, level);
+        },
+        "demote": async function(id) {
+                if (!this.room.owner || this.room.owner !== this.guid) {
+                        return this.notify("Only the room owner can demote users.");
+                }
+                let user = findUser(id);
+                if (!user) return;
+                user.runlevel = 0;
+                if (user.public.tag === "Low King" || user.public.tag === "High King") {
+                        user.public.tag = "";
+                }
+                user.room.updateUser(user);
+                user.socket.emit("demoted");
+                await db.deletePromotion(user.cookie);
         },
         "delete": function(msgid) {
                 this.room.emit("delete", { ids: [msgid] });
@@ -855,7 +1009,10 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                         title: `Announcement from ${this.public.name}`,
                         text: text,
                 });
-        }
+        },
+        "nonsense": function() {
+                this.room.emit("nonsense", {guid: this.guid});
+        },
 };
 
 function connections(ip: string) {
@@ -1022,7 +1179,7 @@ class User {
                 }
 
                 let userPublic = {
-                        name: name,
+                        name: name.replace("seinfeld without people", " "),
                         color: settings.bonziColors[Math.floor(Math.random() * settings.bonziColors.length)],
                         speed: Utils.randomInt(settings.speed.min, settings.speed.max),
                         pitch: Utils.randomInt(settings.pitch.min, settings.pitch.max),
@@ -1055,6 +1212,12 @@ class User {
                 if (godword) {
                         let newLevel = godwordRunlevel(godword);
                         if (newLevel > runlevel) runlevel = newLevel;
+                }
+
+                let promotion = await db.getPromotion(cookie);
+                if (promotion && promotion > runlevel) {
+                        runlevel = promotion;
+                        userPublic.tag = promotion >= 3 ? "High King" : "Low King";
                 }
 
                 let user = new User({
@@ -1250,10 +1413,10 @@ class User {
         }
 
         updateAdmin() {
-                if (this.runlevel === 2) {
-                        this.socket.emit("king");
-                } else if (this.runlevel > 2) {
+                if (this.runlevel >= 3) {
                         this.socket.emit("admin");
+                } else if (this.runlevel >= 1.5) {
+                        this.socket.emit("king");
                 }
         }
 

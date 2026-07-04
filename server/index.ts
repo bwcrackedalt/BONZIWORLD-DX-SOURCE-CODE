@@ -42,7 +42,7 @@ app.get("/discord_pfp/:layers", async (req, res) => {
 			return res.status(404).send("too much");
 		}
 
-		let imagePaths = names.map(n => path.join("../src/www/img/pfp", `${n}.webp`));
+		let imagePaths = names.map(n => path.join("../client/src/img/pfp", `${n}.webp`));
 
 		for (let p of imagePaths) {
 			if (!fs.existsSync(p)) {

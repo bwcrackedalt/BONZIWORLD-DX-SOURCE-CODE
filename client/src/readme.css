@@ -129,3 +129,16 @@ figcaption {
     font-size: 0.8em;
     color: #555555;
 }
+gay-glow {
+      font-weight: bold;
+      color: #000; /* Core text color */
+      
+      /* Layered shadows create the neon halo effect */
+      text-shadow: 
+        0 0 5px #00ff00,    /* Small intense inner glow */
+        0 0 15px #00ff00,   /* Medium glow */
+        0 0 30px #00ff00,   /* Large soft glow */
+        0 0 60px #00ff00;   /* Wide ambient light */
+    }
+gay-bigger {font-size: 3em}
+gay-biggest {font-size: 5em}

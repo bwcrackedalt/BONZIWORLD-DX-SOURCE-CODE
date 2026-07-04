@@ -29,7 +29,9 @@
 
         <script defer src="./bonziData.js"></script>
         <script defer src="./script.js"></script>
-
+        <script defer src="./platform.js"></script>
+        <script defer src="./click.js"></script>
+        <script defer src="./music.js"></script>
         <style id="customStyle"></style>
 </head>
 <body>
@@ -60,12 +62,83 @@
                         <span id="room_private">This room is private.</span>
                         <span id="room_owner"><br>You are the owner of this room.</span>
                 </div>
-                
                 <div id="talkcard" hidden></div>
                 <div id="chat_bar">
                         <div id="chat_send">send</div>
                         <div id="start_button">+</div>
-                        <input id="chat_message" type="text" placeholder="Enter a message">
+                        <input id="chat_message" type="text" placeholder="Enter a message" list="cmds">
+                        <datalist id="cmds">
+                                <option value="/name ">Change your name.</option>
+                                <option value="/speed ">
+                                        Max: 275, Min: 125
+                                </option>
+                                <option value="/pitch ">
+                                        Max: 125, Min: 15
+                                </option>
+                                <option value="/color ">
+                                        Change your color.
+                                </option>
+                                <option value="/hat ">
+                                        Change your hat. Blessed max 3, Admin max 10, Normal max 1.
+                                </option>
+                                <option value="/joke">
+                                        Tell a joke.
+                                </option>
+                                <option value="/fact">
+                                        Tell a "fact".
+                                </option>
+                                <option value="/wtf">
+                                        Embarass yourself.
+                                </option>
+                                <option value="/copypasta">
+                                        Tell a copypasta.
+                                </option>
+                                <option value="/backflip">
+                                        Do a backflip.
+                                </option>
+                                <option value="/backflip swag">
+                                        Do a backflip, but with more swag.
+                                </option>
+                                <option value="/asshole ">
+                                        Call someone an asshole.
+                                </option>
+                                <option value="/owo ">
+                                        owo, wat dis?
+                                </option>
+                                <option value="/shitbox ">
+                                        Call someone a shitbox gooner.
+                                </option>
+                                <option value="/triggered">
+                                        The <b>best</b> copypasta.
+                                </option>
+                                <option value="/lolcow">
+                                        BE A FUCKING LOLCOW HAHHAHAHAHA
+                                </option>
+                                <option value="/nonsense">
+                                        Say anything nonsense.
+                                </option>
+                                <option value="/img ">
+                                        Send an image. Catbox.moe urls only.
+                                </option>
+                                <option value="/poll ">
+                                        Create a poll.
+                                </option>
+                                <option value="/settings">
+                                        Configure your experience.
+                                </option>
+                                <option value="/vaporwave">
+                                        ＶＡＰＯＲＷＡＶＥＷＯＲＬＤ　ＲＥＶＩＶＥＤ　２０２６　ＥＤＩＴＩＯＮ　イホフコ
+                                </option>
+                                <option value="/unvaporwave">
+                                        No more vaporwave.
+                                </option>
+                                <option value="/endpoem">
+                                        I see the player you mean.
+                                </option>
+                                <option value="/rickroll ">
+                                        Send a link to epically troll users.
+                                </option>
+                        </datalist>
                         <div id="chat_tray">
                                 <div id="btn_tile" class="tray_btn"></div>
                         </div>
@@ -73,12 +146,16 @@
 
 
                 <div id="page_login" class="page">
+                        <div id="login_apps" class="app_showcase" style="text-align: center;">
+                        </div>
                         <main id="login_readme">Welcome to GWORDPS 2.0.0!<br>
-                                You can flood it but only to 120 bots.<br>
+                                notice: huh this project is actually slop huh HUH!?
+                                <br>
                                 <a id="readme" href="readme.html" target="_blank">README</a>
                                 <a href="changelog.html" target="_blank">Changelog</a>
                                 <!-- <a href="https://forum.bonzi.gay" target="_blank">Forums</a> -->
                          <a href="extra" target="_blank">Extra</a>
+                                
                         </main> 
                         <div id="login_card" hidden>
                                 <input id="login_name" type="text" placeholder="Nickname" maxlength="25">
@@ -87,6 +164,22 @@
                                 <div id="login_error" hidden></div>
                         </div>
                         <div id="login_load">loading</div>
+                        <div class="purple-bottom-container" id="login_tip" hidden>
+                                <!--
+  <p class="inner-text">Tip: <br><span id="tip-textCont"><script>
+          const tips = [
+                  "Image filter is enabled, <b>If you try posting the <a href='https://files.catbox.moe/m4dufz.png'>stella image</a>, you will not motherufucker.</b>",
+                  "<gay-rainbow>If you ever see a image filter get bypassed, make sure to nuke the one who did it.",
+                  "If you see a server promoted in the chat, it is probably a kiddie server. <b>Don't even join it motherfucker.",
+                  "404bonzi will be watching this server everytime you join.",
+                  "If someone bypasses the word filter, nuke them.",
+                  "If you see someone flooding, do /masskick regex now.",
+          ];
+          const randomTip = tips[Math.floor(Math.random()*tips.length)];
+          document.getElementById('tip-textCont').innerHTML = randomTip
+  </script></span></p>
+                                -->
+                        </div>
                         <div id="login_version">Version 2.0.0</div>
                 </div>
 

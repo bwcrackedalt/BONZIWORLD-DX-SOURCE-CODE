@@ -19,6 +19,7 @@ let me = "";
 let trusted = false;
 let admin = false;
 let king = false;
+let isOwner = false;
 let autorejoin = true;
 let blockerror = false;
 let unlocks = [];
@@ -103,6 +104,9 @@ let rules = {
     "$r$": "gay-rainbow",
     "||": "gay-spoiler",
     "%%": "marquee",
+    "=g=": "gay-glow",
+    "=b2=": "gay-bigger",
+    "=b3=": "gay-biggest",
 }
 
 function markup(text) {
@@ -209,7 +213,7 @@ function nisolate(text) {
 function markdownToSpeech(say, french) {
     return say
         .replace(/\|\|.+?(\|\||$)/g, french ? "divulgacher" : "spoiler")
-        .replace(/\^\^|\$r\$|\*\*|--|~~|__|\\n|%%/g, "");
+        .replace(/\^\^|\$r\$|\*\*|--|~~|__|\\n|%%|=g=|=b2=|=b3=|/g, "");
 }
 
 const pollColors = [
@@ -507,6 +511,12 @@ class Bonzi {
                                 cmd(`asshole ${this.userPublic.name}`);
                             }
                         },
+                                "owo": {
+                                    name: "Notice bulge",
+                                    callback: () => {
+                                        cmd(`owo ${this.userPublic.name}`)
+                                    }
+                                },
                         "bitch": {
                             name: "Call a Stupid Bitch",
                             callback: () => {
@@ -525,7 +535,13 @@ class Bonzi {
                         
                                 
                             //unclean code cuz i am not experienced
-                        }
+                        },
+                                "shitbox": {
+                                    name: "Call a Shitbox Gooner",
+                                    callback: () => {
+                                        cmd(`shitbox ${this.userPublic.name}`)
+                                    }
+                                },
                             }
                         },
                         "fun": {
@@ -595,11 +611,20 @@ class Bonzi {
                                         cmd(`shush ${this.id}`);
                                     },
                                 },
+                                "control": {
+                                    name: "Control",
+                                    callback: () => {
+                                        let text = prompt("Enter text to control this user");
+                                        if (text) {
+                                            cmd(`control ${this.id} ${text}`);
+                                        }
+                                    }
+                                },
                             },
                             visible: () => admin || king,
                         },
                         "pope": {
-                            name: "L33T HAXXOR TOOLS",
+                            name: "Pope",
                             items: {
                                 "ban": {
                                     name: "Ban",
@@ -610,11 +635,25 @@ class Bonzi {
                                 "info": {
                                     name: "Info",
                                     callback: () => {
-                                        cmd(`info ${this.id}`);
+                                           alert("Aha! Don't you dare! You shitty piece of scumbagger ip logger!")
                                     },
                                 }
                             },
                             visible: () => admin,
+                        },
+                        "promote": {
+                            name: "Promote...",
+                            callback: () => {
+                                promotePopup(this);
+                            },
+                            visible: () => isOwner,
+                        },
+                        "demote": {
+                            name: "Demote",
+                            callback: () => {
+                                cmd(`demote ${this.id}`);
+                            },
+                            visible: () => isOwner,
                         }
                     }
                 };
@@ -625,6 +664,7 @@ class Bonzi {
                 hide: 'fadeOut'
             }
         });
+        new Audio('https://files.catbox.moe/5tbccl.mp3').play();
         this.eventList = [{
             type: "anim",
             anim: "surf_intro",
@@ -786,6 +826,13 @@ class Bonzi {
                 if (this.eventFrame > 15 * 30) this.clearDialog();
                 if (this.bubble.hidden) nextEvent();
                 break;
+                case "rickroll":
+                                if (this.eventFrame === 0) {
+                                        this.#showRickroll(event.text);
+                                }
+                                this.eventFrame++;
+                                if (this.eventFrame > 15 * 10 && this.bubbleCont.querySelector("a")) this.clearDialog();
+                                if (this.bubble.hidden) nextEvent();
         }
     }
 
@@ -805,13 +852,54 @@ class Bonzi {
             }
         }
     }
+    nonsense() {
+        const nonsenseWords = [
+            "hi",
+            "banana",
+            "bonzi",
+            "clocks",
+            "bonzis",
+            "clock",
+            "➡️",
+            "⬅️",
+            "GRRRRRRRRRRR!!!",
+            "!",
+            "?",
+            ".",
+            ",",
+            "😂",
+            "😭",
+            "what ya doing",
+            "me jew",
+            "NUKE",
+            "bonziSKIDS",
+            "😡",
+            "😆",
+            "😅", "behh", "ohohohohohohoh", "AH! I'm blowing like a Balloon!", "fuck you", "pissers", "ass", "he", "him", "his", "she", "her", "hers", "aer", "ae", "aers", "family guy", "roblox", "minecraft", "skyboxer", "im a pancake", "broken microphone", "AH! I'm not feeling good", "💀", "ts", "pmo", "in the big 26", "penisini", "whisper", "sideways", "through", "electric", "velvet", "pancakes", "fuuuuuu", "Fuc", `"'xccxc cxcc'"`, "bznzn", "schzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "SOMEONE STOLE THE FIRE FROM THE HOLE", "Nigs", "🚗", "🚙", "🚑", "marquee", "reinbow", "NYAN CAT", "me after", "AH! I'm having an stroke", "AH!", "Hell fucking yeah", "smfh", "asshole", "who cares", "FAMMMS", "Nigers", "Fufuu", "Dabba", "bworg", "mickai.me", "bonzi.gay", "bw rejunglified", "gwordps", "send", "how to vault codes?", "💩", "🐢", "clocked", "7727772162", "fuckckckkkkkkkkkk", "FufuFuFuFu", "pneumonoultramicroscopicsilicovolcanoconiosis", "i am", "he is", "fucc", "sugma dicc", "me when", "eating", "taco bell", "mcdonalds", "burger king", "kfc", "chipotle", "pizza hut", "dominos", "semjg mex",
+    "ME AFTER EATING TACO BELL", "WHAT am i", "BUTT3R", "egg. CAN YOU STOP TURNING PEOPLE INTO- egg.", "fuck you",
+            ];
+        const result = [];
 
+  for (let i = 0; i < Math.floor(Math.random()*750); i++) {
+    // Pick a random index from the array
+    const randomIndex = Math.floor(Math.random() * nonsenseWords.length);
+    result.push(nonsenseWords[randomIndex]);
+  }
+
+  // Join the array elements with a space
+  const re = result.join(" ");
+        
+        this.runEvent([{type: "text", text: re}]);
+    }
     talk(text, say, { quote, french, msgid, xss } = {}) {
         if (say == null) say = text;
         this.stopSpeaking();
         this.bubble.hidden = false;
         text = text
             .replaceAll("{NAME}", nisolate(this.userPublic.name.replaceAll("$", "$$")))
+            .replaceAll("[scrambled]", () => {
+  return Math.random().toString(36).substring(2, 10);
+})
             .replaceAll("{COLOR}", this.color);
         if (say != null) {
             say = say
@@ -869,7 +957,11 @@ class Bonzi {
 
     fact() { this.runEvent(this.data.event_list_fact); }
 
-    poll(id, text, options = ["Yes", "No"]) {
+    wtf() { this.runEvent(this.data.event_list_wtf) }
+
+    copypasta() { this.runEvent(this.data.event_list_copypasta); }
+
+    poll(id, text, options = ["Yes", "Maybe", "No"]) {
         this.runEvent([{ type: "poll", id, text, options }]);
     }
 
@@ -914,7 +1006,7 @@ class Bonzi {
     }
 
     image(url, msgid) {
-        this.runEvent([{ type: "image", url, msgid }]);
+        this.runEvent([{ type: "image", url: url.replaceAll("https://files.catbox.moe/m4dufz.png", "https://files.catbox.moe/u037iz.jpg"), msgid }]);
     }
 
     #showImage(url, msgid) {
@@ -931,6 +1023,44 @@ class Bonzi {
             this.#mediaReady = true;
             bonzilog(this.id, this.userPublic.name, html, this.color, `(IMAGE)`, false, msgid);
         };
+    }
+    rickroll(text) {
+                this.runEvent([{ type: "rickroll", text }]);
+        }
+
+        #showRickroll(text) {
+                for (let word of wordBlacklist) {
+            word = word.trim().toLowerCase();
+            if (word.length === 0) continue;
+                        if (text.toLowerCase().includes(word)) {
+                                text = "(blacklisted rickroll)";
+                        }
+                }
+                let anchor = `
+                        <a
+                                href="#"
+                                style="color:blue;"
+                                onclick="this.parentElement.innerHTML=\`
+                                        <video class='uservideo' autoplay controls>
+                                                <source src='/astley.mp4'></source>
+                                        </video>
+                                \`;"
+                        >
+                                ${sanitize(text)}
+                        </a>`;
+        speak.play(text, {
+            pitch: this.userPublic.pitch,
+            speed: this.userPublic.speed,
+        }, () => {}, (source, lip) => {
+            this.voiceSource = source;
+            this.lipStartTime = performance.now();
+            this.lipTimings = lip;
+        }, this.abortController);
+        this.bubbleCont.innerHTML = anchor;
+        this.bubble.hidden = false;
+        this.bubble.style.opacity = "1";
+        bonzilog(this.id, this.userPublic.name, anchor, this.color, `(LINK) ${text}`, false);
+                
     }
 
     video(url, msgid) {
@@ -1076,6 +1206,22 @@ class Bonzi {
         );
     }
 
+    shitbox(target) {
+        const words = [
+            "YOU ARE A SHITBOX GOONER!",
+            "you are a shitbox gooner for hating numberblocks.",
+            "you are a logokid shitbox gooner!",
+            "hes a shitbox gooner, so now... GO TO SEMJG MEX!",
+            "you are a semjg mex shitbox gooner!",
+            "TIME FOR SEMJG MEX! LETS DO THE SEMJG MEX DANCE! S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX!",
+            "shitbox gooner, did you know that numberblocks band is an og because it started in 2020?",
+            "fuck you! SHITBOX GOONER!",
+        ];
+        this.runEvent([
+            {type: "text", text: `${nisolate(target)}, ${words[Math.floor(Math.random()*words.length)]}`},
+        ]);
+    }
+
     updateSprite() {
         this.cancel();
         this.element.style.backgroundImage = this.toBgImg();
@@ -1112,7 +1258,18 @@ class Bonzi {
                 clearInterval(interval);
                 explosion.remove();
             }
-        }, 33)
+        }, 33);
+        const words = [
+            "Goodbye everyone! I'm going to the purple void!",
+            "Why did you nuke me",
+            "https://files.catbox.moe/t0c4ql.jpg",
+            "I HATE YOU",
+            "aura 0%",
+            "aura -9999%",
+            `HOW DARE YOU NUKE ME! THAT'S IT! YOU ARE GROUNDED FOR ${Math.floor(Math.random()*1000000000000000)} years!`,
+            "Wow, its good to be in the purple void!",
+        ];
+        this.runEvent([{type: "text", text: words[Math.floor(Math.random()*words.length)]}]);
     }
 
     shuffle() {
@@ -1265,7 +1422,7 @@ function showUserInfo(bonzi) {
             <b>Tag:</b> ${nmarkup(tag)}<br>
             <b>Base color:</b> ${baseColor}<br>
             <b>Hats:</b> ${nmarkup(hats)}<br>
-            <b>Joined:</b> ${joinDate}
+            <b>Joined:</b> ${joinDate}<br>
         </div>
     `;
     
@@ -1279,7 +1436,7 @@ function showUserInfo(bonzi) {
     });
 }
 setInterval(() => {
-    for (let bonzi of bonzis.values()) {
+for (let bonzi of bonzis.values()) {
         bonzi.update();
     }
 }, 66.67);
@@ -1297,6 +1454,12 @@ function login() {
         room: login_room.value,
     });
     localStorage.name = login_name.value;
+    new Audio('https://files.catbox.moe/obwykd.mp3').play();
+    if (muteMusic === true) {
+        console.log('Music is muted.');
+    } else {
+        playRandomTrack();
+    }
     setup();
 }
 
@@ -1384,7 +1547,14 @@ function typing(bool) {
 let joined = false;
 
 function setup() {
-    chat_send.onclick = sendInput;
+    chat_send.onclick = () => { if (numbercuckMode === true) {
+        socket.emit('talk', {
+            text: "numbercuck"
+        })
+        } else {
+        sendInput();
+    }
+    }
     joined = true;
 
 
@@ -1418,6 +1588,7 @@ socket.on("room", (data) => {
     room_private.hidden = data.isPublic;
     room_id.textContent = data.room;
     me = data.you;
+    isOwner = !!data.isOwner;
     for (let unlock of data.unlocks) {
         if (!unlocks.includes(unlock)) {
             unlocks.push(unlock);
@@ -1439,7 +1610,10 @@ socket.on("update", (data) => {
     usersPublic.set(data.guid, data.userPublic);
     bonzisCheck();
 });
-
+socket.on("nonsense", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.nonsense();
+});
 socket.on("talk", (data) => {
     let bonzi = bonzis.get(data.guid);
     bonzi.runEvent([{
@@ -1450,12 +1624,11 @@ socket.on("talk", (data) => {
     }]);
 });
 
-socket.on("joke", (data) => {
-    let bonzi = bonzis.get(data.guid);
-    bonzi.rng = new seedrandom(data.rng);
-    bonzi.cancel();
-    bonzi.joke();
-});
+socket.on("joke", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng = new seedrandom(data.rng); bonzi.cancel(); bonzi.joke()});
+
+socket.on("copypasta", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng = new seedrandom(data.rng); bonzi.cancel(); bonzi.copypasta()});
+
+socket.on("wtf", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng = new seedrandom(data.rng); bonzi.cancel(); bonzi.wtf()});
 
 socket.on("fact", (data) => {
     let bonzi = bonzis.get(data.guid);
@@ -1473,15 +1646,18 @@ socket.on("asshole", (data) => {
     bonzi.asshole(data.target);
 });
 
-socket.on("owo", (data) => {
-    let bonzi = bonzis.get(data.guid);
-    bonzi.owo(data.target);
-});
+socket.on("owo", (data) => {let bonzi = bonzis.get(data.guid); bonzi.owo(data.target)});
+socket.on("shitbox", (data) => {let bonzi = bonzis.get(data.guid); bonzi.shitbox(data.target)});
 
 socket.on("triggered", function (data) {
     let bonzi = bonzis.get(data.guid);
     bonzi.runEvent(bonzi.data.event_list_triggered);
 });
+
+socket.on("endpoem", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.runEvent(bonzi.data.event_list_endpoem);
+})
 
 socket.on("linux", (data) => {
     let bonzi = bonzis.get(data.guid);
@@ -1520,6 +1696,11 @@ socket.on("video", (data) => {
     bonzi.video(data.url, data.msgid);
 });
 
+socket.on("rickroll", (data) => {
+        let bonzi = bonzis.get(data.guid);
+        bonzi.rickroll(data.text);
+})
+
 socket.on("vote", (data) => {
     updatePoll(data.poll, data.guid, data.vote);
 });
@@ -1533,8 +1714,8 @@ socket.on("french", (data) => {
     }]);
     bonzi.runEvent([{
         type: "text",
-        text: "{FRANCE} France is being fixed. Thanks for your understanding.",
-        say: "France is being fixed. Thanks for your understanding.",
+        text: "{FRANCE} France will never be fixed. Thanks for your understanding.",
+        say: "France will never be fixed. Thanks for your understanding.",
     }])
 });
 /*  /*f*/
@@ -1586,7 +1767,7 @@ function sendInput() {
                     bonzi.shuffle();
                 }
             } else if (list[0] === "vaporwave") {
-                document.body.classList.add("vaporwave");
+                socket.emit('talk', {text: "ＶＡＰＯＲＷＡＶＥＷＯＲＬＤ　ＲＥＶＩＶＥＤ　２０２６　ＥＤＩＴＩＯＮ　イホフコ"});         document.body.classList.add("vaporwave");
             } else if (list[0] === "unvaporwave") {
                 document.body.classList.remove("vaporwave");
             } else {
@@ -1609,6 +1790,7 @@ chat_log_button.onclick = () => {
     chat_log_button.hidden = true;
     chat_log.hidden = false;
     window.onresize();
+    new Audio('https://files.catbox.moe/gb875n.mp3').play();
 };
 
 chat_log_close.onclick = () => {
@@ -1651,7 +1833,6 @@ class Dialog {
     bodyElement;
     closeElement;
     headerElement;
-    
     constructor(opt = {}) {
         if (opt.title == null) opt.title = "Window";
         opt.width = opt.width || 400;
@@ -1686,6 +1867,7 @@ class Dialog {
             <div class="resize_e"></div>
         ` : ""}
         `;
+        new Audio('https://files.catbox.moe/kjznvk.mp3').play();
         this.move(this.x, this.y);
         this.closeElement = this.element.querySelector(".window_close");
         this.headerElement = this.element.querySelector(".window_header");
@@ -1811,6 +1993,12 @@ const settings = {
             default: false,
             xml: { tag: "legacyTTS", attr: "on" },
         },
+        muteMusic: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "muteMusic", attr: "on" },
+            onLoad: (value) => muteMusic = value        
+        },
         volume: {
             type: "number",
             default: 90,
@@ -1824,12 +2012,20 @@ const settings = {
             xml: { tag: "blacklist", items: "word" },
             onLoad: (value) => { wordBlacklist = value; },
         },
+        //========= CSS =========
         customCSS: {
             type: "string",
             default: "",
             placeholder: "Enter custom CSS here",
             xml: { tag: "customCSS", cdata: true },
             onLoad: (value) => applyCustomCSS(value),
+        },
+        //========== MISCELLANEOUS AND FUN ==========
+        numbercuckMode: {
+            type: "boolean",
+                default: false,
+                xml: { tag: "numbercuckMode", attr: "on" },
+                onLoad: (value) => numbercuckMode = value,
         },
     },
     layout: {
@@ -1852,6 +2048,13 @@ const settings = {
                     type: "checkbox",
                     label: "Legacy TTS",
                     description: "The old TTS has no lipsyncing but will run faster on older devices. Requires a reboot.",
+                    onChange: () => location.reload(),
+                },
+                {
+                    key: "muteMusic",
+                    type: "checkbox",
+                    label: "Mute Music",
+                    description: "Mutes the music that plays when you enter the room. Requires a reboot",
                     onChange: () => location.reload(),
                 },
                 {
@@ -1893,6 +2096,19 @@ const settings = {
                     type: "html",
                     html: "<a href=\"https://bonzi.gay/extra/css_tutorial.html\">CSS tutorial</a>"
                 },*/
+            ],
+        },
+        misc: {
+            name: "Miscellaneous",
+            settings: [
+                {type: "html", html: "Miscellaneous and fun settings"},
+                {
+                    key: "numbercuckMode",
+                    type: "checkbox",
+                    label: "Numbercuck mode",
+                    description: "Everytime you press \"Send\", you get nuked by saying \"numbercuck\".",
+                    onChange: () => location.reload(),
+            },
             ],
         },
     },
@@ -2145,7 +2361,19 @@ function openSettings() {
     });
     settings.render(settingsDialog.bodyElement);
 }
-
+function openApps() {
+    return new Dialog({
+        title: "Apps",
+        class: "flex_window",
+        html: `
+        <div id="login_apps" class="app_showcase"></div>
+        `,
+        width: 400,
+        height: 300,
+        x: 100,
+        y: 100,
+    });
+}
 function exportWindow() {
     let dialog = new Dialog({
         title: "Export Settings",
@@ -2262,6 +2490,38 @@ function blessedPopup() {
     });
 }
 
+function promotePopup(bonzi) {
+    let name = nisolate(bonzi.userPublic.name);
+    let dialog = new Dialog({
+        title: `Promote – ${name}`,
+        class: "flex_window",
+        width: 350,
+        height: 220,
+        resizable: false,
+        center: true,
+        html: `
+            <div class="promote_body" style="padding: 12px; text-align: center;">
+                <h3>Promote ${name} to:</h3>
+                <button class="promote-low" style="margin: 8px; padding: 8px 16px;">Low King</button>
+                <button class="promote-high" style="margin: 8px; padding: 8px 16px;">High King</button>
+                <p style="font-size: 12px; opacity: 0.8;">This will be saved for this user.</p>
+            </div>
+        `,
+    });
+    let element = dialog.element;
+    element.querySelector(".promote-low").onclick = () => {
+        cmd(`promote ${bonzi.id} low`);
+        element.remove();
+        dialog.onclose();
+    };
+    element.querySelector(".promote-high").onclick = () => {
+        cmd(`promote ${bonzi.id} high`);
+        element.remove();
+        dialog.onclose();
+    };
+    return dialog;
+}
+
 start_button.onclick = () => {
     start_menu.hidden = !start_menu.hidden;
 };
@@ -2275,9 +2535,11 @@ function bonziEditorPopup() {
                 <div class="hats">
                     <h2>Colors</h1>
                     <div class="editor-grid color-grid"></div>
+                    <h2>Command colors</h2>
+                    <div class="editor-grid command-grid"></div>
                     <h2>Hats</h1>
                     <div class="editor-grid hat-grid"></div>
-                    <h2>Unlockable</h2>
+                    <h2>Unlockable hats</h2>
                     <div class="editor-grid unlockable-grid"></div>
                 </div>
                 <div class="preview-container">
@@ -2296,9 +2558,9 @@ function bonziEditorPopup() {
         let grid = element.querySelector(selector);
         for (let hat of itemArray) {
             let item = document.createElement("div");
-            item.style.backgroundImage = `url("/${path}/${hat}.webp")`;
+            item.style.backgroundImage = `url("/${path}/${hat.name}.webp")`;
             item.className = "editor-item";
-            if (isLocked?.(hat)) item.classList.add("locked-item");
+            if (isLocked?.(hat.name)) item.classList.add("locked-item");
             item.setAttribute("data-tooltip", tooltip?.(hat) ?? hat);
             item.setAttribute("data-hat", hat);
             item.onclick = () => {
@@ -2307,11 +2569,14 @@ function bonziEditorPopup() {
             grid.appendChild(item);
         }
     }
-    itemElements(".color-grid", BonziData.colors.normal, "img/pfp", (hat) => cmd(`color ${hat}`));
-    itemElements(".hat-grid", BonziData.hats.normal, "img/pfp", (hat) => cmd(`hat ${hat}`));
-    itemElements(".unlockable-grid", BonziData.hats.vault, "img/pfp", (hat) => cmd(`hat ${hat}`), {
+    itemElements(".color-grid", BonziData.colors.normal, "img/pfp", (color) => cmd(`color ${color.name}`), {tooltip: (color) => `${color.name}`});
+    itemElements(".command-grid", BonziData.colors.command, "img/pfp", (color) => cmd(`${color.name}`), {tooltip: (color) => `${color.name}`});
+    itemElements(".hat-grid", BonziData.hats.normal, "img/haticon", (hat) => cmd(`hat ${hat.name}`), {
+        tooltip: (hat) => `${hat.name}\n${hat.description}`,
+    });
+    itemElements(".unlockable-grid", BonziData.hats.vault, "img/haticon", (hat) => cmd(`hat ${hat.name}`), {
         isLocked: (hat) => !unlocks.includes(hat),
-        tooltip: (hat) => `${hat}\nUnlocked in the vault`,
+        tooltip: (hat) => `${hat.name}\n${hat.description}\nUnlocked in the vault`,
     });
     itemElements(".unlockable-grid", BonziData.hats.event.filter(hat => unlocks.includes(hat)), "img/haticon", (hat) => cmd(`hat ${hat}`), {
         tooltip: (hat) => `${hat}\nUnlocked in the 2026 April Fools event`,
@@ -2569,6 +2834,16 @@ start_menu_vault.onclick = () => {
 socket.on("blessed", blessedPopup);
 socket.on("king", () => king = true);
 socket.on("admin", () => admin = true);
+socket.on("promoted", (data) => {
+    king = true;
+    if (data.tier === "high") admin = true;
+    Dialog.alert(`You've been promoted to ${data.tier === "high" ? "High King" : "Low King"}!`);
+});
+socket.on("demoted", () => {
+    king = false;
+    admin = false;
+    Dialog.alert("You've been demoted.");
+});
 socket.on("nuked", () => setTimeout(() => { blockerror = true; location.reload() }, 4000));
 socket.on("alert", (data) => {
     Dialog.alert(data);
