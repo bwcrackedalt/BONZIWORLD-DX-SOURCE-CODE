@@ -520,6 +520,13 @@ body.vaporwave #chat_send:active {
     background-position: center, top, bottom, top left, center;
     background-size: auto, 100% 100px, 100% 122px, auto, 1px 100%;
     background-repeat: no-repeat;
+    opacity: 1;
+    transition: opacity 0.4s ease;
+}
+
+#page_login.fading-out {
+    opacity: 0;
+    pointer-events: none;
 }
 
 #login_card {

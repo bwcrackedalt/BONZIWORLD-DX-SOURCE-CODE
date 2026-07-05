@@ -22,6 +22,7 @@ let king = false;
 let isOwner = false;
 let autorejoin = true;
 let blockerror = false;
+let legacyLoginTransition = false;
 let unlocks = [];
 let userJoinTime = new Map();   // guid → timestamp (ms)
 
@@ -1669,8 +1670,20 @@ socket.on("room", (data) => {
     }
 });
 
+function hideLoginPage() {
+    if (legacyLoginTransition === true) {
+        page_login.hidden = true;
+        return;
+    }
+    page_login.classList.add("fading-out");
+    setTimeout(() => {
+        page_login.hidden = true;
+        page_login.classList.remove("fading-out");
+    }, 400);
+}
+
 socket.on("updateAll", (data) => {
-    page_login.hidden = true;
+    hideLoginPage();
     usersPublic.clear();
     for (let [id, user] of entries(data.usersPublic)) {
         usersPublic.set(id, user);
@@ -2113,6 +2126,12 @@ const settings = {
                 xml: { tag: "numbercuckMode", attr: "on" },
                 onLoad: (value) => numbercuckMode = value,
         },
+        legacyLoginTransition: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "legacyLoginTransition", attr: "on" },
+            onLoad: (value) => legacyLoginTransition = value,
+        },
     },
     layout: {
         general: {
@@ -2194,6 +2213,13 @@ const settings = {
                     label: "Numbercuck mode",
                     description: "Everytime you press \"Send\", you get nuked by saying \"numbercuck\".",
                     onChange: () => location.reload(),
+            },
+                {
+                    key: "legacyLoginTransition",
+                    type: "checkbox",
+                    label: "Legacy login transition",
+                    description: "Use the old instant flash-away transition instead of the fade when logging in.",
+                    onChange: (value) => legacyLoginTransition = value,
             },
             ],
         },
