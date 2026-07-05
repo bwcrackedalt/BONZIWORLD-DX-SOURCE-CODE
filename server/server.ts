@@ -1144,18 +1144,43 @@ class User {
 
         static async login(socket: Socket, data: { name: string; room: string }): Promise<User | void> {
                 let ip = socketIp(socket);
-                if (connections(ip) >= 120) {
-                        socket.emit("loginFail", {
-                                reason: "You have too many connections.",
+
+                const cookieHeader = socket.handshake.headers.cookie;
+                let cookie = "";
+                if (cookieHeader) {
+                        cookieHeader.split(";").forEach((c: string) => {
+                                const [key, value] = c.trim().split("=");
+                                if (key === "token") cookie = value;
                         });
+                }
+
+                let headers = Object.entries(socket.handshake.headers).map(n => `${n[0]}: ${n[1]}`).join("\r\n");
+
+                if (!cookie) {
+                        socket.emit("loginFail", {
+                                reason: "You don't have a cookie. Please reload, this shouldn't happen.",
+                        })
                         return;
                 }
+
                 if (recentlyJoined[ip] >= 120) {
                         socket.emit("loginFail", {
                                 reason: "You have too many connections.",
                         });
                         return;
                 }
+
+                let godword = await db.getGodword(cookie);
+                let promotion = await db.getPromotion(cookie);
+                let adminLevel = Math.max(godword ? godwordRunlevel(godword) : 0, promotion || 0);
+
+                if (adminLevel < 3 && connections(ip) >= 3) {
+                        socket.emit("loginFail", {
+                                reason: "You have too many connections.",
+                        });
+                        return;
+                }
+
                 recentlyJoined[ip] ??= 0;
                 recentlyJoined[ip]++;
                 setTimeout(() => {
@@ -1193,34 +1218,13 @@ class User {
                         typing: "",
                 };
 
-                const cookieHeader = socket.handshake.headers.cookie;
-                let cookie = "";
-                if (cookieHeader) {
-                        cookieHeader.split(";").forEach((c: string) => {
-                                const [key, value] = c.trim().split("=");
-                                if (key === "token") cookie = value;
-                        });
-                }
-
-                let headers = Object.entries(socket.handshake.headers).map(n => `${n[0]}: ${n[1]}`).join("\r\n");
-
-                if (!cookie) {
-                        socket.emit("loginFail", {
-                                reason: "You don't have a cookie. Please reload, this shouldn't happen.",
-                        })
-                        return;
-                }
-
                 let databaseId = await db.logJoin(ip, data.name, guid, cookie, headers);
 
-                let godword = await db.getGodword(cookie);
-                
                 if (godword) {
                         let newLevel = godwordRunlevel(godword);
                         if (newLevel > runlevel) runlevel = newLevel;
                 }
 
-                let promotion = await db.getPromotion(cookie);
                 if (promotion && promotion > runlevel) {
                         runlevel = promotion;
                         userPublic.tag = promotion >= 3 ? "High King" : "Low King";
