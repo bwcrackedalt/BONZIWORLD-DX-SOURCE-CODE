@@ -1692,13 +1692,15 @@ socket.on("talk", (data) => {
     let audioMatch = typeof data.text === "string" && data.text.match(/\[audio=\(?(https?:\/\/[^\s\]\)]+)\)?\]/i);
     if (audioMatch) {
         let remaining = data.text.replace(audioMatch[0], "").trim();
-        bonzi.runEvent([{
-            type: "audio",
-            url: audioMatch[1],
-            text: remaining,
-            msgid: data.msgid,
-        }]);
-        return;
+        if (remaining.length > 0) {
+            bonzi.runEvent([{
+                type: "audio",
+                url: audioMatch[1],
+                text: remaining,
+                msgid: data.msgid,
+            }]);
+            return;
+        }
     }
     bonzi.runEvent([{
         type: "text",
