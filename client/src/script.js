@@ -865,9 +865,10 @@ class Bonzi {
             let avg = sum / this.audioDataArray.length;
             let volume = avg / 255;
             let mouthSprite = MOUTH_SPRITES.CL;
-            if (volume < 0.02) mouthSprite = MOUTH_SPRITES.CL;
-            else if (volume < 0.1) mouthSprite = MOUTH_SPRITES.O1;
-            else if (volume < 0.2) mouthSprite = MOUTH_SPRITES.E1;
+            if (volume <= 0) mouthSprite = MOUTH_SPRITES.CL;
+            else if (volume < 0.1) mouthSprite = MOUTH_SPRITES.CL;
+            else if (volume < 0.15) mouthSprite = MOUTH_SPRITES.E2;
+            else if (volume < 0.2) mouthSprite = MOUTH_SPRITES.E4;
             else mouthSprite = MOUTH_SPRITES.E3;
             if (this.sprite === 0 || this.sprite >= 142) {
                 this.setSprite(mouthSprite);
@@ -1048,7 +1049,7 @@ class Bonzi {
 
     #playAudio(url, text, msgid) {
         let safeText = text ? markup(text) : "";
-        this.bubbleCont.innerHTML = `${safeText}<div class="audio-indicator">🔊 playing sound... (touch to stop)</div>`;
+        this.bubbleCont.innerHTML = safeText;
         this.bubble.hidden = false;
         bonzilog(this.id, this.userPublic.name, this.bubbleCont.innerHTML, this.color, text ? `${text} (AUDIO)` : "(AUDIO)", false, msgid);
 
