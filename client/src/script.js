@@ -863,10 +863,12 @@ class Bonzi {
             let sum = 0;
             for (let i = 0; i < this.audioDataArray.length; i++) sum += this.audioDataArray[i];
             let avg = sum / this.audioDataArray.length;
+            let volume = avg / 255;
             let mouthSprite = MOUTH_SPRITES.CL;
-            if (avg > 28) mouthSprite = MOUTH_SPRITES.O1;
-            else if (avg > 16) mouthSprite = MOUTH_SPRITES.E3;
-            else if (avg > 6) mouthSprite = MOUTH_SPRITES.E1;
+            if (volume <= 0) mouthSprite = MOUTH_SPRITES.CL;
+            else if (volume < 0.2) mouthSprite = MOUTH_SPRITES.O1;
+            else if (volume < 0.5) mouthSprite = MOUTH_SPRITES.E1;
+            else mouthSprite = MOUTH_SPRITES.E3;
             if (this.sprite === 0 || this.sprite >= 142) {
                 this.setSprite(mouthSprite);
             }
