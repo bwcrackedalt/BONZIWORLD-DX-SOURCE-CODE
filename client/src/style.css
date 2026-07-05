@@ -916,6 +916,13 @@ body.vaporwave .window_close {
     background: black;
 }
 
+.audio-indicator {
+    text-align: center;
+    font-style: italic;
+    cursor: pointer;
+    user-select: none;
+}
+
 .log_message:hover .reply, .log_message:hover .ban, .log_message:hover .delete {
     display: block;
 }

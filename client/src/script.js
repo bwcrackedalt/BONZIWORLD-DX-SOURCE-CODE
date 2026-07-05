@@ -285,6 +285,7 @@ function updatePoll(id, voterId, vote) {
 }
 
 let lastZ = 1;
+let sharedAudioCtx = null;
 let dragged = null;
 let dragX = 0;
 let dragY = 0;
@@ -405,6 +406,9 @@ class Bonzi {
         this.sprite = 0;
         this.lipTimings = [];
         this.lipStartTime = 0;
+        this.customAudio = null;
+        this.audioAnalyser = null;
+        this.audioDataArray = null;
 
         this.mute = false;
         this.id = id || s4() + s4();
@@ -718,6 +722,14 @@ class Bonzi {
         if (this.voiceSource) {
             this.voiceSource.stop();
         }
+        if (this.customAudio) {
+            this.customAudio.pause();
+            this.customAudio.onended = null;
+            this.customAudio.onerror = null;
+            this.customAudio = null;
+        }
+        this.audioAnalyser = null;
+        this.audioDataArray = null;
         this.lipTimings = [];
         this.lipStartTime = 0;
     }
@@ -826,6 +838,14 @@ class Bonzi {
                 if (this.eventFrame > 15 * 30) this.clearDialog();
                 if (this.bubble.hidden) nextEvent();
                 break;
+            case "audio":
+                if (this.eventFrame === 0) {
+                    this.#playAudio(event.url, event.text, event.msgid);
+                }
+                this.eventFrame++;
+                if (this.eventFrame > 15 * 60) this.clearDialog();
+                if (this.bubble.hidden) nextEvent();
+                break;
                 case "rickroll":
                                 if (this.eventFrame === 0) {
                                         this.#showRickroll(event.text);
@@ -837,6 +857,20 @@ class Bonzi {
     }
 
     updateLipsync() {
+        if (this.audioAnalyser && this.audioDataArray) {
+            this.audioAnalyser.getByteFrequencyData(this.audioDataArray);
+            let sum = 0;
+            for (let i = 0; i < this.audioDataArray.length; i++) sum += this.audioDataArray[i];
+            let avg = sum / this.audioDataArray.length;
+            let mouthSprite = MOUTH_SPRITES.CL;
+            if (avg > 28) mouthSprite = MOUTH_SPRITES.O1;
+            else if (avg > 16) mouthSprite = MOUTH_SPRITES.E3;
+            else if (avg > 6) mouthSprite = MOUTH_SPRITES.E1;
+            if (this.sprite === 0 || this.sprite >= 142) {
+                this.setSprite(mouthSprite);
+            }
+            return;
+        }
         if (this.lipTimings.length > 0 && this.lipStartTime > 0) {
             let ms = performance.now() - this.lipStartTime;
             let pho = "_";
@@ -1007,6 +1041,45 @@ class Bonzi {
 
     image(url, msgid) {
         this.runEvent([{ type: "image", url: url.replaceAll("https://files.catbox.moe/m4dufz.png", "https://files.catbox.moe/u037iz.jpg"), msgid }]);
+    }
+
+    #playAudio(url, text, msgid) {
+        let safeText = text ? markup(text) : "";
+        this.bubbleCont.innerHTML = `${safeText}<div class="audio-indicator">🔊 playing sound... (touch to stop)</div>`;
+        this.bubble.hidden = false;
+        bonzilog(this.id, this.userPublic.name, this.bubbleCont.innerHTML, this.color, text ? `${text} (AUDIO)` : "(AUDIO)", false, msgid);
+
+        let audio = new Audio(url);
+        audio.crossOrigin = "anonymous";
+        this.customAudio = audio;
+
+        try {
+            if (!sharedAudioCtx) sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (sharedAudioCtx.state === "suspended") sharedAudioCtx.resume();
+            let source = sharedAudioCtx.createMediaElementSource(audio);
+            let analyser = sharedAudioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            analyser.smoothingTimeConstant = 0.6;
+            source.connect(analyser);
+            analyser.connect(sharedAudioCtx.destination);
+            this.audioAnalyser = analyser;
+            this.audioDataArray = new Uint8Array(analyser.frequencyBinCount);
+        } catch (e) {
+            this.audioAnalyser = null;
+            this.audioDataArray = null;
+        }
+
+        let finish = () => {
+            if (this.customAudio === audio) {
+                this.audioAnalyser = null;
+                this.audioDataArray = null;
+                this.customAudio = null;
+                this.clearDialog();
+            }
+        };
+        audio.onended = finish;
+        audio.onerror = finish;
+        audio.play().catch(finish);
     }
 
     #showImage(url, msgid) {
@@ -1616,6 +1689,17 @@ socket.on("nonsense", (data) => {
 });
 socket.on("talk", (data) => {
     let bonzi = bonzis.get(data.guid);
+    let audioMatch = typeof data.text === "string" && data.text.match(/\[audio=\(?(https?:\/\/[^\s\]\)]+)\)?\]/i);
+    if (audioMatch) {
+        let remaining = data.text.replace(audioMatch[0], "").trim();
+        bonzi.runEvent([{
+            type: "audio",
+            url: audioMatch[1],
+            text: remaining,
+            msgid: data.msgid,
+        }]);
+        return;
+    }
     bonzi.runEvent([{
         type: "text",
         text: data.text,

@@ -1,0 +1,1 @@
+- [Bonzi media-bubble event pattern](bonzi-media-events.md) — how to add a new chat media type (image/video/audio/poll) to the Bonzi speech bubble system.
