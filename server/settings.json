@@ -48,6 +48,8 @@
                 "fact": 0,
                 "backflip": 0,
                 "color": 0,
+                "pfp": 0,
+                "crosspfp": 0,
                 "asshole": 0,
                 "triggered": 0,
                 "linux": 0,
@@ -151,6 +153,12 @@
                 "truck",
                 "propeller",
                 "don"
+        ],
+        "customPfps": [
+                "airplane", "astronaut", "ball", "beach", "bonzibuddy", "butterfly",
+                "car", "cat", "chess", "dirtbike", "dog", "donutshop", "drip", "duck",
+                "fish", "frog", "guitar", "horses", "kick", "lift-off", "miraclemachine",
+                "palmtree", "pinkflower", "redflower", "skater", "snowflake"
         ],
         "vaultHats": [
                 "unicorn",

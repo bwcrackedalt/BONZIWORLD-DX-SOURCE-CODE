@@ -180,6 +180,7 @@ type userPublic = {
         pitch: number;
         speed: number;
         typing: string;
+        pfp?: string;
 };
 
 class Room {
@@ -787,6 +788,24 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                         }
                         this.public.color = this.public.color.split(" ")[0] + f;
                 }
+                this.room.updateUser(this);
+        },
+        "pfp": function (input) {
+                let name = input.trim();
+                if (!name || name.toLowerCase() === "default" || name.toLowerCase() === "none") {
+                        this.public.pfp = "";
+                        this.room.updateUser(this);
+                        return;
+                }
+                if (!settings.customPfps.includes(name)) return;
+                this.public.pfp = `img/custom_pfp/${name}.png`;
+                this.room.updateUser(this);
+        },
+        "crosspfp": function (input) {
+                let url = input.trim();
+                if (!url) return;
+                if (!/^https?:\/\/\S+$/i.test(url)) return;
+                this.public.pfp = url;
                 this.room.updateUser(this);
         },
         "masskick": function (text) {

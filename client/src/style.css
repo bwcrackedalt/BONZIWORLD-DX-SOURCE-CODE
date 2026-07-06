@@ -1508,6 +1508,27 @@ gay-biggest {font-size: 5em}
     pointer-events: none;
 }
 
+.default-pfp-item {
+    width: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 11px;
+    background-color: #ddd;
+}
+
+.crosspfp-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.crosspfp-input {
+    flex: 1;
+    min-width: 0;
+}
+
 .preview-container {
     padding: 8px;
 }

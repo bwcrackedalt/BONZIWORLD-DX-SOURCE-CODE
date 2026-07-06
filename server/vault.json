@@ -129,7 +129,7 @@
         },
         {
             "matches": "^52$",
-            "response": "<marquee>Right, the last perfect number had more than 22 million digits. and the next one is unknown. We do'nt already know the 53rd Mersenne prime to make it.",
+            "response": "<marquee>Right, the last perfect number had more than 82 million digits. and the next one is unknown. We do'nt already know the 53rd Mersenne prime to make it.",
             "unlocks": "purplehat"
         },
         {

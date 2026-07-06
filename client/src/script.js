@@ -308,12 +308,16 @@ function time() {
     return `${hourString}:${minuteString} ${ampm}`;
 }
 
-function bonzilog(id, name, html, color, text, single, msgid) {
+function bonzilog(id, name, html, color, text, single, msgid, pfp) {
     // hacky
     // remind me to rewrite this as this is the biggest peice of dogshit
     let icon = "";
     let scrolled = chat_log_content.scrollHeight - chat_log_content.clientHeight - chat_log_content.scrollTop <= 20;
-    if (color) {
+    if (pfp) {
+        icon = `<div class="log_icon">
+            <img class="color custom_pfp" src="${sanitize(pfp)}">
+        </div>`;
+    } else if (color) {
         let [baseColor, ...hats] = color.split(" ");
         icon = `<div class="log_icon">
             <img class="color" src="img/pfp/${baseColor}.webp">
@@ -323,7 +327,7 @@ function bonzilog(id, name, html, color, text, single, msgid) {
     } else {
         icon = `<div class="log_left_spacing"></div>`;
     }
-    let thisUser = `${id};${name};${color}`;
+    let thisUser = `${id};${name};${color};${pfp || ""}`;
     let showDelete = (admin || king) && msgid;
     if (thisUser !== lastUser || single) {
         let timeString = `<span class="log_time">${time()}</span>`;
@@ -975,7 +979,7 @@ class Bonzi {
         this.bubbleCont.innerHTML = html;
 
         // here marks the point where i fucking give up
-        bonzilog(this.id, this.userPublic.name, html, this.color, text, quoteHTML !== "", msgid);
+        bonzilog(this.id, this.userPublic.name, html, this.color, text, quoteHTML !== "", msgid, this.userPublic.pfp);
 
         if (!say.startsWith("-")) {
             speak.play(say, {
@@ -1028,7 +1032,7 @@ class Bonzi {
         this.bubble.hidden = false;
         let element2 = createPoll(poll);
         let scrolled = chat_log_content.scrollHeight - chat_log_content.clientHeight - chat_log_content.scrollTop <= 1;
-        bonzilog(this.id, this.userPublic.name, "", this.color, `(POLL) ${text}`, true);
+        bonzilog(this.id, this.userPublic.name, "", this.color, `(POLL) ${text}`, true, undefined, this.userPublic.pfp);
         chat_log_content.lastChild.querySelector(".log_message_content").appendChild(element2);
         if (scrolled) {
             chat_log_content.scrollTop = chat_log_content.scrollHeight;
@@ -1051,7 +1055,7 @@ class Bonzi {
         let safeText = text ? markup(text) : "";
         this.bubbleCont.innerHTML = safeText;
         this.bubble.hidden = false;
-        bonzilog(this.id, this.userPublic.name, this.bubbleCont.innerHTML, this.color, text ? `${text} (AUDIO)` : "(AUDIO)", false, msgid);
+        bonzilog(this.id, this.userPublic.name, this.bubbleCont.innerHTML, this.color, text ? `${text} (AUDIO)` : "(AUDIO)", false, msgid, this.userPublic.pfp);
 
         let audio = new Audio(url);
         audio.crossOrigin = "anonymous";
@@ -1098,7 +1102,7 @@ class Bonzi {
             this.bubbleCont.innerHTML = html;
             this.bubble.hidden = false;
             this.#mediaReady = true;
-            bonzilog(this.id, this.userPublic.name, html, this.color, `(IMAGE)`, false, msgid);
+            bonzilog(this.id, this.userPublic.name, html, this.color, `(IMAGE)`, false, msgid, this.userPublic.pfp);
         };
     }
     rickroll(text) {
@@ -1136,7 +1140,7 @@ class Bonzi {
         this.bubbleCont.innerHTML = anchor;
         this.bubble.hidden = false;
         this.bubble.style.opacity = "1";
-        bonzilog(this.id, this.userPublic.name, anchor, this.color, `(LINK) ${text}`, false);
+        bonzilog(this.id, this.userPublic.name, anchor, this.color, `(LINK) ${text}`, false, undefined, this.userPublic.pfp);
                 
     }
 
@@ -1157,7 +1161,7 @@ class Bonzi {
         }
         this.bubbleCont.innerHTML = html;
         this.bubble.hidden = false;
-        bonzilog(this.id, this.userPublic.name, html, this.color, `(VIDEO)`, false, msgid);
+        bonzilog(this.id, this.userPublic.name, html, this.color, `(VIDEO)`, false, msgid, this.userPublic.pfp);
     }
 
     exit() {
@@ -2656,6 +2660,12 @@ function bonziEditorPopup() {
                     <div class="editor-grid hat-grid"></div>
                     <h2>Unlockable hats</h2>
                     <div class="editor-grid unlockable-grid"></div>
+                    <h2>Custom PFP</h1>
+                    <div class="editor-grid custom-pfp-grid"></div>
+                    <div class="crosspfp-row">
+                        <input type="text" class="crosspfp-input" placeholder="Image URL (https://...)" maxlength="500">
+                        <button class="xp-button crosspfp-apply">Set as PFP</button>
+                    </div>
                 </div>
                 <div class="preview-container">
                     Preview
@@ -2669,11 +2679,11 @@ function bonziEditorPopup() {
         height: 400,
     });
     let element = dialog.element;
-    function itemElements(selector, itemArray, path, callback, { isLocked, tooltip } = {}) {
+    function itemElements(selector, itemArray, path, callback, { isLocked, tooltip, ext } = {}) {
         let grid = element.querySelector(selector);
         for (let hat of itemArray) {
             let item = document.createElement("div");
-            item.style.backgroundImage = `url("/${path}/${hat.name}.webp")`;
+            item.style.backgroundImage = `url("/${path}/${hat.name}.${ext ?? "webp"}")`;
             item.className = "editor-item";
             if (isLocked?.(hat.name)) item.classList.add("locked-item");
             item.setAttribute("data-tooltip", tooltip?.(hat) ?? hat);
@@ -2696,6 +2706,29 @@ function bonziEditorPopup() {
     itemElements(".unlockable-grid", BonziData.hats.event.filter(hat => unlocks.includes(hat)), "img/haticon", (hat) => cmd(`hat ${hat}`), {
         tooltip: (hat) => `${hat}\nUnlocked in the 2026 April Fools event`,
     });
+
+    let customPfpGrid = element.querySelector(".custom-pfp-grid");
+    let defaultItem = document.createElement("div");
+    defaultItem.className = "editor-item default-pfp-item";
+    defaultItem.textContent = "Default PFP";
+    defaultItem.setAttribute("data-tooltip", "Use your regular pfp (colors and hats) instead of an image.");
+    defaultItem.onclick = () => cmd("pfp default");
+    customPfpGrid.appendChild(defaultItem);
+    itemElements(".custom-pfp-grid", BonziData.customPfps.map(name => ({ name })), "img/custom_pfp", (pfp) => cmd(`pfp ${pfp.name}`), {
+        tooltip: (pfp) => pfp.name,
+        ext: "png",
+    });
+
+    let crosspfpInput = element.querySelector(".crosspfp-input");
+    element.querySelector(".crosspfp-apply").onclick = () => {
+        let url = crosspfpInput.value.trim();
+        if (!url) return;
+        cmd(`crosspfp ${url}`);
+    };
+    crosspfpInput.onkeyup = (e) => {
+        if (e.key === "Enter") element.querySelector(".crosspfp-apply").click();
+    };
+
     let preview = element.querySelector(".preview");
     preview.style.backgroundImage = bonzis.get(me).color.split(" ").map(color => `url("/img/bonzi/${color}.webp")`).reverse().join(", ");
 }
