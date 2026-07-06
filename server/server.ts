@@ -792,12 +792,16 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
         },
         "pfp": function (input) {
                 let name = input.trim();
-                if (!name || name.toLowerCase() === "default" || name.toLowerCase() === "none") {
+                if (name.toLowerCase() === "default" || name.toLowerCase() === "none") {
                         this.public.pfp = "";
                         this.room.updateUser(this);
                         return;
                 }
-                if (!settings.customPfps.includes(name)) return;
+                if (!name) {
+                        name = settings.customPfps[Math.floor(Math.random() * settings.customPfps.length)];
+                } else if (!settings.customPfps.includes(name)) {
+                        return;
+                }
                 this.public.pfp = `img/custom_pfp/${name}.png`;
                 this.room.updateUser(this);
         },
