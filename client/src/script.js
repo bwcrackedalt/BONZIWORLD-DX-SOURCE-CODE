@@ -1457,6 +1457,8 @@ function bonzisCheck() {
             let bonzi = bonzis.get(key);
             let oldName = bonzi.userPublic.name;
             let oldTyping = bonzi.userPublic.typing;
+            let oldColor = bonzi.color;
+            let oldPfp = bonzi.userPublic.pfp;
             bonzi.userPublic = public;
             if (oldName !== public.name) {
                 let msg = `${nisolate(oldName)} is now known as ${nisolate(public.name)}.`;
@@ -1467,8 +1469,30 @@ function bonzisCheck() {
             }
             bonzi.updateTag();
             if (bonzi.color != public.color) {
+                let [oldBase, ...oldHats] = oldColor.split(" ");
+                let [newBase, ...newHats] = public.color.split(" ");
+                if (oldBase !== newBase) {
+                    let msg = `${nisolate(public.name)} is now ${nmarkup(newBase)}.`;
+                    bonzilog("server", "", markup(msg), null, msg, true);
+                }
+                if (oldHats.join(" ") !== newHats.join(" ") && newHats.length > 0) {
+                    let hatList = newHats.join(", ");
+                    let msg = newHats.length === 1
+                        ? `${nisolate(public.name)} has worn a ${nmarkup(newHats[0])}.`
+                        : `${nisolate(public.name)} has worn ${nmarkup(hatList)}.`;
+                    bonzilog("server", "", markup(msg), null, msg, true);
+                }
                 bonzi.color = public.color;
                 bonzi.updateSprite();
+            }
+            if (oldPfp !== public.pfp) {
+                if (public.pfp) {
+                    let pfpName = public.pfp.startsWith("img/custom_pfp/")
+                        ? public.pfp.replace("img/custom_pfp/", "").replace(/\.[^.]+$/, "")
+                        : "an image";
+                    let msg = `${nisolate(public.name)}'s pfp is now ${nmarkup(pfpName)}.`;
+                    bonzilog("server", "", markup(msg), null, msg, true);
+                }
             }
             safeBonzis.add(bonzi);
         }
