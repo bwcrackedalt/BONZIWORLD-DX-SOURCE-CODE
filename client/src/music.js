@@ -1,7 +1,7 @@
 // 1. List your audio source URLs in an array
 const playlist = [
-  "https://files.catbox.moe/x4d8qh.mp4",
-  "https://files.catbox.moe/w01de2.mp3",
+  "https://files.catbox.moe/bhhy1m.mp3",
+  "https://files.catbox.moe/5s74pz.mp3",
 ];
 
 // 2. Instantiate a native JavaScript Audio object

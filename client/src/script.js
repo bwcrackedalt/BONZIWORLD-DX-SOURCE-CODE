@@ -1559,7 +1559,11 @@ function login() {
         room: login_room.value,
     });
     localStorage.name = login_name.value;
+    if (rejunglifiedStartSound === true) {
+      new Audio('https://files.catbox.moe/fbj34b.mp4').play();
+    } else {
     new Audio('https://files.catbox.moe/obwykd.mp3').play();
+    }
     if (muteMusic === true) {
         console.log('Music is muted.');
     } else {
@@ -1844,8 +1848,8 @@ socket.on("french", (data) => {
     }]);
     bonzi.runEvent([{
         type: "text",
-        text: "{FRANCE} France will never be fixed. Thanks for your understanding.",
-        say: "France will never be fixed. Thanks for your understanding.",
+        text: "{FRANCE} France will never be fixed. Bon appetit.",
+        say: "France will never be fixed. Bon appetit.",
     }])
 });
 /*  /*f*/
@@ -1886,7 +1890,7 @@ function sendInput() {
                 chat_log_content.innerText = "";
             } else if (list[0] === "settings") {
                 openSettings();
-            } else if (list[0] === "sex" || list[0] === "dolphin") {
+            } else if (list[0] === "sex" || list[0] === "dolphin" || list[0] === "semjgmex") {
                 dolphin();
             } else if (list[0] === "debug:bless") {
                 blessedPopup();
@@ -2147,6 +2151,7 @@ const settings = {
             type: "string",
             default: "",
             placeholder: "Enter custom CSS here",
+            
             xml: { tag: "customCSS", cdata: true },
             onLoad: (value) => applyCustomCSS(value),
         },
@@ -2162,6 +2167,12 @@ const settings = {
             default: false,
             xml: { tag: "legacyLoginTransition", attr: "on" },
             onLoad: (value) => legacyLoginTransition = value,
+        },
+        rejunglifiedStartSound: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "rejunglifiedStartSound", attr: "on" },
+            onLoad: (value) => rejunglifiedStartSound = value,
         },
     },
     layout: {
@@ -2252,6 +2263,13 @@ const settings = {
                     description: "Use the old instant flash-away transition instead of the fade when logging in.",
                     onChange: (value) => legacyLoginTransition = value,
             },
+                {
+                    key: "rejunglifiedStartSound",
+                    type: "checkbox",
+                    label: "BonziWORLD rejunglified startup sound",
+                    description: "That startup was so awesome i started renembering about it. Requires a reboot to make it sound.",
+                    onChange: () => location.reload(),
+                },
             ],
         },
     },
