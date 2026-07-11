@@ -659,6 +659,7 @@ window.BonziData = {
                 [{type: "text", text: "i make gore art out of dream as fucking usual"}],
                 [{type: "text", text: "i searched up godzilland deviantart on google and now i need eye surgery and maybe even a therapist"}],
                 [{type: "text", text: "PLEASE GIVE THIS VIDEO LIKES!!!!! I CANNOT TAKE IT ANYMORE!"}],
+                [{type: "text", text: "i am agent weirldalfag, and i own an STUPID GANG NAMED SS, I MISS DARWIN, AND I AM KIDDIEBOX."}],
                         ],
 //=====================================================
         event_list_cp_open: [
