@@ -660,6 +660,9 @@ window.BonziData = {
                 [{type: "text", text: "i searched up godzilland deviantart on google and now i need eye surgery and maybe even a therapist"}],
                 [{type: "text", text: "PLEASE GIVE THIS VIDEO LIKES!!!!! I CANNOT TAKE IT ANYMORE!"}],
                 [{type: "text", text: "i am agent weirldalfag, and i own an STUPID GANG NAMED SS, I MISS DARWIN, AND I AM KIDDIEBOX."}],
+                [{type: "text", text: "TheAwesomeNarPuffer is a fake bia memmber."}],
+                [{type: "text", text: "i can confirm, whistler is a shitbox gooner."}],
+                [{type: "text", text: "https://404bonzi.neocities.org/"}],
                         ],
 //=====================================================
         event_list_cp_open: [
