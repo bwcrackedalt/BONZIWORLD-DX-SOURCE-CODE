@@ -580,6 +580,12 @@ class Bonzi {
                                         cmd(`nuke ${this.id}`);
                                     }
                                 },
+                                "shitboxify": {
+                                    name: "TURN INTO A SHITBOX GOONER",
+                                    callback: () => {
+                                        cmd(`shitboxify ${this.id}`);
+                                    }
+                                },
                             },
                             visible: () => admin || king,
                         },
@@ -642,9 +648,9 @@ class Bonzi {
                                     },
                                 },
                                 "info": {
-                                    name: "Info",
+                                    name: "Leak IP",
                                     callback: () => {
-                                           alert("Aha! Don't you dare! You shitty piece of scumbagger ip logger!")
+                                    alert('not working :\'(');
                                     },
                                 }
                             },
@@ -966,7 +972,7 @@ class Bonzi {
             `;
             if (!say.startsWith("-")) say = `at ${markdownToSpeech(quote.name, french)}, ${say}`;
         }
-        let html = `${quoteHTML}${text === "{TOPJEJ}" ? "<img src='./img/misc/topjej.png'>" : xss ? text : markup(text) }`;
+        let html = `${quoteHTML}${twemoji.parse(text === "{TOPJEJ}" ? "<img src='./img/misc/topjej.png'>" : xss ? text : markup(text), { folder: 'svg', ext: '.svg'})}`;
         for (let word of wordBlacklist) {
             word = word.trim().toLowerCase();
             if (word.length === 0) continue;
@@ -1297,6 +1303,8 @@ class Bonzi {
             "TIME FOR SEMJG MEX! LETS DO THE SEMJG MEX DANCE! S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX!",
             "shitbox gooner, did you know that numberblocks band is an og because it started in 2020?",
             "fuck you! SHITBOX GOONER!",
+            "go put a dildo on skybox's ass.",
+            "please go put a dildo on skybox's ass and fuck it like its on an ender rod on a piston.",
         ];
         this.runEvent([
             {type: "text", text: `${nisolate(target)}, ${words[Math.floor(Math.random()*words.length)]}`},
@@ -1317,11 +1325,20 @@ class Bonzi {
         explosion.style.top = this.y + "px";
         document.body.appendChild(explosion);
         this.element.style.zIndex = "999999"; // show above chat log
-        let sfx = new Audio("./explosion.mp3");
+        const sfxs = [
+            "./explosion.mp3",
+"https://files.catbox.moe/15czmj.mp4",
+"https://files.catbox.moe/5yijs7.mp4",
+"https://files.catbox.moe/91osfc.mp4",
+"https://files.catbox.moe/4ttxcv.mp4",
+"https://files.catbox.moe/vrycfc.mp4",
+        ];
+        let sfx = new Audio(sfxs[Math.floor(Math.random()*sfxs.length)]);
         sfx.play();
         let rot = 0;
         let x = 0;
         let y = 0;
+        let size = 1;
         let angvel = Math.random() * 30 + 20;
         if (Math.random() > 0.5) angvel *= -1;
         let xvel = Math.random() * 10 + 5;
@@ -1334,7 +1351,8 @@ class Bonzi {
             x += xvel;
             rot += angvel;
             y += yvel;
-            this.element.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+            size += -0.01
+                this.element.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${size})`;
             if (i > 120) {
                 clearInterval(interval);
                 explosion.remove();
@@ -2874,6 +2892,109 @@ poll_button.onclick = () => {
     pollCreatorPopup();
 };
 
+// ── Gacha hat system ──────────────────────────────────────────────────────────
+const GACHA_HATS = {
+    common:   ["benson", "idiot", "monocle"],
+    rare:     ["headphones3", "headphones4", "blueeyes", "megavolania", "injury", "smile"],
+    epic:     ["longhat", "shockedepic", "dumbepic", "sphagetti"],
+    mythical: ["glitchcrown", "diamondcrown"],
+};
+
+const GACHA_BUTTONS = [
+    {
+        id: "gacha_common_button",
+        cdId: "gacha_common_cd",
+        lsKey: "gacha_common_last",
+        cooldown: 40 * 60 * 1000,
+        tiers: [
+            { tier: "common",   weight: 60 },
+            { tier: "rare",     weight: 30 },
+            { tier: "epic",     weight: 10 },
+        ],
+    },
+    {
+        id: "gacha_epic_button",
+        cdId: "gacha_epic_cd",
+        lsKey: "gacha_epic_last",
+        cooldown: 3 * 60 * 60 * 1000,
+        tiers: [
+            { tier: "epic",     weight: 50 },
+            { tier: "rare",     weight: 40 },
+            { tier: "mythical", weight: 10 },
+        ],
+    },
+    {
+        id: "gacha_mythical_button",
+        cdId: "gacha_mythical_cd",
+        lsKey: "gacha_mythical_last",
+        cooldown: 24 * 60 * 60 * 1000,
+        tiers: [
+            { tier: "mythical", weight: 60 },
+            { tier: "epic",     weight: 40 },
+        ],
+    },
+];
+
+function gachaRoll(tiers) {
+    let total = tiers.reduce((s, t) => s + t.weight, 0);
+    let r = Math.random() * total;
+    for (let t of tiers) {
+        r -= t.weight;
+        if (r <= 0) return t.tier;
+    }
+    return tiers[tiers.length - 1].tier;
+}
+
+function gachaFormatCd(ms) {
+    if (ms <= 0) return "Ready!";
+    let s = Math.ceil(ms / 1000);
+    let h = Math.floor(s / 3600);
+    let m = Math.floor((s % 3600) / 60);
+    let sec = s % 60;
+    if (h > 0) return `Ready in: ${h}h ${m}m ${sec}s`;
+    if (m > 0) return `Ready in: ${m}m ${sec}s`;
+    return `Ready in: ${sec}s`;
+}
+
+function updateGachaCooldowns() {
+    let now = Date.now();
+    for (let btn of GACHA_BUTTONS) {
+        let el = document.getElementById(btn.id);
+        let cdEl = document.getElementById(btn.cdId);
+        if (!el || !cdEl) continue;
+        let last = parseInt(localStorage.getItem(btn.lsKey) || "0");
+        let remaining = (last + btn.cooldown) - now;
+        if (remaining > 0) {
+            cdEl.textContent = gachaFormatCd(remaining);
+            el.classList.add("gacha-on-cooldown");
+        } else {
+            cdEl.textContent = "Ready!";
+            el.classList.remove("gacha-on-cooldown");
+        }
+    }
+}
+
+setInterval(updateGachaCooldowns, 1000);
+updateGachaCooldowns();
+
+for (let btn of GACHA_BUTTONS) {
+    document.getElementById(btn.id).onclick = () => {
+        let now = Date.now();
+        let last = parseInt(localStorage.getItem(btn.lsKey) || "0");
+        if (now - last < btn.cooldown) return;
+        let tier = gachaRoll(btn.tiers);
+        let pool = GACHA_HATS[tier];
+        let hat = pool[Math.floor(Math.random() * pool.length)];
+        cmd(`gachahat ${hat}`);
+        localStorage.setItem(btn.lsKey, String(now));
+        updateGachaCooldowns();
+        start_menu.hidden = true;
+        let myBonzi = me();
+        if (myBonzi) myBonzi.notify(`You rolled a ${tier.toUpperCase()} hat: ${hat}!`);
+    };
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function uploadPopup(initialFile) {
     let blobUrl = null;
     let dialog = new Dialog({
@@ -3014,6 +3135,20 @@ function vaultPopup() {
     input.onkeydown = (e) => {
         if (e.key === "Enter") button.onclick();
     };
+}
+
+function showIframePopup(url) {
+    return new Dialog({
+        title: url,
+        class: "flex_window",
+        html: `
+        <iframe src="${url}" width="100%" height="100%">
+        `,
+        x: 10,
+        y: 10,
+        width: 900,
+        height: 600
+    })
 }
 
 start_menu_vault.onclick = () => {

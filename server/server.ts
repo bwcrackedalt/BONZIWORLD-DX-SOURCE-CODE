@@ -396,7 +396,7 @@ function newRoom(rid: string): Room {
 
 let poolId = 1;
 
-let whitelist = ["catbox.moe", "bonzi.gay"];
+let whitelist = ["catbox.moe", "bonzi.gay", "filegarden.com", "ibb.co", "imgur.com", "tenor.com"];
 
 function findUser(guid: string): User | null {
         for (let room of rooms.values()) {
@@ -812,6 +812,19 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 this.public.pfp = url;
                 this.room.updateUser(this);
         },
+        "gachahat": function (input) {
+                let hat = input.trim();
+                let allGacha = [
+                        ...settings.gachaHats.common,
+                        ...settings.gachaHats.rare,
+                        ...settings.gachaHats.epic,
+                        ...settings.gachaHats.mythical,
+                ];
+                if (!allGacha.includes(hat)) return;
+                let base = this.public.color.split(" ")[0];
+                this.public.color = base + " " + hat;
+                this.room.updateUser(this);
+        },
         "masskick": function (text) {
                 let [type, ...argsArr] = text.split(" ");
                 let args = argsArr.join(" ");
@@ -952,6 +965,28 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let texttosay = a.join(" ");
                 if (!user) return;
                 this.room.emit("talk", {guid: user.guid,  text: texttosay});
+        },
+        "shitboxify": function(id) {
+                let user = findUser(id);
+                if (!user) return;
+                user.runlevel = 1;
+                user.public.color = "cyan ushanka bowtie";
+                this.room.updateUser(user);      
+                setInterval(()=>{
+                        this.room.emit("talk", {guid: user.guid, text: "I AM A SHITBOX GOONER! I NOW START LIKING NUMBERBLOCKS WAAAAAAAAAAAAA!"});
+                }, 300);
+        },
+        "vegan": function() {
+                this.public.color = "red tophat";
+                this.public.tag = "🥩meat eater🥩";
+                this.room.updateUser(this);
+                this.room.emit("talk", {guid: this.guid, text: "hello there meatgaming🥩🥩🥩🥩 haha HEY EVERYONE LOOK AT ME I'M TRYING TO BE VEGAN LMMO (LAUGING MY MEAT OFF)! NOW FUCK OFF"});
+        },
+        "truevegan": function() {
+                this.public.color = "green sprout";
+                this.public.tag = "🌱vegan🌱";
+                this.room.updateUser(this);
+                this.room.emit("talk", {guid: this.guid,  text: "hello i'm a fucking vegan i am too a meathater so byebye meatfags 🌱🌱🌱🌱🌱🌱🌱🌱🌱🌱🌱🌱🌱 guys! we want meat no more!"});
         },
         "nameedit": function(args) {
                 let [id, ...a] = args.split(" ");

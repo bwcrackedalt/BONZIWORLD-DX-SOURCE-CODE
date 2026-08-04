@@ -1,3 +1,4 @@
+//App showcase
 $(".app_showcase").append(
       '<a>' +
         '<img src="./img/app/desktop.png" alt="asdfghjklñ" />' +
@@ -23,3 +24,29 @@ $(".app_showcase").append(
         '<img src="https://files.catbox.moe/z1uxuq.png" alt="asdfghjklñ" />' +
       '</a>'
     );
+//badges
+const badges = [
+  "antinft",
+  "aoltos_a",
+  "best_chrome",
+  "best_viewed_with_eyes",
+  "bestviewedcomp",
+  "bookmark_this_page",
+  "cooltxt",
+  "desp-anim",
+  "google_25wht",
+  "html_learn_it_today",
+  "rainbow_bev",
+  "screw",
+  "stop",
+  "transnow2",
+  "wii",
+];
+
+badges.forEach((badge) => {
+  $(".badge-showcase").append(
+      '<a>' +
+       '<img src="./img/badges/' + badge + '.gif" alt="asdfghjklñ" />' +
+      '</a>'
+    );
+});

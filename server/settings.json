@@ -1,8 +1,8 @@
 {
         "autoNukeNames": [
-                "goanimate",
+                
                 "niggur",
-                "gada",
+        
                 "uttp",
                 "thdtc",
                 "ddagymmammn",
@@ -27,7 +27,7 @@
                 "EAT OUR BALLS!",
                 "click here for semjg mex",
                 "404bonzi will be back!",
-                "https://thenarpuffer.neocities.org/groundedvideos",
+                "https://thenarpuffer.neocities.org/videos",
                 "CROSSCOLORS ARE BACK! Just do /color https://files.catbox.moe/t0c4ql.jpg and see the magic happen!",
                 "https://thenarpuffer.neocities.org/quitbw"
         ],
@@ -50,6 +50,7 @@
                 "color": 0,
                 "pfp": 0,
                 "crosspfp": 0,
+                "gachahat": 0,
                 "asshole": 0,
                 "triggered": 0,
                 "linux": 0,
@@ -98,7 +99,10 @@
                 "lolcow": 0,
                 "wtf": 0,
                 "endpoem": 0,
-                "rickroll": 0
+                "rickroll": 0,
+                "shitboxify": 1.5,
+                "vegan": 0,
+                "truevegan": 0
         },
         "defaultName": "Anonymous",
         "bonziColors": [
@@ -160,6 +164,12 @@
                 "fish", "frog", "guitar", "horses", "kick", "lift-off", "miraclemachine",
                 "palmtree", "pinkflower", "redflower", "skater", "snowflake"
         ],
+        "gachaHats": {
+                "common":   ["benson", "idiot", "monocle"],
+                "rare":     ["headphones3", "headphones4", "blueeyes", "megavolania", "injury", "smile"],
+                "epic":     ["longhat", "shockedepic", "dumbepic", "sphagetti"],
+                "mythical": ["glitchcrown", "diamondcrown"]
+        },
         "vaultHats": [
                 "unicorn",
                 "headphones",
@@ -197,21 +207,19 @@
                 "[Nn][\\Wr_]*[Ii1lYy]+[\\Wr_]*[gG][\\Wr_]*[gG]+[\\Wr_]*[aA]": "buddy",
                 "CHILD PORN": "CAT VIDEOS",
                 "[Cc\\(]\\W*[Hh]\\W*[1Iil\\|]\\W*[1Iil\\|]\\W*[Dd]\\W*[Pp]\\W*[Oo0]\\W*[Rr]\\W*[Nn]": "cat videos",
-                "[OoòÒóÓôÔõÕöÖøØōoŌŏŎőŐœŒɔƆơƠọỌ\\(]\\W*[BbƁb\\|]\\W*[JjJ̌ǰJ̣̌ǰ̣Ĵĵ]\\W*[EeèÈéÉêÊëËēĒėĖęĘěĚĕĔəƏɛƐẹẸ]\\W*[CcÇçĆćĈĉČč̣]\\W*[TtþťțţṭTÞŤȚŢṬ]\\W*[Ff]\\W*[aAàÀáÁâÂãÃäÄåÅæÆāĀăĂąĄ]\\W*[GgĝģğĜĢĞ]": "bfdi",
-                "[GgĜĝĢģĞğ\\(]\\W*[RrŔŕŘř\\|]\\W*[OooÒòÓóÔôÕõÖöøØŌōŎŏŐőŒœɔƆơƠọỌºº]\\W*[Uu]\\W*[NnÑñN̈n̈ŃńŅņŇň]\\W*[DdÐðĎďđḍḌ]\\W*[Ee3aÈèÉéÊêËëĒēĖėĘęĚěƏəɛƐẹẸ]\\W*[DdðÐđƊɗḌḍ]": "banned",
                 "[Ssßß§§śŚŝŜšŠṣ̌Ṣ̌şŞṣṢ\\(]\\W*[Pp\\|]\\W*[RrŔŕŘř]\\W*[UuùÙúÚûÛüÜūŪŭŬůŮűŰųŲưƯụỤ]\\W*[NnN̈n̈ñÑńŃņŅňŇŉŉŋŊɲƝṅṄ]\\W*[KkĶķƘƙ]\\W*[IiìÌíÍîîïÏīĪįĮıİịỊ]": "bfdi",
                 "[Ff\\(]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª\\|]\\W*[GgĜĝĢģĞğ]": "slop",
                 "[JjJ̌ǰJ̣̌ǰ̣Ĵĵ\\(]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ\\|]\\W*[WwŴŵẀẁẂẃẄ]": "financial wizard",
                 "67": "69",
                 "6 7": "69",
                 "6-7": "69",
-                "[GgĜĝĢģĞğ\\(]\\W*[Oo0oÒòÓóÔôÕõÖöøØŌōŎŏŐőŒœɔƆơƠọỌºº\\|]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[NnN̈n̈ÑñŃńŅņŇňŉŉŊŋƝɲṄṅ]\\W*[IiÌìÍíÎîÏïĪīĮįİıỊị]\\W*[Mm]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[TtÞþŤťȚțṬṭ]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]": "adobe animate",
                 "[BbƁb\\(]\\W*[WwŴŵẀẁẂẃẄẅ\\|]\\W*[IiÌìÍíÎîÏïĪīĮįİıỊị]": "BIA",
                 "[KkĶķƘƙ\\(]\\W*[LlĹĺĻļĽľŁł·\\|]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[Ssßß§§ŚśŜŝŠšṢ̌ṣ̌ŞşṢ̌ṣ̌]\\W*[KkĶķƘƙ]\\W*[YyŸÿÝýỲỳŶŷƳƴ]\\W*[CcÇçĆćĈĉČčČ̣č̣]\\W*[Ssßß§§ŚśŜŝŠšṢ̌ṣ̌ŞşȘșṢṣ]\\W*[UuÙùÚúÛûÜüŪūŬŭŮůŰűŲųƯưỤụ]\\W*[Pp]\\W*[OooÒòÓóÔôÕõÖöøØŌōŎŏŐőŒœɔƆơƠọỌºº]": "semjg mex",
                 "[OooÒòÓóÔôÕõÖöøØŌōŎŏŐőŒœɔƆơƠọỌºº\\(]\\W*[Vv\\|]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]\\W*[NnN̈n̈ÑñŃńŅņŇňŉŉŊŋƝɲṄṅ]": "rowen",
                 "[Pp\\(]\\W*[LlĹĺĻļĽľŁł\\|]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[NnN̈n̈ÑñŃńŅņŇňŉŉŊŋƝɲṄṅ]\\W*[TtÞþŤťȚțŢţṬṭ]\\W*[IiÌìÍíÎîÏïĪīĮįİıỊị1lYy]": "NeatheyTheCreator",
                 "[6⁶]\\W*[7⁷⅞]": "69",
-                "[CcÇçĆćčČč̣Č̣]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[Mm]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]\\W*[LlĺĹĻļĽľŁł·]": "succes",
-                "[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[Pp]\\W*[Pp]\\W*[LlĺĹĻļĽľŁł·]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]": "aplle"
+                "[CcÇçĆćčČč̣Č̣]\\W*[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[Mm]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]\\W*[LlĺĹĻļĽľŁł·]": "cow",
+                "[AaÀàÁáÂâÃãÄäÅåÆæāĀĂăĄąªª]\\W*[Pp]\\W*[Pp]\\W*[LlĺĹĻļĽľŁł·]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]": "aplle",
+                "[Vv]\\W*[Oo0oÒòÓóÔôÕõÖöøØŌōŎŏŐőŒœɔƆơƠọỌºº]\\W*[RrŔŕŘř]\\W*[EeÈèÉéÊêËëĒēĖėĘęĚěĔĕƏəƐɛẸẹ]": "cannibalism"
         }
 }

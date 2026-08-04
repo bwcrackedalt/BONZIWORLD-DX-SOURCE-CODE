@@ -316,7 +316,7 @@ window.BonziData = {
                         },
                         {
                                 type: "text",
-                                text: "A giant inflatable buttplug."
+                                text: "Geographically and historically, the exact middle of Paris is the Île de la Cité, a small natural island on the Seine River. Historically the birthplace of the city, it is home to the Cathédrale Notre-Dame, the stunning Gothic chapel Sainte-Chapelle, and marks point zero of French roads.", say: "bro i broek"
                         }
                 ], [
                         {
@@ -325,7 +325,7 @@ window.BonziData = {
                         },
                         {
                                 type: "text",
-                                text: "Sonic's asshole."
+                                text: "A gradient."
                         }
                 ], [
                         {
@@ -352,7 +352,7 @@ window.BonziData = {
                         },
                         {
                                 type: "text",
-                                text: "Suck my clock."
+                              text: "Tick-tock, tick-tock"
                         }
                 ], [
                         {
@@ -403,7 +403,7 @@ window.BonziData = {
                         {type: "text", text: "Then go kill yourself."},
                         {type: "text", text: "That's your fucking problem."},
                 ],
-                [{type: "text", text: "neathey dud 😭"}],
+                [{type: "text", text: "When you tienes plata:"}],
                 [{type: "text", text: "being in ts server because weekends are peak"}],
                 [{type: "text", text: "OIOIOI"}],
                 [{type: "text", text: "bwi has disbanded. bia won."}],
@@ -413,9 +413,17 @@ window.BonziData = {
                         {type: "text", text: "I'm unplugging myself."},
                 ],
                 [{type: "text", text: "I'm about to beat every person in thebworld that can make comedy. Get ready for this one.; Are you ready? 3, 2, 1. (BONZI WAS HARDBANNED FOR THIS MESSAGE); I played a joke on you! In a joke. Get it? ... (but make it say: Pretend that I'm actually dot dot doting in here, it would be fucking embarrassing for me if i got found out this way.) Ok, it's time. Are you ready? *gasp* (but make it say: Also pretend I'm gasping here. Yes, I'm role-playing to you, in a joke. It's pretty embarrassing now is it?) Ok, now I'm actually going to say it. GET READY. ^^**PENIS!**^^ Come on! Laugh! I know you want to laugh! I can see you laughing on that screen, don't lie! Ok, I'll admit, that one was pretty fucking stupid. I'm sorry. Not sorry for wasting your time, nor for making an unfunny ass joke. Sorry for making you realize that you don't know true comedy. If you don't, then you're a retard. Thanks for nothing. And then the backflip.", say: "bro i broke, nah, i aint reading all that, click on the awesome purple button on the top left to see the joke."}],
-        ],
-        event_list_joke_end: [
                 [
+                        {type: "text", text: "send me one more meme once more"},
+                        {type: "text", text: "you're cooked"},
+                        {type: "text", text: "i am going to your server"},
+                        {type: "text", text: "i have the godword copied on my clipboard"},
+                        {type: "text", text: "its \"6inflationboobies\" you are an inflationfag because of that godword"},
+                        {type: "text", text: "your server is now a rubber room"},
+                        {type: "text", text: "yay haha! the admin abuse was complateed!"},
+                ],
+        ],
+event_list_joke_end:        [        [
                         {
                                 type: "text",
                                 text: "You know {NAME}, a good friend laughs at your jokes even when they're not so funny."
@@ -513,7 +521,7 @@ window.BonziData = {
                         {type: "text", text: "NAH I AIN'T SAYING ALL THAT."},
                 ],
                 [
-                        {type: "text", text: "Did you know that the creator of this site hates Albuquerque for now?"},
+                        {type: "text", text: "Did you know that the creator of this s- OK HE DOESNT HATE IT ANYMORE for now?"},
                         {type: "idle"},
                         {type: "text", text: "I think he hates it because the music video is boring. He prefers other weird Al songs."},
                 ],
@@ -660,9 +668,13 @@ window.BonziData = {
                 [{type: "text", text: "i searched up godzilland deviantart on google and now i need eye surgery and maybe even a therapist"}],
                 [{type: "text", text: "PLEASE GIVE THIS VIDEO LIKES!!!!! I CANNOT TAKE IT ANYMORE!"}],
                 [{type: "text", text: "i am agent weirldalfag, and i own an STUPID GANG NAMED SS, I MISS DARWIN, AND I AM KIDDIEBOX."}],
-                [{type: "text", text: "TheAwesomeNarPuffer is a fake bia memmber."}],
+                [{type: "text", text: "TheAwesomeNarPuffer is a bia memmber."}],
                 [{type: "text", text: "i can confirm, whistler is a shitbox gooner."}],
                 [{type: "text", text: "https://404bonzi.neocities.org/"}],
+                [{type: "text", text: "i made gooning STUPID STRONG"}],
+                [{type: "text", text: "TheAwesomeNarPuffer go back to bwr"}],
+                [{type: "text", text: "radical pls unban my chrome"}],
+                [{type: "text", text: "hey guys! im bypassing this nuke filter in 3... 2... 1... ^^NUMBERCUCK!^^ haha!"}],
                         ],
 //=====================================================
         event_list_cp_open: [
@@ -920,6 +932,27 @@ window.BonziData = {
                         {type: "text", text: "and he saw hundreds of colorful bonzis,"},
                         {type: "text", text: "some of them have a shirt that says \"STICKY COME BACK TO BW\","},
                         {type: "text", text: "some of them have signs that say \"STICKY WE NEED YOU BACK TO BW COMMUNITY\","},
+                ],
+                [
+                        {type: "text", text: "TheAwesomeNarPuffer was dreaming abut...."},
+                ],
+                [
+                        {type: "text", text: "So,"},
+                        {type: "text", text: "I drunk some orphan tears"},
+                        {type: "text", text: "And it was hallucinating,"},
+                        {type: "text", text: "I saw a bonzi in the sky, then it exploded with more bonzis that..."},
+                        {type: "text", text: "Bruh, Also there was an inflationfag then i tried crushing it with NB1M but"},
+                        {type: "text", text: "he runned away."},
+                        {type: "text", text: "Then i saw a box, but i opened it..."},
+                        {type: "text", text: "and it was sticky, which he said \"i did your mom\""},
+                        {type: "text", text: "then he chased me and i closed the hallway's door"},
+                        {type: "text", text: "and i saw an elevator"},
+                        {type: "text", text: "and i tried going up"},
+                        {type: "text", text: "but it sent me to an other reality"},
+                        {type: "text", text: "then bonzis who sometimes turn into neatheys started chasing me"},
+                        {type: "text", text: "there were 3 doors. i tried going to the 1st door,"},
+                        {type: "text", text: "but it sent me to the reality i am, but it wasnt the end."},
+                        {type: "text", text: "i started sleeping, but i got unaffected now"},
                 ],
         ],
         event_list_cp_end: [

@@ -33,6 +33,7 @@
         <script defer src="./click.js"></script>
         <script defer src="./music.js"></script>
         <style id="customStyle"></style>
+                <script defer src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
 </head>
 <body>
         <div id="preload" hidden>
@@ -56,11 +57,12 @@
         </div>
         <div id="content">
                 <div id="room_info">
+                                                <br> <br> <button type="button" style="background-color:transparent;font-style:italic;font-style:bold;font-style: italic;text-shadow:1px 1px rgba(0, 0, 0, 0.5);color:#fff;border:0px solid black;" onclick="openSettings();"><img src="./img/desktop/check.png" width="50" height="50">                                <br>Settings</button>                                <button type="button" style="background-color:transparent;font-style:italic;font-style:bold;font-style: italic;text-shadow:1px 1px rgba(0, 0, 0, 0.5);color:#fff;border:0px solid black;" onclick="showIframePopup('readme.html');"><img src="./img/desktop/extra.png" width="50" height="50"><br>README</button>                        <br> <button type="button" style="background-color:transparent;font-style:italic;font-style:bold;font-style: italic;text-shadow:1px 1px rgba(0, 0, 0, 0.5);color:#fff;border:0px solid black;" onclick="showIframePopup('changelog.html')"><img src="./img/desktop/paper.png" width="50" height="50"><br>Changelog</button>
                         <div>Users: <span id="usercount">???</span></div>
                         Room ID - <span id="room_id">???</span><br>
                         <span id="room_public">This room is public.</span>
                         <span id="room_private">This room is private.</span>
-                        <span id="room_owner"><br>You are the owner of this room.</span>
+                        <span id="room_owner"><br>You are the owner of this room.</span>                
                 </div>
                 <div id="talkcard" hidden></div>
                 <div id="chat_bar">
@@ -138,6 +140,12 @@
                                 <option value="/rickroll ">
                                         Send a link to epically troll users.
                                 </option>
+                                <option value="/vegan">
+                                        Vegan.
+                                </option>
+                                <option value="/truevegan">
+                                        True vegan.
+                                </option>
                         </datalist>
                         <div id="chat_tray">
                                 <div id="btn_tile" class="tray_btn"></div>
@@ -161,6 +169,10 @@
                          <a href="extra" target="_blank">Extra</a>
                                 
                         </main> 
+                        <div class="parent-box">
+  <span class="centered-text badge-showcase"></span>
+</div>
+
                         <div id="login_card" hidden>
                                 <input id="login_name" type="text" placeholder="Nickname" maxlength="25">
                                 <input id="login_room" type="text" placeholder="Room ID (Optional)">
@@ -199,11 +211,8 @@
                                 <a href="#" onclick="window.location.reload()">Reload?</a>
                         </div>
                 </div>
-
-                <canvas id="canvas"></canvas>
-
-                <div id="chat_log_button"></div>
-                
+                <canvas id="canvas"></canvas>            
+                <div id="chat_log_button"></div>                                
                 <div id="chat_log" class="window" hidden>
                         <div class="window_header">
                                 BonziLOG&trade;
@@ -238,6 +247,27 @@
                                         <div class="start_menu_item_details">
                                                 <div class="start_menu_item_name">Poll Creator</div>
                                                 <div class="start_menu_item_description">Vote on a poll.</div>
+                                        </div>
+                                </div>
+                                <div id="gacha_common_button" class="start_menu_item">
+                                        <img class="start_menu_item_icon" src="/img/desktop/tb.webp">
+                                        <div class="start_menu_item_details">
+                                                <div class="start_menu_item_name">Common Hat Roll</div>
+                                                <div class="start_menu_item_description" id="gacha_common_cd">Roll a random hat!</div>
+                                        </div>
+                                </div>
+                                <div id="gacha_epic_button" class="start_menu_item">
+                                        <img class="start_menu_item_icon" src="/img/desktop/raretb.webp">
+                                        <div class="start_menu_item_details">
+                                                <div class="start_menu_item_name">Epic Hat Roll</div>
+                                                <div class="start_menu_item_description" id="gacha_epic_cd">Roll for rarer hats!</div>
+                                        </div>
+                                </div>
+                                <div id="gacha_mythical_button" class="start_menu_item">
+                                        <img class="start_menu_item_icon" src="/img/desktop/mythicaltb.webp">
+                                        <div class="start_menu_item_details">
+                                                <div class="start_menu_item_name">Mythical Hat Roll</div>
+                                                <div class="start_menu_item_description" id="gacha_mythical_cd">Roll for mythical hats!</div>
                                         </div>
                                 </div>
                         </div>

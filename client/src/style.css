@@ -1467,6 +1467,15 @@ gay-biggest {font-size: 5em}
     cursor: pointer;
 }
 
+.start_menu_item.gacha-on-cooldown {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+.start_menu_item.gacha-on-cooldown:hover {
+    background-color: transparent;
+    color: inherit;
+}
+
 .bonzi_editor h2 {
     border-bottom: 1px solid #000a;
     margin-bottom: 4px;
@@ -1905,6 +1914,25 @@ gay-biggest {font-size: 5em}
   .inner-text {
     color: white;
     padding: 20px;
-    margin: 0;                /* Prevents layout gaps */
-    border-radius: 4px;       /* Optional: rounds the inner box corners */
+    margin: 0;      }
+.parent-box {
+    position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center; /* Optional: centers the text horizontally */
+  padding-bottom: 25px;   /* Creates the transparent space at the bottom */
+  background: transparent; /* Ensures the background space is see-through */
+}
+
+.centered-text {
+  display: inline;         /* Keeps the element inline */
+}
+
+img.emoji {
+     display: inline-block !important; /* Evita que otras reglas lo rompan */
+     height: 1em !important;          /* Toma la altura exacta del tamaño de fuente (font-size) */
+     width: 1em !important;           /* Mantiene la proporción cuadrada */
+     margin: 0 .05em 0 .1em;          /* Añade un pequeño espacio a los lados */
+     vertical-align: -0.1em;          /* Alinea el emoji correctamente con la línea del texto */
   }
