@@ -2726,6 +2726,8 @@ function bonziEditorPopup() {
                         <input type="text" class="crosspfp-input" placeholder="Image URL (https://...)" maxlength="500">
                         <button class="xp-button crosspfp-apply">Set as PFP</button>
                     </div>
+                    <h2>Hat Rolls</h2>
+                    <div class="gacha-roll-list"></div>
                 </div>
                 <div class="preview-container">
                     Preview
@@ -2791,6 +2793,62 @@ function bonziEditorPopup() {
 
     let preview = element.querySelector(".preview");
     preview.style.backgroundImage = bonzis.get(me).color.split(" ").map(color => `url("/img/bonzi/${color}.webp")`).reverse().join(", ");
+
+    // ── Gacha roll buttons ────────────────────────────────────────────────────
+    let gachaList = element.querySelector(".gacha-roll-list");
+    let gachaRowEls = [];
+    for (let btn of GACHA_BUTTONS) {
+        let row = document.createElement("div");
+        row.className = "gacha-roll-row";
+        row.innerHTML = `
+            <img class="gacha-roll-img" src="${btn.img}">
+            <div class="gacha-roll-info">
+                <div class="gacha-roll-name">${btn.label}</div>
+                <div class="gacha-roll-odds">${btn.odds}</div>
+            </div>
+            <button class="xp-button gacha-roll-btn">Roll!</button>
+            <div class="gacha-roll-cd"></div>
+        `;
+        let rollBtn = row.querySelector(".gacha-roll-btn");
+        let cdEl    = row.querySelector(".gacha-roll-cd");
+
+        function makeClickHandler(b, rb, cd) {
+            rb.onclick = () => {
+                let now  = Date.now();
+                let last = parseInt(localStorage.getItem(b.lsKey) || "0");
+                if (now - last < b.cooldown) return;
+                let tier = gachaRoll(b.tiers);
+                let pool = GACHA_HATS[tier];
+                let hat  = pool[Math.floor(Math.random() * pool.length)];
+                cmd(`gachahat ${hat}`);
+                localStorage.setItem(b.lsKey, String(now));
+                let myBonzi = me();
+                if (myBonzi) myBonzi.notify(`You rolled a ${tier.toUpperCase()} hat: ${hat}!`);
+            };
+        }
+        makeClickHandler(btn, rollBtn, cdEl);
+        gachaList.appendChild(row);
+        gachaRowEls.push({ btn, rollBtn, cdEl });
+    }
+
+    function tickGacha() {
+        let now = Date.now();
+        for (let { btn, rollBtn, cdEl } of gachaRowEls) {
+            let last      = parseInt(localStorage.getItem(btn.lsKey) || "0");
+            let remaining = (last + btn.cooldown) - now;
+            if (remaining > 0) {
+                cdEl.textContent      = gachaFormatCd(remaining);
+                rollBtn.disabled      = true;
+            } else {
+                cdEl.textContent      = "";
+                rollBtn.disabled      = false;
+            }
+        }
+    }
+    tickGacha();
+    let gachaTimer = setInterval(tickGacha, 1000);
+    dialog.element.addEventListener("remove", () => clearInterval(gachaTimer), { once: true });
+    // ─────────────────────────────────────────────────────────────────────────
 }
 
 start_menu_pfp.onclick = () => {
@@ -2892,7 +2950,7 @@ poll_button.onclick = () => {
     pollCreatorPopup();
 };
 
-// ── Gacha hat system ──────────────────────────────────────────────────────────
+// ── Gacha hat data (used inside bonziEditorPopup) ────────────────────────────
 const GACHA_HATS = {
     common:   ["benson", "idiot", "monocle"],
     rare:     ["headphones3", "headphones4", "blueeyes", "megavolania", "injury", "smile"],
@@ -2902,10 +2960,11 @@ const GACHA_HATS = {
 
 const GACHA_BUTTONS = [
     {
-        id: "gacha_common_button",
-        cdId: "gacha_common_cd",
-        lsKey: "gacha_common_last",
+        label:   "Common Roll",
+        img:     "/img/desktop/tb.webp",
+        lsKey:   "gacha_common_last",
         cooldown: 40 * 60 * 1000,
+        odds:    "60% common · 30% rare · 10% epic",
         tiers: [
             { tier: "common",   weight: 60 },
             { tier: "rare",     weight: 30 },
@@ -2913,10 +2972,11 @@ const GACHA_BUTTONS = [
         ],
     },
     {
-        id: "gacha_epic_button",
-        cdId: "gacha_epic_cd",
-        lsKey: "gacha_epic_last",
+        label:   "Epic Roll",
+        img:     "/img/desktop/raretb.webp",
+        lsKey:   "gacha_epic_last",
         cooldown: 3 * 60 * 60 * 1000,
+        odds:    "50% epic · 40% rare · 10% mythical",
         tiers: [
             { tier: "epic",     weight: 50 },
             { tier: "rare",     weight: 40 },
@@ -2924,10 +2984,11 @@ const GACHA_BUTTONS = [
         ],
     },
     {
-        id: "gacha_mythical_button",
-        cdId: "gacha_mythical_cd",
-        lsKey: "gacha_mythical_last",
+        label:   "Mythical Roll",
+        img:     "/img/desktop/mythicaltb.webp",
+        lsKey:   "gacha_mythical_last",
         cooldown: 24 * 60 * 60 * 1000,
+        odds:    "60% mythical · 40% epic",
         tiers: [
             { tier: "mythical", weight: 60 },
             { tier: "epic",     weight: 40 },
@@ -2951,47 +3012,9 @@ function gachaFormatCd(ms) {
     let h = Math.floor(s / 3600);
     let m = Math.floor((s % 3600) / 60);
     let sec = s % 60;
-    if (h > 0) return `Ready in: ${h}h ${m}m ${sec}s`;
-    if (m > 0) return `Ready in: ${m}m ${sec}s`;
-    return `Ready in: ${sec}s`;
-}
-
-function updateGachaCooldowns() {
-    let now = Date.now();
-    for (let btn of GACHA_BUTTONS) {
-        let el = document.getElementById(btn.id);
-        let cdEl = document.getElementById(btn.cdId);
-        if (!el || !cdEl) continue;
-        let last = parseInt(localStorage.getItem(btn.lsKey) || "0");
-        let remaining = (last + btn.cooldown) - now;
-        if (remaining > 0) {
-            cdEl.textContent = gachaFormatCd(remaining);
-            el.classList.add("gacha-on-cooldown");
-        } else {
-            cdEl.textContent = "Ready!";
-            el.classList.remove("gacha-on-cooldown");
-        }
-    }
-}
-
-setInterval(updateGachaCooldowns, 1000);
-updateGachaCooldowns();
-
-for (let btn of GACHA_BUTTONS) {
-    document.getElementById(btn.id).onclick = () => {
-        let now = Date.now();
-        let last = parseInt(localStorage.getItem(btn.lsKey) || "0");
-        if (now - last < btn.cooldown) return;
-        let tier = gachaRoll(btn.tiers);
-        let pool = GACHA_HATS[tier];
-        let hat = pool[Math.floor(Math.random() * pool.length)];
-        cmd(`gachahat ${hat}`);
-        localStorage.setItem(btn.lsKey, String(now));
-        updateGachaCooldowns();
-        start_menu.hidden = true;
-        let myBonzi = me();
-        if (myBonzi) myBonzi.notify(`You rolled a ${tier.toUpperCase()} hat: ${hat}!`);
-    };
+    if (h > 0) return `${h}h ${m}m ${sec}s`;
+    if (m > 0) return `${m}m ${sec}s`;
+    return `${sec}s`;
 }
 // ─────────────────────────────────────────────────────────────────────────────
 

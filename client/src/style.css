@@ -1467,14 +1467,6 @@ gay-biggest {font-size: 5em}
     cursor: pointer;
 }
 
-.start_menu_item.gacha-on-cooldown {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-.start_menu_item.gacha-on-cooldown:hover {
-    background-color: transparent;
-    color: inherit;
-}
 
 .bonzi_editor h2 {
     border-bottom: 1px solid #000a;
@@ -1536,6 +1528,52 @@ gay-biggest {font-size: 5em}
 .crosspfp-input {
     flex: 1;
     min-width: 0;
+}
+
+.gacha-roll-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.gacha-roll-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+}
+
+.gacha-roll-img {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+}
+
+.gacha-roll-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.gacha-roll-name {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.gacha-roll-odds {
+    font-size: 10px;
+    color: #555;
+}
+
+.gacha-roll-cd {
+    font-size: 11px;
+    color: #c00;
+    white-space: nowrap;
+    min-width: 90px;
+    text-align: right;
 }
 
 .preview-container {
