@@ -2726,8 +2726,6 @@ function bonziEditorPopup() {
                         <input type="text" class="crosspfp-input" placeholder="Image URL (https://...)" maxlength="500">
                         <button class="xp-button crosspfp-apply">Set as PFP</button>
                     </div>
-                    <h2>Hat Rolls</h2>
-                    <div class="gacha-roll-list"></div>
                 </div>
                 <div class="preview-container">
                     Preview
@@ -2768,6 +2766,18 @@ function bonziEditorPopup() {
     itemElements(".unlockable-grid", BonziData.hats.event.filter(hat => unlocks.includes(hat)), "img/haticon", (hat) => cmd(`hat ${hat}`), {
         tooltip: (hat) => `${hat}\nUnlocked in the 2026 April Fools event`,
     });
+    let gachaCollection = JSON.parse(localStorage.getItem("gacha_collection") || "[]");
+    let allGachaItems = Object.entries(GACHA_HATS).flatMap(([tier, hats]) =>
+        hats.map(name => ({ name, tier }))
+    );
+    itemElements(".unlockable-grid", allGachaItems, "img/haticon", (hat) => {
+        if (!gachaCollection.includes(hat.name)) return;
+        cmd(`gachahat ${hat.name}`);
+    }, {
+        isLocked: (name) => !gachaCollection.includes(name),
+        tooltip: (hat) => `${hat.name}\n${hat.tier.toUpperCase()} hat\n`
+            + (gachaCollection.includes(hat.name) ? "Won from hat rolls — click to equip" : "Win from hat rolls to unlock"),
+    });
 
     let customPfpGrid = element.querySelector(".custom-pfp-grid");
     let defaultItem = document.createElement("div");
@@ -2793,10 +2803,21 @@ function bonziEditorPopup() {
 
     let preview = element.querySelector(".preview");
     preview.style.backgroundImage = bonzis.get(me).color.split(" ").map(color => `url("/img/bonzi/${color}.webp")`).reverse().join(", ");
+}
 
-    // ── Gacha roll buttons ────────────────────────────────────────────────────
-    let gachaList = element.querySelector(".gacha-roll-list");
-    let gachaRowEls = [];
+function gachaPopup() {
+    let dialog = new Dialog({
+        title: "Hat Rolls",
+        class: "flex_window gacha-popup",
+        width: 380,
+        height: 240,
+        x: 220,
+        y: 180,
+        html: `<div class="gacha-popup-body"></div>`,
+    });
+    let body = dialog.element.querySelector(".gacha-popup-body");
+    let rowEls = [];
+
     for (let btn of GACHA_BUTTONS) {
         let row = document.createElement("div");
         row.className = "gacha-roll-row";
@@ -2806,13 +2827,14 @@ function bonziEditorPopup() {
                 <div class="gacha-roll-name">${btn.label}</div>
                 <div class="gacha-roll-odds">${btn.odds}</div>
             </div>
-            <button class="xp-button gacha-roll-btn">Roll!</button>
-            <div class="gacha-roll-cd"></div>
+            <div class="gacha-roll-right">
+                <button class="xp-button gacha-roll-btn">Roll!</button>
+                <div class="gacha-roll-cd"></div>
+            </div>
         `;
         let rollBtn = row.querySelector(".gacha-roll-btn");
         let cdEl    = row.querySelector(".gacha-roll-cd");
-
-        function makeClickHandler(b, rb, cd) {
+        (function(b, rb) {
             rb.onclick = () => {
                 let now  = Date.now();
                 let last = parseInt(localStorage.getItem(b.lsKey) || "0");
@@ -2820,35 +2842,34 @@ function bonziEditorPopup() {
                 let tier = gachaRoll(b.tiers);
                 let pool = GACHA_HATS[tier];
                 let hat  = pool[Math.floor(Math.random() * pool.length)];
+                let col  = JSON.parse(localStorage.getItem("gacha_collection") || "[]");
+                if (!col.includes(hat)) { col.push(hat); localStorage.setItem("gacha_collection", JSON.stringify(col)); }
                 cmd(`gachahat ${hat}`);
                 localStorage.setItem(b.lsKey, String(now));
                 let myBonzi = me();
                 if (myBonzi) myBonzi.notify(`You rolled a ${tier.toUpperCase()} hat: ${hat}!`);
             };
-        }
-        makeClickHandler(btn, rollBtn, cdEl);
-        gachaList.appendChild(row);
-        gachaRowEls.push({ btn, rollBtn, cdEl });
+        })(btn, rollBtn);
+        body.appendChild(row);
+        rowEls.push({ btn, rollBtn, cdEl });
     }
 
     function tickGacha() {
         let now = Date.now();
-        for (let { btn, rollBtn, cdEl } of gachaRowEls) {
-            let last      = parseInt(localStorage.getItem(btn.lsKey) || "0");
-            let remaining = (last + btn.cooldown) - now;
+        for (let { btn, rollBtn, cdEl } of rowEls) {
+            let remaining = (parseInt(localStorage.getItem(btn.lsKey) || "0") + btn.cooldown) - now;
             if (remaining > 0) {
-                cdEl.textContent      = gachaFormatCd(remaining);
-                rollBtn.disabled      = true;
+                cdEl.textContent = gachaFormatCd(remaining);
+                rollBtn.disabled = true;
             } else {
-                cdEl.textContent      = "";
-                rollBtn.disabled      = false;
+                cdEl.textContent = "";
+                rollBtn.disabled = false;
             }
         }
     }
     tickGacha();
-    let gachaTimer = setInterval(tickGacha, 1000);
-    dialog.element.addEventListener("remove", () => clearInterval(gachaTimer), { once: true });
-    // ─────────────────────────────────────────────────────────────────────────
+    let timer = setInterval(tickGacha, 1000);
+    dialog.element.addEventListener("remove", () => clearInterval(timer), { once: true });
 }
 
 start_menu_pfp.onclick = () => {
@@ -2948,6 +2969,11 @@ function pollCreatorPopup() {
 poll_button.onclick = () => {
     start_menu.hidden = true;
     pollCreatorPopup();
+};
+
+gacha_button.onclick = () => {
+    start_menu.hidden = true;
+    gachaPopup();
 };
 
 // ── Gacha hat data (used inside bonziEditorPopup) ────────────────────────────
