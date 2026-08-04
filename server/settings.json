@@ -165,9 +165,9 @@
                 "palmtree", "pinkflower", "redflower", "skater", "snowflake"
         ],
         "gachaHats": {
-                "common":   ["benson", "idiot", "monocle"],
+                "common":   ["benson", "idiot", "monocle", "pot2"],
                 "rare":     ["headphones3", "headphones4", "blueeyes", "megavolania", "injury", "smile"],
-                "epic":     ["longhat", "shockedepic", "dumbepic", "sphagetti"],
+                "epic":     ["longhat", "shockedepic", "dumbepic", "sphagetti", "blueepic"],
                 "mythical": ["glitchcrown", "diamondcrown"]
         },
         "vaultHats": [

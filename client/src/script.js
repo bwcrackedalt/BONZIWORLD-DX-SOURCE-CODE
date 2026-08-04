@@ -2720,6 +2720,8 @@ function bonziEditorPopup() {
                     <div class="editor-grid hat-grid"></div>
                     <h2>Unlockable hats</h2>
                     <div class="editor-grid unlockable-grid"></div>
+                    <h2>Gacha-exclusive hats</h2>
+                    <div class="editor-grid gacha-grid"></div>
                     <h2>Custom PFP</h1>
                     <div class="editor-grid custom-pfp-grid"></div>
                     <div class="crosspfp-row">
@@ -2770,7 +2772,7 @@ function bonziEditorPopup() {
     let allGachaItems = Object.entries(GACHA_HATS).flatMap(([tier, hats]) =>
         hats.map(name => ({ name, tier }))
     );
-    itemElements(".unlockable-grid", allGachaItems, "img/haticon", (hat) => {
+    itemElements(".gacha-grid", allGachaItems, "img/haticon", (hat) => {
         if (!gachaCollection.includes(hat.name)) return;
         cmd(`gachahat ${hat.name}`);
     }, {
@@ -2978,10 +2980,31 @@ gacha_button.onclick = () => {
 
 // ── Gacha hat data (used inside bonziEditorPopup) ────────────────────────────
 const GACHA_HATS = {
-    common:   ["benson", "idiot", "monocle"],
-    rare:     ["headphones3", "headphones4", "blueeyes", "megavolania", "injury", "smile"],
-    epic:     ["longhat", "shockedepic", "dumbepic", "sphagetti"],
-    mythical: ["glitchcrown", "diamondcrown"],
+    common:   [
+        {name: "benson", description: "a bunny from abgerny."},
+        {name: "idiot", description: "Use this hat if you're 10/10 idiot."},
+        {name: "monocle", description: "A steampunk lens."}, 
+        {name: "pot2", description: "A black pot."},
+    ],
+    rare:     [
+        {name: "headphones3", description: "transit meme again"}, 
+        {name: "headphones4", description: "i do not know why is that headphone made of plum."},
+        {name: "blueeyes", description: "You were born like that?"}, 
+        {name: "megavolania", description: "The most iconic undertale thing."}, 
+        {name: "injury", description: "Ow! Who did that?"}, 
+        {name: "smile", description: "You open fakely your mouth?"},
+    ],
+    epic:     [
+        {name: "longhat", description: "TOO LONG hat. Why you can handle it?"}, 
+        {name: "shockedepic", description: "OH WAIT WOOOOAH!"}, 
+        {name: "dumbepic", description: "dumb utubesyryou /J"}, 
+        {name: "sphagetti", description: "WHAT DID YOU PUT INTO MY HAIR?"},
+        {name: "blueepic", description: "blue epic."},
+    ],
+    mythical: [
+        {name: "glitchcrown", description: "The world is glitching."}, 
+        {name: "diamondcrown", description: "Too cool to be king."},
+    ],
 };
 
 const GACHA_BUTTONS = [
