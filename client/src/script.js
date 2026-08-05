@@ -2769,12 +2769,15 @@ function bonziEditorPopup() {
         tooltip: (hat) => `${hat}\nUnlocked in the 2026 April Fools event`,
     });
     let gachaCollection = JSON.parse(localStorage.getItem("gacha_collection") || "[]");
-    itemElements(".gacha-grid", BonziData.hats.gacha, "img/haticon", (hat) => {
+    let allGachaHats = Object.entries(BonziData.hats.gacha).flatMap(([tier, hats]) =>
+        hats.map(hat => ({ ...hat, tier }))
+    );
+    itemElements(".gacha-grid", allGachaHats, "img/haticon", (hat) => {
         if (!gachaCollection.includes(hat.name)) return;
         cmd(`gachahat ${hat.name}`);
     }, {
         isLocked: (name) => !gachaCollection.includes(name),
-        tooltip: (hat) => `${hat.name}\n${hat.description}\n`
+        tooltip: (hat) => `${hat.name}\n${hat.tier.charAt(0).toUpperCase() + hat.tier.slice(1)} — ${hat.description}\n`
             + (gachaCollection.includes(hat.name) ? "Won from hat rolls — click to equip" : "Win from hat rolls to unlock"),
     });
 
