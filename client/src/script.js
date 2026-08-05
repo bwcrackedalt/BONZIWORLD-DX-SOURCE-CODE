@@ -2749,7 +2749,7 @@ function bonziEditorPopup() {
             item.className = "editor-item";
             if (isLocked?.(hat.name)) item.classList.add("locked-item");
             item.setAttribute("data-tooltip", tooltip?.(hat) ?? hat);
-            item.setAttribute("data-hat", hat);
+            item.setAttribute("data-hat", hat.name ?? hat);
             item.onclick = () => {
                 callback(hat);
             };
@@ -2769,15 +2769,12 @@ function bonziEditorPopup() {
         tooltip: (hat) => `${hat}\nUnlocked in the 2026 April Fools event`,
     });
     let gachaCollection = JSON.parse(localStorage.getItem("gacha_collection") || "[]");
-    let allGachaItems = Object.entries(GACHA_HATS).flatMap(([tier, hats]) =>
-        hats.map(name => ({ name, tier }))
-    );
-    itemElements(".gacha-grid", allGachaItems, "img/haticon", (hat) => {
+    itemElements(".gacha-grid", BonziData.hats.gacha, "img/haticon", (hat) => {
         if (!gachaCollection.includes(hat.name)) return;
         cmd(`gachahat ${hat.name}`);
     }, {
         isLocked: (name) => !gachaCollection.includes(name),
-        tooltip: (hat) => `${hat.name}\n${hat.tier.toUpperCase()} hat\n`
+        tooltip: (hat) => `${hat.name}\n${hat.description}\n`
             + (gachaCollection.includes(hat.name) ? "Won from hat rolls — click to equip" : "Win from hat rolls to unlock"),
     });
 
@@ -2981,30 +2978,27 @@ gacha_button.onclick = () => {
 // ── Gacha hat data (used inside bonziEditorPopup) ────────────────────────────
 const GACHA_HATS = {
     common:   [
-        {name: "benson", description: "a bunny from abgerny."},
-        {name: "idiot", description: "Use this hat if you're 10/10 idiot."},
-        {name: "monocle", description: "A steampunk lens."}, 
-        {name: "pot2", description: "A black pot."},
+        "benson",
+        "idiot",
+        "monocle",
+        "pot2",
     ],
     rare:     [
-        {name: "headphones3", description: "transit meme again"}, 
-        {name: "headphones4", description: "i do not know why is that headphone made of plum."},
-        {name: "blueeyes", description: "You were born like that?"}, 
-        {name: "megavolania", description: "The most iconic undertale thing."}, 
-        {name: "injury", description: "Ow! Who did that?"}, 
-        {name: "smile", description: "You open fakely your mouth?"},
+        "headphones3",
+        "headphones4",
+        "blueeyes",
+        "megavolania", 
+        "injury",
+        "smile",
     ],
     epic:     [
-        {name: "longhat", description: "TOO LONG hat. Why you can handle it?"}, 
-        {name: "shockedepic", description: "OH WAIT WOOOOAH!"}, 
-        {name: "dumbepic", description: "dumb utubesyryou /J"}, 
-        {name: "sphagetti", description: "WHAT DID YOU PUT INTO MY HAIR?"},
-        {name: "blueepic", description: "blue epic."},
-    ],
-    mythical: [
-        {name: "glitchcrown", description: "The world is glitching."}, 
-        {name: "diamondcrown", description: "Too cool to be king."},
-    ],
+        "longhat",
+        "shockedepic",
+        "dumbepic",
+        "sphagetti",
+        "blueepic",
+        "emeraldchain"],
+    mythical: ["glitchcrown", "diamondcrown"],
 };
 
 const GACHA_BUTTONS = [
