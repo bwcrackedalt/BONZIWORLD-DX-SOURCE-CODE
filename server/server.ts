@@ -812,17 +812,39 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 this.public.pfp = url;
                 this.room.updateUser(this);
         },
-        "gachahat": function (input) {
-                let hat = input.trim();
+        "gachahat": async function (input) {
+                let hatList = input.trim().split(/\s+/).filter(Boolean);
+                if (!hatList.length) return;
                 let allGacha = [
                         ...settings.gachaHats.common,
                         ...settings.gachaHats.rare,
                         ...settings.gachaHats.epic,
                         ...settings.gachaHats.mythical,
                 ];
-                if (!allGacha.includes(hat)) return;
-                let base = this.public.color.split(" ")[0];
-                this.public.color = base + " " + hat;
+                let limit = 1;
+                let normalHats = settings.hats;
+                if (this.runlevel >= 1) {
+                        limit = 3;
+                        normalHats = [...normalHats, ...settings.blessedHats];
+                        if (this.runlevel >= 2) {
+                                normalHats = [...normalHats, "king", "headphones2", "scarf2", "redcrown", "diamondchain", "silverchain"];
+                                limit = 10;
+                        }
+                }
+                let f = "";
+                for (let hat of hatList) {
+                        if (normalHats.includes(hat)) {
+                                f += " " + hat;
+                        } else if (settings.vaultHats.includes(hat)) {
+                                let hasHat = await db.hasHat(this.cookie, hat);
+                                if (hasHat) f += " " + hat;
+                        } else if (allGacha.includes(hat)) {
+                                f += " " + hat;
+                        }
+                        if (f.replace(/[^ ]/g, "").length >= limit) break;
+                }
+                if (!f) return;
+                this.public.color = this.public.color.split(" ")[0] + f;
                 this.room.updateUser(this);
         },
         "masskick": function (text) {

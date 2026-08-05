@@ -80,8 +80,9 @@ window.BonziData = {
                                 {name: "longhat", description: "Very tall hat."},
                                 {name: "shockedepic", description: "WHAT"},
                                 {name: "dumbepic", description: "Dumb but epic."},
-                                {name: "blueepic", description: "Blue epic."},
+                                {name: "blueepic", description: "blue utubesyryou"},
                                 {name: "sphagetti", description: "Spaghetti on your hair."},
+                                {name: "emeraldchain", description: "Villagers will be proud."},
                         ],
                         mythical: [
                                 {name: "glitchcrown", description: "The glitched crown of legends."},

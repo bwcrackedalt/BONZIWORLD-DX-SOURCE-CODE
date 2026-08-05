@@ -2777,7 +2777,7 @@ function bonziEditorPopup() {
         cmd(`gachahat ${hat.name}`);
     }, {
         isLocked: (name) => !gachaCollection.includes(name),
-        tooltip: (hat) => `${hat.name}\n${hat.tier.charAt(0).toUpperCase() + hat.tier.slice(1)} — ${hat.description}\n`
+        tooltip: (hat) => `${hat.name}\n${hat.tier.charAt(0).toUpperCase() + hat.tier.slice(1)} \n${hat.description}\n`
             + (gachaCollection.includes(hat.name) ? "Won from hat rolls — click to equip" : "Win from hat rolls to unlock"),
     });
 
