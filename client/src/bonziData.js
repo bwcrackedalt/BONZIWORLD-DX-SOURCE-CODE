@@ -559,7 +559,7 @@ event_list_joke_end:        [        [
                 ],
                 [{type: "text", text: "Fuc"}],
                 [
-                        {type: "text", text: "In reality, FlashThemes was hacked by a trojan named \"BONZITROJAN\" and it was made by the bia."},
+                        {type: "text", text: "In reality, Sprunki community was hacked by a trojan named \"BONZITROJAN\" and it was made by the bia."},
                 ],
                 [{type: "text", text: "To make ChatGPT work, it needs water to cool down."}],
                 [
@@ -702,6 +702,14 @@ event_list_joke_end:        [        [
                 [{type: "text", text: "TheAwesomeNarPuffer go back to bwr"}],
                 [{type: "text", text: "radical pls unban my chrome"}],
                 [{type: "text", text: "hey guys! im bypassing this nuke filter in 3... 2... 1... ^^NUMBERCUCK!^^ haha!"}],
+                [{type: "text", text: "Hei Hoops Me awnt to sug Yu Dicc!"}],
+                [{type: "text", text: "plz tendo i need this"}],
+                [{type: "text", text: "i want to fuck nithi <3"}],
+                [{type: "text", text: "nithi pls fuck me ~~~~ <3 UWU"}],
+                [{type: "text", text: "i googled up \"nb porn\" and now i have eye cancer"}],
+                [{type: "text", text: "neathey pls FUCK~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!"}],
+                [{type: "text", text: "i always beg for bless as fucking usual"}],
+                
                         ],
 //=====================================================
         event_list_cp_open: [
@@ -770,6 +778,7 @@ event_list_joke_end:        [        [
                 {type: "text", text: "why the hell does it fucking exist? why the hell nyanko even made it?"},
                 {type: "text", text: "i hate it."},
             ],
+                /*
             [
                 {type: "text", text: "here is why i hate goanimate."},
                 {type: "text", text: "here is the text that I got from the deviantart post."},
@@ -823,7 +832,7 @@ event_list_joke_end:        [        [
                 {type: "text", text: "Well, the good news is that there is a rumor spreading that GoAnimate will shut down permanently next year."},
                 {type: "text", text: "And if you liked this rant, thank you, and consider favoriting it, or watch me for more drawings and journals."},
                 {type: "text", text: "Thank you all for your attention."},
-            ],
+            ],*/
             [
                 {type: "text", text: "404 was dreaming about..."},
                 {type: "text", text: "not about the mall or smth..."},

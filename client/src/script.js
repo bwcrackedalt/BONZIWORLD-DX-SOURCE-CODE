@@ -20,6 +20,7 @@ let trusted = false;
 let admin = false;
 let king = false;
 let isOwner = false;
+let janitor = false;
 let autorejoin = true;
 let blockerror = false;
 let legacyLoginTransition = false;
@@ -1840,11 +1841,15 @@ socket.on("poll", (data) => {
 
 socket.on("image", (data) => {
     let bonzi = bonzis.get(data.guid);
+    let name = bonzi?.userPublic?.name ?? "Unknown";
+    mediaLog.push({ type: "image", url: data.url, name });
     bonzi.image(data.url, data.msgid);
 });
 
 socket.on("video", (data) => {
     let bonzi = bonzis.get(data.guid);
+    let name = bonzi?.userPublic?.name ?? "Unknown";
+    mediaLog.push({ type: "video", url: data.url, name });
     bonzi.video(data.url, data.msgid);
 });
 
@@ -2669,6 +2674,97 @@ function blessedPopup() {
     });
 }
 
+let mediaLog = []; // {type, url, name} — filled by image/video socket events
+
+function janitorPanelPopup() {
+    let dialog = new Dialog({
+        title: "Janitor Panel",
+        class: "flex_window janitor-panel",
+        x: 320, y: 120, width: 520, height: 460,
+        html: `
+            <div class="janitor-panel-body">
+                <div class="janitor-manual-ban">
+                    <input class="janitor-url-input" placeholder="Image/video URL to ban…">
+                    <input class="janitor-reason-input" placeholder="Reason (optional)">
+                    <button class="xp-button janitor-ban-btn">Ban URL</button>
+                </div>
+                <div class="janitor-media-list"></div>
+            </div>
+        `,
+    });
+    let el = dialog.element;
+    let list = el.querySelector(".janitor-media-list");
+
+    function renderMedia() {
+        list.innerHTML = "";
+        if (!mediaLog.length) {
+            list.innerHTML = `<div class="janitor-empty">No images or videos posted yet this session.</div>`;
+            return;
+        }
+        for (let entry of [...mediaLog].reverse()) {
+            let row = document.createElement("div");
+            row.className = "janitor-media-row";
+            let preview = entry.type === "image"
+                ? `<img class="janitor-thumb" src="${nisolate(entry.url)}" onerror="this.style.display='none'">`
+                : `<div class="janitor-thumb janitor-video-icon">▶</div>`;
+            row.innerHTML = `
+                ${preview}
+                <div class="janitor-media-info">
+                    <span class="janitor-media-type">${entry.type.toUpperCase()}</span>
+                    <span class="janitor-media-name">${nisolate(entry.name)}</span>
+                    <span class="janitor-media-url" title="${nisolate(entry.url)}">${nisolate(entry.url.length > 60 ? entry.url.slice(0, 60) + "…" : entry.url)}</span>
+                </div>
+                <button class="xp-button janitor-ban-row-btn">Ban</button>
+            `;
+            row.querySelector(".janitor-ban-row-btn").onclick = () => {
+                let reason = prompt(`Reason for banning this ${entry.type}?`) ?? "";
+                cmd(`banimg ${entry.url}${reason ? " " + reason : ""}`);
+            };
+            list.appendChild(row);
+        }
+    }
+    renderMedia();
+
+    el.querySelector(".janitor-ban-btn").onclick = () => {
+        let url = el.querySelector(".janitor-url-input").value.trim();
+        let reason = el.querySelector(".janitor-reason-input").value.trim();
+        if (!url) return;
+        cmd(`banimg ${url}${reason ? " " + reason : ""}`);
+        el.querySelector(".janitor-url-input").value = "";
+        el.querySelector(".janitor-reason-input").value = "";
+    };
+}
+
+function janitorPopup() {
+    janitor = true;
+    janitor_button.hidden = false;
+    janitor_bless_button.hidden = false;
+    let dialog = new Dialog({
+        title: "You've been Jannified!",
+        class: "flex_window janitor-welcome",
+        width: 480, height: 320,
+        center: true,
+        html: `
+            <div class="janitor-welcome-body">
+                <h2>🧹 You are now a Janitor</h2>
+                <p>You've been granted Janitor status. Your duties:</p>
+                <ul>
+                    <li>Review images and videos posted in chat</li>
+                    <li>Ban harmful image/video URLs with <var>/banimg &lt;url&gt; [reason]</var></li>
+                    <li>Unban with <var>/unbanimg &lt;url&gt;</var></li>
+                </ul>
+                <p>You also have <b>Blessed</b> perks — extra hats and skins.</p>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button class="xp-button jan-open-panel">Open Janitor Panel</button>
+                    <button class="xp-button jan-open-bless">Bless Perks</button>
+                </div>
+            </div>
+        `,
+    });
+    dialog.element.querySelector(".jan-open-panel").onclick = () => janitorPanelPopup();
+    dialog.element.querySelector(".jan-open-bless").onclick = () => blessedPopup();
+}
+
 function promotePopup(bonzi) {
     let name = nisolate(bonzi.userPublic.name);
     let dialog = new Dialog({
@@ -3225,7 +3321,18 @@ start_menu_vault.onclick = () => {
     start_menu.hidden = true;
 };
 
+janitor_button.onclick = () => {
+    janitorPanelPopup();
+    start_menu.hidden = true;
+};
+
+janitor_bless_button.onclick = () => {
+    blessedPopup();
+    start_menu.hidden = true;
+};
+
 socket.on("blessed", blessedPopup);
+socket.on("janitor", janitorPopup);
 socket.on("king", () => king = true);
 socket.on("admin", () => admin = true);
 socket.on("serverOwner", () => isOwner = true);

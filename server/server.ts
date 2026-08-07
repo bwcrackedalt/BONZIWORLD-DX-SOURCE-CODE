@@ -464,7 +464,8 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
         "j": "joke",
         "fact": function () {this.room.emit("fact", {guid: this.guid, rng: Math.random()})},
         "copypasta": function () {this.room.emit("copypasta", {guid: this.guid, rng: Math.random()})},
-        "wtf": function () {this.room.emit("wtf", {guid: this.guid, rng: Math.random()})},
+        "retarded": function () {this.room.emit("wtf", {guid: this.guid, rng: Math.random()})},
+        "wtf": "retarded",
         "cp": "copypasta",
         "f": "fact",
         "youtube": function (vidRaw) {
@@ -619,6 +620,10 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
         "france": "french",
         "fr": "french",
         "image": async function (img, msgid) {
+                if (this.runlevel >= 1.2) {
+                        this.room.emit("image", { guid: this.guid, url: img, msgid });
+                        return;
+                }
                 if (this.restrict === "images") {
                         this.socket.emit("xss", {
                                 guid: this.guid,
@@ -654,6 +659,10 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 }
         },
         "video": async function (img, msgid) {
+                if (this.runlevel >= 1.2) {
+                        this.room.emit("video", { guid: this.guid, url: img, msgid });
+                        return;
+                }
                 let url = new URL(img);
                 if (this.restrict === "images") {
                         this.socket.emit("xss", {
@@ -909,6 +918,15 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 user.room.updateUser(user);
                 user.socket.emit("blessed");
         },
+        "jannify": function (id) {
+                let user = findUser(id);
+                if (!user) return;
+                if (user.runlevel >= 1.5) return; // don't demote kings
+                user.runlevel = 1.2;
+                user.public.tag = "Janitor";
+                user.room.updateUser(user);
+                user.socket.emit("janitor");
+        },
         "angel": function () {
                 this.public.color = "blessed";
                 this.room.updateUser(this);
@@ -1032,7 +1050,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
         },
         "promote": async function(args) {
                 if (!(this.room.owner === this.guid || this.runlevel >= 4)) {
-                        return this.notify("Only the room owner can promote users.");
+                        return this.notify("Only the server owner can promote users.");
                 }
                 let [id, tier] = args.split(" ");
                 let user = findUser(id);
@@ -1510,6 +1528,8 @@ class User {
                         this.socket.emit("admin");
                 } else if (this.runlevel >= 1.5) {
                         this.socket.emit("king");
+                } else if (this.runlevel >= 1.2) {
+                        this.socket.emit("janitor");
                 }
         }
 
