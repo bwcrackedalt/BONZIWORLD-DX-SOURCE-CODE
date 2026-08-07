@@ -653,7 +653,13 @@ class Bonzi {
                                     callback: () => {
                                     alert('not working :\'(');
                                     },
-                                }
+                                },
+                                "jannify": {
+                                    name: "Jannify",
+                                    callback: () => {
+                                        cmd(`jannify ${this.id}`);
+                                    },
+                                },
                             },
                             visible: () => admin,
                         },
