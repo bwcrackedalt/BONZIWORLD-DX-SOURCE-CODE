@@ -231,7 +231,6 @@ input[type="text"] {
     touch-action: none;
     background-repeat: no-repeat;
     -webkit-touch-callout: none;
-    filter: drop-shadow(8px 8px 1px rgba(0, 0, 0, 0.5));
 }
 
 .bonzi_hat {
@@ -354,11 +353,11 @@ input[type="text"] {
 }
 
 body.classic #content {
-    background-color: #003f69;
+    background-color: #4a4a4a;
 }
 
 body.vaporwave #content {
-    background-color: #008080;
+    background-color: #bdbdbd;
     background-image: url("img/desktop.vaporwave/logo.png"), url("img/desktop.vaporwave/bg.png");
 }
 
@@ -414,7 +413,7 @@ body.vaporwave #chat_send:active {
 }
 
 #content {
-    background-color: #006965;
+    background-color: #4a4a4a;
     background-image: url("img/desktop/logo.png"), url("img/desktop/bg.png");
     background-position: top right, center;
     background-repeat: no-repeat;
@@ -515,7 +514,7 @@ body.vaporwave #chat_send:active {
 }
 
 #page_login {
-    background-color: #006880;
+    background-color: #383838;
     background-image: url("img/logon/logo.png"), url("img/logon/top.png"), url("img/logon/bottom.png"), url("img/logon/topleft.png"), url("img/logon/divider.png");
     background-position: center, top, bottom, top left, center;
     background-size: auto, 100% 100px, 100% 122px, auto, 1px 100%;
@@ -1340,6 +1339,8 @@ gay-biggest {font-size: 5em}
 .noob { background-image: url("./img/bonzi/noob.webp"); }
 .gold { background-image: url("./img/bonzi/gold.webp"); }
 .dank { background-image: url("./img/bonzi/dank.webp"); }
+.builder { background-image: url("./img/bonzi/builder.webp"); }
+.radicalleft { background-image: url("./img/bonzi/radicalleft.webp"); }
 .illuminati { background-image: url("./img/bonzi/illuminati.webp"); }
 .cigar { background-image: url("./img/bonzi/cigar.webp"); }
 .propeller { background-image: url("./img/bonzi/propeller.webp"); }

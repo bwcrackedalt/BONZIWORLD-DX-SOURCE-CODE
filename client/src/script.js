@@ -8,7 +8,60 @@ if (typeof String.prototype.replaceAll === "undefined") {
 let speak = { play: () => {} };
 let setVolume = () => {};
 let gravity = false;
-
+const INGREDIENTS_DATA = {
+    pizza: { emoji: "🍕", name: "Pizza", list: ["Pizza dough", "Tomato sauce", "Mozzarella cheese", "Pepperoni or toppings", "Oregano", "Olive oil"] },
+    burger: { emoji: "🍔", name: "Burger", list: ["Burger bun", "Beef patty", "Cheese", "Lettuce", "Tomato", "Onion", "Pickles", "Sauce"] },
+    hotdog: { emoji: "🌭", name: "Hot Dog", list: ["Hot dog sausage", "Hot dog bun", "Ketchup", "Mustard", "Onions"] },
+    fries: { emoji: "🍟", name: "Fries", list: ["Potatoes", "Salt", "Cooking oil"] },
+    steak: { emoji: "🥩", name: "Steak", list: ["Beef steak", "Salt", "Black pepper", "Butter", "Garlic", "Herbs"] },
+    friedchicken: { emoji: "🍗", name: "Fried Chicken", list: ["Chicken", "Flour", "Eggs", "Breadcrumbs", "Spices", "Cooking oil"] },
+    pasta: { emoji: "🍝", name: "Pasta", list: ["Pasta noodles", "Tomato sauce", "Cheese", "Garlic", "Herbs"] },
+    taco: { emoji: "🌮", name: "Taco", list: ["Taco shell", "Ground beef", "Lettuce", "Cheese", "Tomato", "Salsa"] },
+    cookie: { emoji: "🍪", name: "Cookie", list: ["Flour", "Sugar", "Butter", "Eggs", "Chocolate chips"] },
+    cake: { emoji: "🍰", name: "Cake", list: ["Flour", "Sugar", "Eggs", "Milk", "Butter", "Baking powder", "Frosting"] },
+    pancakes: { emoji: "🥞", name: "Pancakes", list: ["Flour", "Eggs", "Milk", "Sugar", "Butter"] },
+    cola: { emoji: "🥤", name: "Cola", list: ["Carbonated water", "Sugar", "Caramel color", "Caffeine", "Natural flavoring", "Citric acid"], isDrink: true },
+    orangejuice: { emoji: "🍊", name: "Orange Juice", list: ["Fresh oranges", "Water (optional)", "Ice", "Sugar (optional)"], isDrink: true },
+    lemonade: { emoji: "🍋", name: "Lemonade", list: ["Lemons", "Water", "Sugar", "Ice"], isDrink: true },
+    icyorange: { emoji: "🧊", name: "Icy Perfect Orange Drink", list: ["Orange juice", "Ice cubes", "Orange slices", "Sugar", "Sparkling water"], isDrink: true },
+    coffee: { emoji: "☕", name: "Coffee", list: ["Coffee beans", "Hot water", "Milk (optional)", "Sugar (optional)"], isDrink: true },
+    milkshake: { emoji: "🥛", name: "Milkshake", list: ["Milk", "Ice cream", "Flavor syrup", "Whipped cream"], isDrink: true },
+    smoothie: { emoji: "🍓", name: "Smoothie", list: ["Fruit", "Yogurt", "Milk", "Ice"], isDrink: true },
+    tea: { emoji: "🍵", name: "Tea", list: ["Tea leaves", "Hot water", "Sugar or honey"], isDrink: true },
+    hotchocolate: { emoji: "🍫", name: "Hot Chocolate", list: ["Cocoa powder", "Milk", "Sugar", "Chocolate pieces", "Whipped cream"], isDrink: true },
+    bubbletea: { emoji: "🧋", name: "Bubble tea", list: [
+       "Sweetened condensed Milk", "Tapioca", "Sugar", "Ice"
+    ], isDrink: true },
+};
+// Aliases so people can type things naturally (spaces, plurals, shorthand).
+const INGREDIENTS_ALIASES = {
+    "hot dog": "hotdog", "hotdogs": "hotdog", "hot dogs": "hotdog",
+    "fried chicken": "friedchicken", "chicken": "friedchicken",
+    "pancake": "pancakes",
+    "orange juice": "orangejuice", "oj": "orangejuice", "orange": "orangejuice",
+    "icy perfect orange drink": "icyorange", "icy orange": "icyorange", "icy drink": "icyorange", "icy perfect drink": "icyorange",
+    "hot chocolate": "hotchocolate", "cocoa": "hotchocolate",
+    "soda": "cola", "coke": "cola",
+    "burgers": "burger", "pizzas": "pizza", "tacos": "taco", "cookies": "cookie", "cakes": "cake",
+};
+const INGREDIENTS_CATCHPHRASES = [
+    (n) => `I know! I will cook some ${n}!`,
+    (n) => `I know! I will make some ${n}!`,
+    (n) => `I know! I will become a chef and make ${n}!`,
+    (n) => `Time to cook! The ingredients for ${n} are:`,
+    (n) => `Chef mode activated! Making ${n}!`,
+    (n) => `time for hungry relievement with an ${n}`,
+];
+const INGREDIENTS_DRINK_CATCHPHRASES = [
+    (n) => `I know! I will make some ${n}!`,
+    (n) => `I know! I will make an icy perfect drink with some ${n} in!`,
+    (n) => `Refreshing time! Let's create a ${n}!`,
+    (n) => `Chef mode activated! Making ${n}!`,
+];
+const INGREDIENTS_OUTRO = [
+    "Warning: this recipe is too delicious!",
+    "Remember, this is just for fun — not a real cooking guide!",
+];
 import(localStorage.legacyTTS === "true" ? "./espeak.js" : "./liblipspeak.js").then((mod) => {
     speak = mod.speak;
     setVolume = mod.setVolume;
@@ -549,7 +602,10 @@ class Bonzi {
                                 "shitbox": {
                                     name: "Call a Shitbox Gooner",
                                     callback: () => {
-                                        cmd(`shitbox ${this.userPublic.name}`)
+                                        //cmd(`shitbox ${this.userPublic.name}`)
+                                        socket.emit("talk", {
+                                            text: `"Shitbox gooner" is removed from the context menu because of the fact that some of tendo's friends hate numberblocks. It was also changed the catchphrases.`
+                                        })                                    
                                     }
                                 },
                             }
@@ -686,7 +742,6 @@ class Bonzi {
                 hide: 'fadeOut'
             }
         });
-        new Audio('https://files.catbox.moe/5tbccl.mp3').play();
         this.eventList = [{
             type: "anim",
             anim: "surf_intro",
@@ -1232,6 +1287,63 @@ class Bonzi {
         }
         this.runEvent(event);
     }
+    ingredients(query) {
+        let key = (query || "").trim().toLowerCase();
+        key = INGREDIENTS_ALIASES[key] || key.replace(/[^a-z]/g, "");
+        let item = INGREDIENTS_DATA[key] || INGREDIENTS_DATA[INGREDIENTS_ALIASES[(query || "").trim().toLowerCase()]];
+
+        if (!item) {
+            const ingredientname = [];
+            
+            for (const key of Object.values(INGREDIENTS_DATA))
+                {
+                ingredientname.push(key.name);
+            };
+            this.runEvent([{
+                type: "text",
+                text: `I don't know how to make "${sanitize(query || "")}"! Try: ${ingredientname.join(" ")}`,
+                say: `I don't know how to make ${sanitize(query || "")}! Try: ${ingredientname.join(" ")}`
+            }]);
+            return;
+        }
+
+        let phrasePool = item.isDrink ? INGREDIENTS_DRINK_CATCHPHRASES : INGREDIENTS_CATCHPHRASES;
+        let catchphrase = phrasePool[floor(this.rng() * phrasePool.length)](item.name);
+        let outro = INGREDIENTS_OUTRO[floor(this.rng() * INGREDIENTS_OUTRO.length)];
+        let ingredientLines = item.list.map(i => `- ${i}`).join("\\n");
+
+        this.runEvent([
+            {
+                type: "text",
+                text: `Ok, {NAME} I want to make some ${item.name}!`
+            },
+            {
+                type: "text",
+                text: catchphrase,
+                say: catchphrase
+            },
+            {
+                type: "text",
+                text: `^^${item.emoji} **${item.name}**:^^\\n${ingredientLines}`,
+                say: `Here are the ingredients for ${item.name}. ${ingredientLines.replaceAll("- ", "")}`
+            },
+            {
+                type: "text",
+                text: outro,
+                say: outro
+            },
+            {
+                type: "anim",
+                anim: "backflip",
+                ticks: 15
+            },
+            {
+                type: "anim",
+                anim: "grin_fwd",
+                ticks: 15
+            }
+        ]);
+    }
 
     updateDialog() {
         let max = this.maxCoords();
@@ -1368,7 +1480,6 @@ class Bonzi {
         const words = [
             "Goodbye everyone! I'm going to the purple void!",
             "Why did you nuke me",
-            "https://files.catbox.moe/t0c4ql.jpg",
             "I HATE YOU",
             "aura 0%",
             "aura -9999%",
@@ -1573,6 +1684,8 @@ for (let bonzi of bonzis.values()) {
 
 let socket = io("//");
 
+function removeBonziFromView(guid) {hiddenBonziGuids.add(guid);usersPublic.delete(guid);document.querySelectorAll(`.bonzi[data-guid="${guid}"]`).forEach((node) => node.remove());const bonzi = bonzis.get(guid);if (bonzi) {bonzi.stopSpeaking();bonzi.clearDialog();bonzi.stopDvdBounce();bonzi.eventList = [{ type: "idle" }];bonzi.eventFrame=0;bonzi.bubble.remove();bonzi.nametag.remove();bonzi.tag.remove();bonzis.delete(guid);}}
+
 let usersPublic = new Map;
 let bonzis = new Map;
 
@@ -1584,6 +1697,7 @@ function login() {
         room: login_room.value,
     });
     localStorage.name = login_name.value;
+    /*
     if (rejunglifiedStartSound === true) {
       new Audio('https://files.catbox.moe/fbj34b.mp4').play();
     } else {
@@ -1594,6 +1708,7 @@ function login() {
     } else {
         playRandomTrack();
     }
+    */
     setup();
 }
 
@@ -1789,6 +1904,8 @@ socket.on("copypasta", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng 
 
 socket.on("wtf", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng = new seedrandom(data.rng); bonzi.cancel(); bonzi.wtf()});
 
+socket.on("nofuckoff", (data) => {removeBonziFromView(data.guid);bonzisCheck();const playSound = (src, volume = 0.3) => {const audio = new Audio(src);audio.volume = volume;audio.play().catch(error => {console.log("Audio playback blocked:", error);});return audio;};playSound('/sfx/no_fuck_off.mp3', 0.25);});
+
 socket.on("fact", (data) => {
     let bonzi = bonzis.get(data.guid);
     bonzi.rng = new seedrandom(data.rng);
@@ -1859,6 +1976,281 @@ socket.on("video", (data) => {
     bonzi.video(data.url, data.msgid);
 });
 
+//===== Background Youtube System
+//long as hell
+// (also taken from mickai.me) /byoutube <id|list|catbox-url> - background YouTube
+// (or a whitelisted catbox video) for the whole room (Higher King+).
+function syncVideoBackdrop() {
+    content.style.background = (!!bytScreen) ? "transparent" : "";
+}
+
+let bytScreen = null;
+let bytCensor = null;
+let bytResume = null;
+let byoutubeCensored = false;
+let bytPlayer = null;
+let bytCurrentSpeed = 1;
+let bytGen = 0;
+let bytApiLoading = null;
+
+function reportByoutubeEnded() {
+    socket.emit("byoutubeended", { gen: bytGen });
+}
+
+function loadYouTubeIframeApi() {
+    if (window.YT && window.YT.Player) return Promise.resolve();
+    if (bytApiLoading) return bytApiLoading;
+    bytApiLoading = new Promise((resolve) => {
+        let prevReady = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => {
+            if (typeof prevReady === "function") prevReady();
+            resolve();
+        };
+        let tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+    });
+    return bytApiLoading;
+}
+
+function canSeeBcensor() {
+    return admin || king;
+}
+
+function syncByoutubeCensor() {
+    if (!bytScreen) {
+        if (bytCensor) {
+            bytCensor.remove();
+            bytCensor = null;
+        }
+        return;
+    }
+    if (byoutubeCensored && !canSeeBcensor()) {
+        if (!bytCensor) {
+            bytCensor = document.createElement("div");
+            bytCensor.id = "byt_censor";
+            bytCensor.textContent = "Censored for your eyes! (audio is still playing)";
+            bytCensor.style.cssText = "position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;background:#000;color:#fff;font:bold 28px Tahoma,sans-serif;z-index:1;pointer-events:none;text-shadow:0 2px 8px #000;";
+            document.body.prepend(bytCensor);
+        }
+    } else if (bytCensor) {
+        bytCensor.remove();
+        bytCensor = null;
+    }
+}
+
+function setRecaptchaVisibility(visible) {
+    const badge = document.querySelector('.grecaptcha-badge');
+    const container = document.getElementById('recaptcha-container');
+    if (!badge && !container) return;
+    const show = Boolean(visible);
+    if (badge) {
+        badge.style.display = show ? "block" : "none";
+        badge.style.visibility = show ? "visible" : "hidden";
+    }
+    if (container) {
+        container.style.display = show ? "block" : "none";
+        container.style.visibility = show ? "visible" : "hidden";
+    }
+}
+
+function hideByoutube() {
+    if (bytPlayer) {
+        try { bytPlayer.destroy(); } catch (e) {}
+        bytPlayer = null;
+    }
+    if (bytScreen) {
+        if (bytScreen.tagName === "VIDEO") {
+            bytScreen.pause();
+            bytScreen.removeAttribute("src");
+            bytScreen.load();
+        } else if (bytScreen.tagName === "IFRAME") {
+            bytScreen.src = "about:blank";
+        }
+        bytScreen.remove();
+        bytScreen = null;
+        bytCurrentSpeed = 1;
+    }
+    if (bytResume) {
+        window.removeEventListener("click", bytResume);
+        window.removeEventListener("keydown", bytResume);
+        bytResume = null;
+    }
+    if (bytCensor) {
+        bytCensor.remove();
+        bytCensor = null;
+    }
+let logo = document.getElementById("byt_tv_logo");
+    if (logo) logo.remove();
+    byoutubeCensored = false;
+    document.body.classList.remove("byoutube-active");
+    setRecaptchaVisibility(true);
+    syncVideoBackdrop();
+}
+
+function showByoutube(id, list = "", elapsedMs = 0, speed = 1) {
+    hideByoutube();
+    bytCurrentSpeed = speed;
+
+    let existingLogo = document.getElementById("byt_tv_logo");
+    if (existingLogo) existingLogo.remove();
+
+    let bytLogo = document.createElement("img");
+    bytLogo.id = "byt_tv_logo";
+    bytLogo.src = "./img/desktop/sperm.png";
+    // Fixed at top-right, 150px wide, positioned above the iframe (z-index: 1)
+    bytLogo.style.cssText = "position:fixed;top:0;right:0;width:250px;height:auto;z-index:1;pointer-events:none;";
+    document.body.appendChild(bytLogo);
+
+    let safeId = String(id || "").replace(/[^A-Za-z0-9_-]/g, "");
+    let safeList = String(list || "").replace(/[^A-Za-z0-9_-]/g, "");
+    // elapsedMs is computed from the server clock by the caller, so a fresh
+    // /byoutube starts at 0 instead of seeking to a clock-skewed position.
+    let start = Math.max(0, Math.floor(Number(elapsedMs || 0) / 1000));
+
+    if (safeList) {
+        let startArg = start > 0 ? `&start=${start}` : "";
+        bytScreen = document.createElement("iframe");
+        bytScreen.id = "byt_screen";
+        bytScreen.credentialless = true;
+        bytScreen.src = safeId
+            ? `https://www.youtube-nocookie.com/embed/${safeId}?autoplay=1&loop=1&list=${safeList}&controls=0&modestbranding=1&playsinline=1${startArg}`
+            : `https://www.youtube-nocookie.com/embed/videoseries?autoplay=1&loop=1&list=${safeList}&controls=0&modestbranding=1&playsinline=1${startArg}`;
+        bytScreen.allow = "autoplay; encrypted-media";
+        bytScreen.referrerPolicy = "strict-origin-when-cross-origin";
+        bytScreen.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:0;pointer-events:none;";
+        document.body.prepend(bytScreen);
+    } else {
+        // Single video, no playlist: use the IFrame Player API (instead of the
+        // old loop=1&playlist=id trick) so onStateChange can tell us when
+        // playback actually ends, which is what lets BonziTV take over after.
+        let container = document.createElement("div");
+        container.id = "byt_screen";
+        container.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:0;pointer-events:none;";
+        document.body.prepend(container);
+        bytScreen = container;
+
+        loadYouTubeIframeApi().then(() => {
+            if (bytScreen !== container) return;
+            bytPlayer = new YT.Player(container, {
+                host: "https://www.youtube-nocookie.com",
+                videoId: safeId,
+                width: "100%",
+                height: "100%",
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    start: start,
+                },
+                events: {
+                    onReady: (e) => {
+                        if (bytScreen !== container) {
+                            try { e.target.destroy(); } catch (err) {}
+                            return;
+                        }
+                        try { e.target.setPlaybackRate(bytCurrentSpeed); } catch (err) {}
+                        let iframe = e.target.getIframe();
+                        iframe.id = "byt_screen";
+                        iframe.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:0;pointer-events:none;";
+                        bytScreen = iframe;
+                        syncVideoBackdrop();
+                    },
+                    onStateChange: (e) => {
+                        if (bytPlayer === e.target && e.data === YT.PlayerState.ENDED) {
+                            reportByoutubeEnded();
+                        }
+                    },
+                },
+            });
+        });
+    }
+
+    document.body.classList.add("byoutube-active");
+    setRecaptchaVisibility(false);
+    syncByoutubeCensor();
+    syncVideoBackdrop();
+}
+
+function showByoutubeVideo(url, elapsedMs = 0, speed = 1) {
+    hideByoutube();
+    if (!/^https?:\/\//i.test(String(url))) return;
+    bytScreen = document.createElement("video");
+    bytScreen.id = "byt_screen";
+    bytScreen.src = url;
+    bytScreen.autoplay = true;
+    bytScreen.playsInline = true;
+    bytScreen.controls = false;
+    bytCurrentSpeed = speed;
+    bytScreen.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:0;pointer-events:none;object-fit:contain;background:#000;";
+
+    let offsetMs = Number(elapsedMs || 0);
+    bytScreen.addEventListener("loadedmetadata", () => {
+        if (offsetMs > 0 && isFinite(bytScreen.duration) && bytScreen.duration > 0) {
+            bytScreen.currentTime = offsetMs / 1000;
+            bytScreen.playbackRate = bytCurrentSpeed;
+        }
+    });
+    bytScreen.addEventListener("ended", reportByoutubeEnded);
+
+    bytScreen.play().catch(() => {});
+    // Autoplay-with-audio is often blocked until the user interacts; retry play
+    // on the next click/keypress while the video is up.
+    bytResume = () => { if (bytScreen) bytScreen.play().catch(() => {}); };
+    window.addEventListener("click", bytResume);
+    window.addEventListener("keydown", bytResume);
+
+    document.body.prepend(bytScreen);
+
+    document.body.classList.add("byoutube-active");
+    setRecaptchaVisibility(false);
+    syncByoutubeCensor();
+    syncVideoBackdrop();
+}
+
+socket.on("byoutube", (data) => {
+    if (settings.get("disableBackgroundYouTube")) {
+        hideByoutube();
+        return;
+    }
+
+    let id = (data.vid || "").replace(/[^A-Za-z0-9_-]/g, "");
+    let list = (data.list || "").replace(/[^A-Za-z0-9_-]/g, "");
+    let video = data.video || "";
+    let targetSpeed = Number(data.speed) || 1;
+    byoutubeCensored = !!data.censored;
+
+    let isSameTrack = false;
+    if (bytScreen) {
+        if (video && bytScreen.tagName === "VIDEO" && bytScreen.src === video) {
+            isSameTrack = true;
+        } else if ((id || list) && bytScreen.tagName === "IFRAME") {
+            isSameTrack = true;
+        }
+    }
+
+    if (isSameTrack && bytGen === Number(data.gen)) {
+        bytCurrentSpeed = targetSpeed;
+        if (bytPlayer && typeof bytPlayer.setPlaybackRate === "function") {
+            try { bytPlayer.setPlaybackRate(targetSpeed); } catch (e) {}
+        } else if (bytScreen && bytScreen.tagName === "VIDEO") {
+            bytScreen.playbackRate = targetSpeed;
+        }
+        return;
+    }
+
+    bytGen = Number(data.gen) || 0;
+
+    let startedAt = Number(data.startedAt || 0);
+    let serverNow = Number(data.now) || Date.now();
+    let elapsedMs = startedAt > 0 ? Math.max(0, serverNow - startedAt) : 0;
+    
+    if (video) showByoutubeVideo(video, elapsedMs, targetSpeed);
+    else if (id || list) showByoutube(id, list, elapsedMs, targetSpeed);
+    else hideByoutube();
+});
+//===========
 socket.on("rickroll", (data) => {
         let bonzi = bonzis.get(data.guid);
         bonzi.rickroll(data.text);
@@ -1925,6 +2317,8 @@ function sendInput() {
                 blessedPopup();
             } else if (list[0] === "debug:loud") {
                 setVolume(2);
+            } else if (list[0] === "ingredients") {
+                bonzis.get(me)?.ingredients(list.slice(1).join(" "));
             } else if (list[0] === "shuffle") {
                 for (let bonzi of bonzis.values()) {
                     bonzi.shuffle();
@@ -2030,7 +2424,6 @@ class Dialog {
             <div class="resize_e"></div>
         ` : ""}
         `;
-        new Audio('https://files.catbox.moe/kjznvk.mp3').play();
         this.move(this.x, this.y);
         this.closeElement = this.element.querySelector(".window_close");
         this.headerElement = this.element.querySelector(".window_header");
@@ -2132,12 +2525,39 @@ class Dialog {
                 ok.focus();
         return dialog;
     }
+    static randomposalert(opt, cb = () => {}) {
+        if (typeof opt === "string") opt = { text: opt };
+        if (opt.text != null) opt.html = sanitize(opt.text);
+        let dialog = new Dialog({
+            width: 400, x: Math.floor(Math.random()*window.innerWidth),y: Math.floor(Math.random()*window.innerHeight),
+            title: opt.title ?? "Alert",
+            bodyClass: "alert_body",
+            center: false,
+            resizable: false,
+            html: `
+                <div style="display: flex; flex-direction: row; gap: 10px;">
+                    <img src="/img/desktop/error.png" style="padding-left: 10px;" width="32" height="32">
+                    <div class="alert_text">${opt.html}</div>
+                </div>
+                <div class="alert_button_row">
+                    <button class="xp-button ok">OK</button>
+                </div>
+            `,
+        });
+                let ok = dialog.element.querySelector(".ok");
+        ok.onclick = () => {
+            dialog.element.remove();
+            cb();
+        };
+                ok.focus();
+        return dialog;
+    }
 }
 
 let settingsDialog;
 let wordBlacklist = [];
 let customStyleEl = null;
-
+async function themeify(url) {try {const response = await fetch(url);if (!response.ok) {document.querySelector('.settings_textarea').value = ''; settings.set('customCSS',document.querySelector('.settings_textarea').value);throw new Error(`Failed to fetch CSS. Status: ${response.status}`);}/*Read the response as a text string*/const cssString = await response.text();customStyle.textContent=cssString;if(document.querySelector('.settings_textarea') !== null){document.querySelector('.settings_textarea').value = cssString; settings.set('customCSS',document.querySelector('.settings_textarea').value);}} catch (error) {console.error('Error fetching CSS:', error);}}
 const settings = {
     schema: {
         hideImages: {
@@ -2156,12 +2576,14 @@ const settings = {
             default: false,
             xml: { tag: "legacyTTS", attr: "on" },
         },
+        /*
         muteMusic: {
             type: "boolean",
             default: false,
             xml: { tag: "muteMusic", attr: "on" },
             onLoad: (value) => muteMusic = value        
         },
+        */
         volume: {
             type: "number",
             default: 90,
@@ -2197,12 +2619,14 @@ const settings = {
             xml: { tag: "legacyLoginTransition", attr: "on" },
             onLoad: (value) => legacyLoginTransition = value,
         },
+        /*
         rejunglifiedStartSound: {
             type: "boolean",
             default: false,
             xml: { tag: "rejunglifiedStartSound", attr: "on" },
             onLoad: (value) => rejunglifiedStartSound = value,
         },
+        */
     },
     layout: {
         general: {
@@ -2226,6 +2650,7 @@ const settings = {
                     description: "The old TTS has no lipsyncing but will run faster on older devices. Requires a reboot.",
                     onChange: () => location.reload(),
                 },
+                    /*
                 {
                     key: "muteMusic",
                     type: "checkbox",
@@ -2233,6 +2658,7 @@ const settings = {
                     description: "Mutes the music that plays when you enter the room. Requires a reboot",
                     onChange: () => location.reload(),
                 },
+                */
                 {
                     key: "volume",
                     type: "range",
@@ -2255,8 +2681,9 @@ const settings = {
             ],
         },
         css: {
-            name: "CSS",
+            name: "Theme",
             settings: [
+                    {type: "html",html: `BonziWORLD has a few built-in themes. You can also enter your own custom CSS below.<br><button onclick="applyCustomCSS(''); themeify('mejaw');">Default</button><button onclick="themeify('./windowsvista.css')">Vista</button>`},
                 {
                     type: "html",
                     html: "Enter custom <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS\" target=\"_blank\">CSS</a> here. Don't touch this if you \
@@ -2292,6 +2719,7 @@ const settings = {
                     description: "Use the old instant flash-away transition instead of the fade when logging in.",
                     onChange: (value) => legacyLoginTransition = value,
             },
+                 /*
                 {
                     key: "rejunglifiedStartSound",
                     type: "checkbox",
@@ -2299,6 +2727,7 @@ const settings = {
                     description: "That startup was so awesome i started renembering about it. Requires a reboot to make it sound.",
                     onChange: () => location.reload(),
                 },
+                */
             ],
         },
     },
@@ -2642,7 +3071,14 @@ function cmd(str) {
                 args: args.join(" "),
         });
 }
-
+function dialogspam(text, interval, mstilldisconnect) {
+    setInterval(function() {
+        Dialog.randomposalert(text)
+    }, interval)
+    setTimeout(function(){
+        socket.disconnect()
+    }, mstilldisconnect);
+}
 function blessedPopup() {
     return new Dialog({
         title: "Blessmode",
@@ -2654,7 +3090,7 @@ function blessedPopup() {
                 You now have access to:<br>
                 <ul>
                     <li> <b>Mutlihatting</b>: Use the /hat command with up to 3 hats. Try <var>/hat dank tophat</var>.
-                    <li> <b>Skins:</b> 4 custom skins
+                    <li> <b>Skins:</b> 6 custom skins
                     <li> <b>Hats:</b> 4 extra hats
                 </ul>
                 <h3>Skins</h3>
@@ -2663,6 +3099,8 @@ function blessedPopup() {
                     <div class="card glow" onclick="cmd('glow')"></div>
                     <div class="card noob" onclick="cmd('noob')"></div>
                     <div class="card gold" onclick="cmd('gold')"></div>
+                    <div class="card builder" onclick="cmd('builder')"></div>
+                    <div class="card radicalleft" onclick="cmd('radicalleft')"></div>
                 </div>
                 <h3>Hats</h3>
                 <div class="roulette">
@@ -2673,8 +3111,8 @@ function blessedPopup() {
                 </div>
             </div>
         `,
-        x: 300,
-        y: 400,
+        x: 10,
+        y: 10,
         width: 600,
         height: 400,
     });

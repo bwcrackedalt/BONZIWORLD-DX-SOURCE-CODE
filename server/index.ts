@@ -5,7 +5,7 @@ import sharp from "sharp";
 import { cookieParser, guidGen } from "./utils.ts";
 import { beat } from "./server.ts";
 import { app, io, server } from "./app.ts";
-import settings from "./settings.json" with { type: "json" };
+import settings from "./settings.json";
 
 export { app, io };
 
@@ -26,12 +26,6 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.use((_req, res, next) => {
-	res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-	res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
-	next();
-});
-
 app.use(express.static('../client/src'));
 
 app.get("/discord_pfp/:layers", async (req, res) => {
@@ -42,7 +36,7 @@ app.get("/discord_pfp/:layers", async (req, res) => {
 			return res.status(404).send("too much");
 		}
 
-		let imagePaths = names.map(n => path.join("../client/src/img/pfp", `${n}.webp`));
+		let imagePaths = names.map(n => path.join("../src/www/img/pfp", `${n}.webp`));
 
 		for (let p of imagePaths) {
 			if (!fs.existsSync(p)) {
@@ -70,6 +64,14 @@ app.get("/discord_pfp/:layers", async (req, res) => {
 
 export let port = Number(process.env.PORT || settings.port);
 
+app.use((_req, res, next) => {
+	res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+	res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
+	next();
+});
+
+app.use(express.static("../client/src"));
+
 beat();
 
-server.listen(port, "0.0.0.0", () => console.log("hi"));
+server.listen(port, "127.0.0.1", () => console.log("hi"));

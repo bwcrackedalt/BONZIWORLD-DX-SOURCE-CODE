@@ -245,6 +245,10 @@
             "unlocks": "silverfedora"
         },
         {
+            "matches": "^get\\s*glitch\\s*fast$",
+            "response": {"tag": "i1", "text": "Your password is incorrect."}
+        },
+        {
             "tag": "d1",
             "response": { "tag": "d2", "text": "..." }
         },

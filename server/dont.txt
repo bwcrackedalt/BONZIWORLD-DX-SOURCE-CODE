@@ -1,24 +1,18 @@
 import * as Utils from "./utils.ts";
 import { normalizeForFilter } from "./utils.ts";
 import { io, app } from "./app.ts";
-import settings from "./settings.json";
-import vaultCodes from "./vault.json";
+import settings from "./settings.json"; { "json" };
+import vaultCodes from "./vault.json"; { "json" };
 import express from "express";
 import * as db from "./database.ts";
 import type { Socket } from "socket.io";
 import type { IncomingHttpHeaders } from "node:http";
 import z from "zod";
 
-try {
-        process.loadEnvFile(".env");
-} catch (error) {
-        if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-                throw error;
-        }
-}
+process.loadEnvFile(".env");
 
-let higherKings = (process.env.HIGHER_KINGS ?? "").split(",").filter(Boolean);
-let lowerKings = (process.env.LOWER_KINGS ?? "").split(",").filter(Boolean);
+let higherKings = process.env.HIGHER_KINGS!.split(",");
+let lowerKings = process.env.LOWER_KINGS!.split(",");
 
 function socketIp(socket: Socket): string {
         if (process.env.USE_X_REAL_IP !== "false") {

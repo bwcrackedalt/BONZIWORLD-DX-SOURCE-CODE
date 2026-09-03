@@ -1,5 +1,5 @@
-modules = ["nodejs-20", "postgresql-16", "python-3.11"]
-run = 'cd ./server && npm install tsx && npx tsx index.ts'
+modules = ["nodejs-20", "python-base-3.13"]
+run = "cd server && npx tsx index.ts"
 [nix]
 channel = "stable-25_05"
 
@@ -7,42 +7,5 @@ channel = "stable-25_05"
 expertMode = true
 
 [[ports]]
-localPort = 5000
+localPort = 3000
 externalPort = 80
-
-[workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Start application"
-
-[[workflows.workflow]]
-name = "Start application"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "cd server && npx tsx index.ts"
-waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
-
-[[workflows.workflow]]
-name = "Stop"
-mode = "sequential"
-author = 54246837
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "pkill node"
-
-[deployment]
-deploymentTarget = "cloudrun"
-run = ["sh", "-c", "cd ./server && npm install tsx && npx tsx index.ts"]
