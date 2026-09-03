@@ -1,13 +1,19 @@
 import * as Utils from "./utils.ts";
 import { normalizeForFilter } from "./utils.ts";
 import { io, app } from "./app.ts";
-import settings from "./settings.json";
-import vaultCodes from "./vault.json";
+import { readFileSync } from "node:fs";
 import express from "express";
 import * as db from "./database.ts";
 import type { Socket } from "socket.io";
 import type { IncomingHttpHeaders } from "node:http";
 import z from "zod";
+
+const settings = JSON.parse(
+	readFileSync(new URL("./settings.json", import.meta.url), "utf8"),
+);
+const vaultCodes = JSON.parse(
+	readFileSync(new URL("./vault.json", import.meta.url), "utf8"),
+);
 
 try {
         process.loadEnvFile(".env");
@@ -88,7 +94,7 @@ type filter = {
 };
 
 let filters: filter[] = [];
-for (const [regex, replacement] of Object.entries(settings.filters)) {
+for (const [regex, replacement] of Object.entries(settings.filters as Record<string, string>)) {
         filters.push({
                 regex: new RegExp(regex, "gv"),
                 replacement,

@@ -5,13 +5,16 @@ import sharp from "sharp";
 import { cookieParser, guidGen } from "./utils.ts";
 import { beat } from "./server.ts";
 import { app, io, server } from "./app.ts";
-import settings from "./settings.json";
+
+const settings = JSON.parse(
+	fs.readFileSync(new URL("./settings.json", import.meta.url), "utf8"),
+);
 
 export { app, io };
 
 app.use(cookieParser);
 
-app.use("/*.rss", (_req, res, next) => {
+app.use(/\/.*\.rss$/, (_req, res, next) => {
 	res.setHeader("Content-Type", "application/xml; charset=UTF-8");
 	next();
 });
