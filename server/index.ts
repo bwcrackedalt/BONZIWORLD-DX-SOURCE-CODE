@@ -77,4 +77,4 @@ app.use(express.static("../client/src"));
 
 beat();
 
-server.listen(port, "127.0.0.1", () => console.log("hi"));
+server.listen(port, "0.0.0.0", () => console.log(`Server listening on port ${port}`));

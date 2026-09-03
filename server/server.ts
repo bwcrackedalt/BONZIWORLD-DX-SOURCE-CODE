@@ -1221,7 +1221,17 @@ class User {
         static async init(socket: Socket): Promise<User | void> {
                 let ip = socketIp(socket);
                 let restrict = "";
-                let banInfo = await db.blockInfo(ip);
+                let banInfo;
+                try {
+                        banInfo = await db.blockInfo(ip);
+                } catch (error) {
+                        console.error("Database unavailable during connection check:", error);
+                        socket.emit("loginFail", {
+                                reason: "The server database is unavailable. Please try again later.",
+                        });
+                        socket.disconnect(true);
+                        return;
+                }
                 if (banInfo) {
                         if(banInfo.type === "block") {
                                 socket.emit("ban", { reason: banInfo.reason });
@@ -1242,8 +1252,17 @@ class User {
                                         resolve();
                                         return;
                                 }
-                                let user = await User.login(socket, loginResult.data);
-                                resolve(user);
+                                try {
+                                        let user = await User.login(socket, loginResult.data);
+                                        resolve(user);
+                                } catch (error) {
+                                        console.error("Database unavailable during login:", error);
+                                        socket.emit("loginFail", {
+                                                reason: "The server database is unavailable. Please try again later.",
+                                        });
+                                        socket.disconnect(true);
+                                        resolve();
+                                }
                         });
                 });
         };
