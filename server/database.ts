@@ -13,13 +13,17 @@ let clientPromise: Promise<pg.Client> | undefined;
 
 async function getClient(): Promise<pg.Client> {
 	if (!clientPromise) {
-		const client = new pg.Client({
-			host: process.env.PG_URL,
-			port: 5432,
-			user: process.env.PG_USER,
-			password: process.env.PG_PASSWORD,
-			database: "bonziworld",
-		});
+		const client = new pg.Client(
+			process.env.DATABASE_URL
+				? { connectionString: process.env.DATABASE_URL }
+				: {
+						host: process.env.PGHOST,
+						port: Number(process.env.PGPORT ?? 5432),
+						user: process.env.PGUSER,
+						password: process.env.PGPASSWORD,
+						database: process.env.PGDATABASE,
+					},
+		);
 
 		clientPromise = client.connect()
 			.then(() => client)
@@ -170,4 +174,26 @@ let result = await query<{ godword: string }>(`
 	`, [cookie]);
 	let row = result.rows[0];
 	return row?.godword ?? null;
+}
+
+export async function setPromotion(cookie: string, level: number): Promise<void> {
+await query(`
+INSERT INTO promotions (cookie, level)
+VALUES ($1, $2)
+ON CONFLICT (cookie) DO UPDATE SET level = EXCLUDED.level
+`, [sanitizeUnicode(cookie), level]);
+}
+
+export async function deletePromotion(cookie: string): Promise<void> {
+await query(`
+DELETE FROM promotions WHERE cookie = $1
+`, [sanitizeUnicode(cookie)]);
+}
+
+export async function getPromotion(cookie: string): Promise<number | null> {
+let result = await query<{ level: number }>(`
+SELECT level FROM promotions WHERE cookie = $1
+`, [sanitizeUnicode(cookie)]);
+let row = result.rows[0];
+return row?.level ?? null;
 }
