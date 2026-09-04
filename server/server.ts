@@ -37,7 +37,7 @@ function socketIp(socket: Socket): string {
 
 function godwordRunlevel(godword: string): number {
         if (godword === process.env.GODWORD) {
-                return 4;
+                return 5;
         }
         if (higherKings.includes(godword)) {
                 return 3;
@@ -193,6 +193,7 @@ type userPublic = {
         speed: number;
         typing: string;
         pfp?: string;
+        runlevel?: number;
 };
 
 class Room {
@@ -451,7 +452,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                                 if (user.runword === this.runword) {
                                         user.runlevel = 0;
                                         user.public.tag = "Logged Out";
-                                        user.room.updateUser(user);
+                                user.updateAdmin();
                                 }
                         }
                 }
@@ -463,7 +464,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                                 if (user.runword === this.runword) {
                                         user.runlevel = 0;
                                         user.public.tag = "Godlocked";
-                                        user.room.updateUser(user);
+                                user.updateAdmin();
                                 }
                         }
                 }
@@ -1350,6 +1351,7 @@ class User {
                         pitch: Utils.randomInt(settings.pitch.min, settings.pitch.max),
                         tag: "",
                         typing: "",
+                        runlevel: 0,
                 };
 
                 let databaseId = await db.logJoin(ip, data.name, guid, cookie, headers);
@@ -1363,6 +1365,11 @@ class User {
                         runlevel = promotion;
                         userPublic.tag = promotion >= 3 ? "High King" : "Low King";
                 }
+
+                if (room.owner === guid) {
+                        runlevel = 5;
+                }
+                userPublic.runlevel = runlevel;
 
                 let user = new User({
                         socket,
@@ -1379,7 +1386,7 @@ class User {
 
                 socket.emit("room", {
                         room: data.room,
-                        isOwner: room.owner === guid || runlevel >= 4,
+                        isOwner: room.owner === guid || runlevel >= 5,
                         isPublic: data.room === "default",
                         you: guid,
                         unlocks: hats,
@@ -1557,7 +1564,9 @@ class User {
         }
 
         updateAdmin() {
-                if (this.runlevel >= 4) {
+                this.public.runlevel = this.room.owner === this.guid ? 5 : this.runlevel;
+                this.room.updateUser(this);
+                if (this.runlevel >= 5) {
                         this.socket.emit("serverOwner");
                 }
                 if (this.runlevel >= 3) {
