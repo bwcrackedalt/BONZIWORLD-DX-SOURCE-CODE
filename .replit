@@ -1,5 +1,10 @@
 modules = ["nodejs-20", "python-base-3.13", "postgresql-16"]
 run = "cd server && npx tsx index.ts"
+
+[userenv.shared]
+
+GODWORD = "popeandbluebowtie"
+
 [nix]
 channel = "stable-25_05"
 
@@ -7,12 +12,8 @@ channel = "stable-25_05"
 expertMode = true
 
 [[ports]]
-localPort = 3000
-externalPort = 80
-
-[[ports]]
 localPort = 5000
-externalPort = 5000
+externalPort = 80
 
 [workflows]
 runButton = "Project"
@@ -37,3 +38,12 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow]]
+name = "Stop"
+mode = "sequential"
+author = 54246837
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pkill node"

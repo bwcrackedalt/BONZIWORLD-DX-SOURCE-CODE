@@ -14,6 +14,12 @@ export { app, io };
 
 app.use(cookieParser);
 
+app.use((_req, res, next) => {
+	res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+	res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
+	next();
+});
+
 app.use(/\/.*\.rss$/, (_req, res, next) => {
 	res.setHeader("Content-Type", "application/xml; charset=UTF-8");
 	next();
@@ -66,14 +72,6 @@ app.get("/discord_pfp/:layers", async (req, res) => {
 });
 
 export let port = Number(process.env.PORT || settings.port);
-
-app.use((_req, res, next) => {
-	res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
-	res.setHeader("Cross-Origin-Embedder-Policy", "credentialless");
-	next();
-});
-
-app.use(express.static("../client/src"));
 
 beat();
 

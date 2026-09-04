@@ -19,8 +19,8 @@ input[type="text"] {
 .xp_bubble,
 #content {
     position: relative;
-    background: #1c1c1c;
-    color: #ffffff;
+    background: #ffffff;
+    color: #000000;
     -webkit-border-radius: 9px;
     -moz-border-radius: 9px;
     border-radius: 9px;
@@ -45,7 +45,7 @@ html {
 }
 
 body {
-    background-color: #ffffff;
+    background-color: #333333;
     background-image: url("img/desktop/bg.png");
     background-position: center;
     background-repeat: no-repeat;
@@ -57,7 +57,7 @@ body {
     max-width: 800px;
     margin: 32px auto;
     padding: 16px 32px;
-    background-color: rgb(15, 15, 15, 0.9);
+    background-color: rgb(255, 255, 255, 0.9);
     overflow: hidden;
 }
 

@@ -62,10 +62,14 @@ const INGREDIENTS_OUTRO = [
     "Warning: this recipe is too delicious!",
     "Remember, this is just for fun — not a real cooking guide!",
 ];
-import(localStorage.legacyTTS === "true" ? "./espeak.js" : "./liblipspeak.js").then((mod) => {
+const ttsModule = localStorage.legacyTTS === "true" ? "./espeak.js" : "./liblipspeak.js";
+import(ttsModule).then((mod) => {
     speak = mod.speak;
     setVolume = mod.setVolume;
-    setVolume(localStorage.volume / 100);
+    const volume = Number(localStorage.volume);
+    setVolume((Number.isFinite(volume) ? volume : 90) / 100);
+}).catch((error) => {
+    console.error("Unable to initialize text-to-speech:", error);
 });
 
 let me = "";

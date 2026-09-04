@@ -39,7 +39,7 @@ window.BonziData = {
                         {name: "maga", description: "Make America Great Again."},
                         {name: "obama", description: "It's your president obama, and i'm going to tell you how to beatbox. Mptmrptbmhum-yeah-humbtuprumbum."},
                         {name: "bfdi", description: "If you're a bfdi lover you should wear this hat."},
-                        {name: "pot", description: "HORROR NANO's former hat. HES 13 BTW"},
+                        {name: "pot", description: "Someone's hat."},
                         {name: "tophat", description: "An tophat. Good for variation."},
                         {name: "troll", description: "If you're a failtroll you should wear this hat."},
                         {name: "witch", description: "Witch. No else."},

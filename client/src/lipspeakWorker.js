@@ -36,5 +36,5 @@ onmessage = async (opt) => {
     lipspeak._free(lipptr);
     lipspeak._free(wavptr);
 
-    postMessage({ id, lip, wav, hz }, null, [ lip, wav ]);
+    postMessage({ id, lip, wav, hz }, [lip.buffer, wav.buffer]);
 }
