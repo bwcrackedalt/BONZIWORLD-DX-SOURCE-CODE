@@ -55,7 +55,7 @@ html {
 }
 
 body {
-    background-color: #0b0054;
+    background-color: gray;
 }
 
 html,
@@ -413,7 +413,7 @@ body.vaporwave #chat_send:active {
 }
 
 #content {
-    background-color: #4a4a4a;
+    background-color: gray;
     background-image: url("img/desktop/logo.png"), url("img/desktop/bg.png");
     background-position: top right, center;
     background-repeat: no-repeat;

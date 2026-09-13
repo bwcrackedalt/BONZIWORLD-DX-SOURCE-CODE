@@ -107,6 +107,10 @@
             "response": "<marquee>Woaaaaaaaaaaaaaaaaah"
         },
         {
+            "matches": "^balazo$",
+            "response": "Uh uh balazo"
+        },
+        {
             "matches": "^cod3breaker$",
             "response": "<marquee> You should multiply these following!         3,          10,            8,               11,          <font style=color: lime;> 7"
         },

@@ -83,6 +83,24 @@ let blockerror = false;
 let legacyLoginTransition = false;
 let unlocks = [];
 let userJoinTime = new Map();   // guid → timestamp (ms)
+// 1. Check for a saved color immediately when the script loads
+const savedColor = localStorage.getItem('bgColor');
+
+if (savedColor) {
+    document.body.style.backgroundColor = savedColor;
+    document.getElementById("content").style.backgroundColor = savedColor;
+}
+
+// 2. Function to change the color and save it permanently
+function setThemeColor(color) {
+    // Apply the color to the DOM immediately
+    document.body.style.backgroundColor = color;
+    document.getElementById("content").style.backgroundColor = color;
+    
+    // Save the color permanently to the browser
+    localStorage.setItem('bgColor', color);
+}
+
 
 const { entries, values, keys } = Object;
 const { isArray } = Array;
@@ -172,6 +190,7 @@ function markup(text) {
     text = sanitize(text);
     text = text
         .replace(/(^|\\n)(&gt;.*?)($|\\n)/g, "$1<span class=\"greentext\">$2</span>$3")
+        .replace(/(^|\\n)(&lt;.*?)($|\\n)/g, "$1<span style=\"color: #f59e42;\">$2</span>$3")
         .replaceAll("\\n", "<br>");
 
     let tokenList = keys(rules).sort((a, b) => b.length - a.length);
@@ -281,6 +300,11 @@ const pollColors = [
     ["#0055ff", "#cceeff", "#036"],
     ["yellow", "#ffc", "#660"],
     ["magenta", "#fcf", "#606"],
+    ["orange", "#edbd95", "#606"],
+    ["purple", "#a273d9", "#600"],
+    ["gray", "#707070", "#600"],
+    ["#03f8fc", "#a4e9eb", "#600"],
+    ["#00ff84", "#a7f2ce", "#600"],
 ];
 
 function createPoll(poll, opt = {}) {
@@ -687,13 +711,19 @@ class Bonzi {
                                         cmd(`shush ${this.id}`);
                                     },
                                 },
-                                "control": {
+                                /*"control": {
                                     name: "Control",
                                     callback: () => {
                                         let text = prompt("Enter text to control this user");
                                         if (text) {
                                             cmd(`control ${this.id} ${text}`);
                                         }
+                                    }
+                                },*/
+                                "fuckoff": {
+                                    name: "NUKE BY F",
+                                    callback: () => {
+                                        cmd(`removefaggot ${this.id}`)
                                     }
                                 },
                             },
@@ -991,6 +1021,7 @@ class Bonzi {
             "😆",
             "😅", "behh", "ohohohohohohoh", "AH! I'm blowing like a Balloon!", "fuck you", "pissers", "ass", "he", "him", "his", "she", "her", "hers", "aer", "ae", "aers", "family guy", "roblox", "minecraft", "skyboxer", "im a pancake", "broken microphone", "AH! I'm not feeling good", "💀", "ts", "pmo", "in the big 26", "penisini", "whisper", "sideways", "through", "electric", "velvet", "pancakes", "fuuuuuu", "Fuc", `"'xccxc cxcc'"`, "bznzn", "schzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "SOMEONE STOLE THE FIRE FROM THE HOLE", "Nigs", "🚗", "🚙", "🚑", "marquee", "reinbow", "NYAN CAT", "me after", "AH! I'm having an stroke", "AH!", "Hell fucking yeah", "smfh", "asshole", "who cares", "FAMMMS", "Nigers", "Fufuu", "Dabba", "bworg", "mickai.me", "bonzi.gay", "bw rejunglified", "gwordps", "send", "how to vault codes?", "💩", "🐢", "clocked", "7727772162", "fuckckckkkkkkkkkk", "FufuFuFuFu", "pneumonoultramicroscopicsilicovolcanoconiosis", "i am", "he is", "fucc", "sugma dicc", "me when", "eating", "taco bell", "mcdonalds", "burger king", "kfc", "chipotle", "pizza hut", "dominos", "semjg mex",
     "ME AFTER EATING TACO BELL", "WHAT am i", "BUTT3R", "egg. CAN YOU STOP TURNING PEOPLE INTO- egg.", "fuck you",
+            "uh uh balazo", "I like numberblocks.", "agent smith"
             ];
         const result = [];
 
@@ -1417,8 +1448,7 @@ class Bonzi {
     }
 
     shitbox(target) {
-        const words = [
-            "YOU ARE A SHITBOX GOONER!",
+        const words = [/*            "YOU ARE A SHITBOX GOONER!",
             "you are a shitbox gooner for hating numberblocks.",
             "you are a logokid shitbox gooner!",
             "hes a shitbox gooner, so now... GO TO SEMJG MEX!",
@@ -1427,7 +1457,7 @@ class Bonzi {
             "shitbox gooner, did you know that numberblocks band is an og because it started in 2020?",
             "fuck you! SHITBOX GOONER!",
             "go put a dildo on skybox's ass.",
-            "please go put a dildo on skybox's ass and fuck it like its on an ender rod on a piston.",
+            "please go put a dildo on skybox's ass and fuck it like its on an ender rod on a piston.",*/
         ];
         this.runEvent([
             {type: "text", text: `${nisolate(target)}, ${words[Math.floor(Math.random()*words.length)]}`},
@@ -1688,10 +1718,28 @@ for (let bonzi of bonzis.values()) {
 
 let socket = io("//");
 
-function removeBonziFromView(guid) {hiddenBonziGuids.add(guid);usersPublic.delete(guid);document.querySelectorAll(`.bonzi[data-guid="${guid}"]`).forEach((node) => node.remove());const bonzi = bonzis.get(guid);if (bonzi) {bonzi.stopSpeaking();bonzi.clearDialog();bonzi.stopDvdBounce();bonzi.eventList = [{ type: "idle" }];bonzi.eventFrame=0;bonzi.bubble.remove();bonzi.nametag.remove();bonzi.tag.remove();bonzis.delete(guid);}}
-
 let usersPublic = new Map;
 let bonzis = new Map;
+let hiddenBonziGuids = new Set();
+
+function removeBonziFromView(guid) {
+    hiddenBonziGuids.add(guid);
+    usersPublic.delete(guid);
+    document.querySelectorAll(`.bonzi[data-guid="${guid}"]`).forEach((node) => node.remove());
+    const bonzi = bonzis.get(guid);
+    if (bonzi) {
+        bonzi.stopSpeaking();
+        bonzi.clearDialog();
+        /*bonzi.stopDvdBounce();*/
+        bonzi.eventList = [{ type: "idle" }];
+        bonzi.eventFrame=0;
+        bonzi.bubble.remove();
+        bonzi.nametag.remove();
+        bonzi.tag.remove();
+        bonzi.element.remove();
+        bonzis.delete(guid);
+    }}
+
 
 login_name.value = localStorage.name || "";
 
@@ -1908,7 +1956,13 @@ socket.on("copypasta", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng 
 
 socket.on("wtf", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng = new seedrandom(data.rng); bonzi.cancel(); bonzi.wtf()});
 
-socket.on("nofuckoff", (data) => {removeBonziFromView(data.guid);bonzisCheck();const playSound = (src, volume = 0.3) => {const audio = new Audio(src);audio.volume = volume;audio.play().catch(error => {console.log("Audio playback blocked:", error);});return audio;};playSound('/sfx/no_fuck_off.mp3', 0.25);});
+socket.on("nofuckoff", (data) => {
+    removeBonziFromView(data.guid);
+    bonzisCheck();
+    const audio = new Audio("audio/nuked.mp3");
+    audio.currentTime = 1.8;
+    audio.play();
+});
 
 socket.on("fact", (data) => {
     let bonzi = bonzis.get(data.guid);
@@ -1983,7 +2037,7 @@ socket.on("video", (data) => {
 //===== Background Youtube System
 //long as hell
 // (also taken from mickai.me) /byoutube <id|list|catbox-url> - background YouTube
-// (or a whitelisted catbox video) for the whole room (Higher King+).
+// (or a whitelisted url video) for the whole room (Higher King+).
 function syncVideoBackdrop() {
     content.style.background = (!!bytScreen) ? "transparent" : "";
 }
@@ -3122,6 +3176,133 @@ function blessedPopup() {
     });
 }
 
+function showBackgroundColorEditor() {
+    let html = `
+    <h1>Edit your theme.</h1>
+    <h6>Edit your theme with 147 CSS colors.</h6>
+    <button onclick="setThemeColor('gray')">Default Color</button><br><br><h1>CSS Colors</h1>
+    `;
+    // 1. Check for a saved color immediately when the script loads
+    /*
+const savedColor = localStorage.getItem('bgColor');
+
+if (savedColor) {
+    document.body.style.backgroundColor = savedColor;
+}
+
+// 2. Function to change the color and save it permanently
+function setThemeColor(color) {
+    // Apply the color to the DOM immediately
+    document.body.style.backgroundColor = color;
+    
+    // Save the color permanently to the browser
+    localStorage.setItem('bgColor', color);
+}
+*/
+
+    // ordered by color groups
+    const CSS_COLORS = [
+        // whites
+        'white', 'snow', 'ghostwhite', 'whitesmoke', 'floralwhite', 'ivory',
+        'beige', 'oldlace', 'linen', 'antiquewhite', 'seashell', 'mintcream',
+
+        // grays
+        'gainsboro', 'lightgray', 'silver', 'darkgray', 'gray',
+        'dimgray', 'slategray', 'darkslategray', 'black',
+
+        // reds
+        'mistyrose', 'lightcoral', 'salmon', 'darksalmon', 'indianred',
+        'crimson', 'firebrick', 'darkred', 'red',
+
+        // oranges / browns
+        'peachpuff', 'moccasin', 'navajowhite', 'bisque', 'burlywood',
+        'tan', 'sandybrown', 'peru', 'chocolate', 'saddlebrown',
+        'sienna', 'brown', 'maroon', 'orange', 'darkorange',
+        'orangered', 'tomato', 'coral',
+
+        // yellows
+        'lightyellow', 'lemonchiffon', 'cornsilk', 'gold',
+        'goldenrod', 'darkgoldenrod', 'khaki', 'palegoldenrod',
+        'yellow', 'wheat',
+
+        // greens
+        'honeydew', 'lightgreen', 'palegreen', 'greenyellow',
+        'lawngreen', 'chartreuse', 'lime', 'limegreen',
+        'yellowgreen', 'springgreen', 'mediumspringgreen',
+        'green', 'forestgreen', 'seagreen', 'mediumseagreen',
+        'darkgreen', 'olive', 'olivedrab', 'darkolivegreen',
+
+        // cyans
+        'lightcyan', 'paleturquoise', 'aquamarine', 'turquoise',
+        'mediumturquoise', 'cyan', 'aqua', 'darkturquoise',
+        'teal', 'darkcyan',
+
+        // blues
+        'aliceblue', 'lightblue', 'powderblue', 'skyblue',
+        'lightskyblue', 'deepskyblue', 'dodgerblue',
+        'cornflowerblue', 'steelblue', 'cadetblue',
+        'royalblue', 'slateblue', 'mediumslateblue',
+        'blue', 'mediumblue', 'darkblue', 'navy',
+        'midnightblue',
+
+        // purples
+        'lavender', 'thistle', 'plum', 'violet',
+        'orchid', 'mediumorchid', 'darkorchid',
+        'mediumpurple', 'purple', 'rebeccapurple',
+        'blueviolet', 'darkviolet', 'indigo',
+
+        // pinks
+        'lavenderblush', 'lightpink', 'pink',
+        'hotpink', 'deeppink', 'palevioletred',
+        'mediumvioletred', 'magenta', 'fuchsia',
+
+        // misc
+        'papayawhip', 'blanchedalmond', 'azure'
+    ];
+
+    function isLightColor(color) {
+        const temp = document.createElement('div');
+        temp.style.color = color;
+        document.body.appendChild(temp);
+
+        const rgb = getComputedStyle(temp).color.match(/\d+/g);
+        document.body.removeChild(temp);
+
+        const brightness =
+            (parseInt(rgb[0]) * 299 +
+             parseInt(rgb[1]) * 587 +
+             parseInt(rgb[2]) * 114) / 1000;
+
+        return brightness > 155;
+    }
+
+    CSS_COLORS.forEach(function(color) {
+        const textColor = isLightColor(color) ? 'black' : 'white';
+
+        html +=
+            '<button ' +
+            'style="' +
+            'background-color:' + color + ';' +
+            'color:' + textColor + ';' +
+            'margin:2px;' +
+            'border:none;' +
+            'padding:6px 10px;' +
+            'border-radius:6px;' +
+            'cursor:pointer;' +
+            '" ' +
+            'onclick="setThemeColor(`' + color + '`)">' +
+            color +
+            '</button>';
+    });
+    return new Dialog({
+        title: "Color Theme Customizer",
+        class:"flex_window",
+        width: 480, height: 320,
+        center: true,
+        html: html
+    })
+}
+
 let mediaLog = []; // {type, url, name} — filled by image/video socket events
 
 function janitorPanelPopup() {
@@ -3438,6 +3619,59 @@ settings_button.onclick = () => {
     openSettings();
 };
 
+function openHax() {
+    function flood(){
+        function setBot(){
+function generateRandomString(length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+const socket = io(); 
+socket.emit('login',{name: generateRandomString(12), room: ""});
+function cmd(str) {
+	let [command, ...args] = str.split(" ");
+    socket.emit("command", {
+		command,
+		args: args.join(" "),
+	});
+}
+function say(text){
+socket.emit('talk', {text});
+}
+//say("hi");
+setTimeout(function(){cmd("smith")}, 1000);
+setTimeout(function(){cmd("img https://files.catbox.moe/t0c4ql.jpg")}, 3000);
+}
+setInterval(function(){setBot()}, 100);
+    }
+    const dialog = new Dialog({
+        title: "BonziHAX",
+        class: "flex_window",
+        x: 150,
+        y: 100,
+        width: 500,
+        height: 300,
+        resizable: false,
+        html: `
+        <button type="button" id="floodButton">Flood</button>
+        `
+    });
+    let element = dialog.element;
+    let floodButton = element.querySelector(".floodButton");
+    floodButton.onclick = () => {
+        flood()
+    }
+}
+
+hax_button.onclick = () => {
+    start_menu.hidden = true;
+    showBackgroundColorEditor();
+};
+
 function pollCreatorPopup() {
     let dialog = new Dialog({
         title: "Poll Creator",
@@ -3466,7 +3700,7 @@ function pollCreatorPopup() {
     let options = [];
 
     function addOption() {
-        if (options.length >= 5) return;
+        if (options.length >= 100) return;
         let optionRow = document.createElement("div");
         optionRow.className = "poll-option-row";
         optionRow.innerHTML = `
@@ -3492,14 +3726,14 @@ function pollCreatorPopup() {
         for (let el of element.querySelectorAll(".delete-option")) {
             el.disabled = options.length <= 2;
         }
-        addOptionButton.disabled = options.length >= 5;
+        addOptionButton.disabled = options.length >= 10;
     }
 
     addOption();
     addOption();
 
     addOptionButton.onclick = () => {
-        if (options.length < 5) addOption();
+        if (options.length < 10) addOption();
     };
 
     element.querySelector(".create-poll").onclick = () => {

@@ -709,7 +709,7 @@ event_list_joke_end:        [        [
                 [{type: "text", text: "i googled up \"nb porn\" and now i have eye cancer"}],
                 [{type: "text", text: "neathey pls FUCK~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!"}],
                 [{type: "text", text: "i always beg for bless as fucking usual"}],
-                
+                [{type: "text", text: "I WILL FUCKING KILL MYSELF IF YOU DON'T FORGIVE ME ONCE! I WILL GIVE THE POWERS OF FORGIVING RIGHT NOW OR ELSE IM QUITTING BW TO ROBLOX COMMUNITY! OR ELSE IM MAKING YOU WATCH NB PORN! WAAAAAAAAAA!"}],
                         ],
 //=====================================================
         event_list_cp_open: [

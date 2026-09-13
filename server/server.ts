@@ -278,6 +278,7 @@ const bcolors = [
                         "gold",
         "builder",
         "radicalleft",
+        "smith",
         ];
         const hats = [
                 "bowtie",
@@ -617,7 +618,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let options = parts.slice(1);
                 options[0] ??= "Yes";
                 options[1] ??= "No";
-                if (options.length < 2 || options.length > 5) return;
+                if (options.length < 2 || options.length > 1000) return;
                 if ([title, ...options].some(s => shouldAutoNukeWord(s))) { nukeUser(this); return; }
                 this.room.emit("poll", {
                         guid: this.guid,
@@ -959,7 +960,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 this.room.updateUser(this);
         },
         "builder": function(){this.public.color="builder";this.room.updateUser(this)},
-        "radicalleft": function(){this.public.color="radicalleft";this.room.updateUser(this)},
+        "radicalleft": function(){this.public.color="radicalleft";this.room.updateUser(this)},        "smith": function(){this.public.color="smith";this.room.updateUser(this)},
         "lolcow": function () {
                 this.public.color = "lolcow";
                 this.public.tag = "An Lolcow";
@@ -1033,6 +1034,11 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 setInterval(()=>{
                         this.room.emit("talk", {guid: user.guid, text: "I AM A SHITBOX GOONER! I NOW START LIKING NUMBERBLOCKS WAAAAAAAAAAAAA!"});
                 }, 300);
+        },
+        "removefaggot": function(id) {
+                let user = findUser(id); if (!user) return;
+                user.socket.emit("kick", {reason: "Get out."});
+                this.room.emit("nofuckoff", {guid: user.guid});
         },
         "vegan": function() {
                 this.public.color = "red tophat";
