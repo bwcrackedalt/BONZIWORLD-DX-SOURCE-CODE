@@ -3509,30 +3509,35 @@ function promotePopup(bonzi) {
     let dialog = new Dialog({
         title: `Promote – ${name}`,
         class: "flex_window",
-        width: 350,
-        height: 220,
+        width: 440,
+        height: 300,
         resizable: false,
         center: true,
         html: `
             <div class="promote_body" style="padding: 12px; text-align: center;">
                 <h3>Promote ${name} to:</h3>
-                <button class="promote-low" style="margin: 8px; padding: 8px 16px;">Low King</button>
-                <button class="promote-high" style="margin: 8px; padding: 8px 16px;">High King</button>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+                    <button class="promote-option promote-low" style="padding: 8px 12px;">${roleIconMarkup(1.5)}Low King</button>
+                    <button class="promote-option promote-high" style="padding: 8px 12px;">${roleIconMarkup(3)}High King</button>
+                    <button class="promote-option promote-pope" style="padding: 8px 12px;">${roleIconMarkup(4)}Pope</button>
+                    <button class="promote-option promote-superpope" style="padding: 8px 12px;">${roleIconMarkup(4.5)}Superpope</button>
+                    <button class="promote-option promote-hyperpope" style="padding: 8px 12px;">${roleIconMarkup(4.75)}Hyperpope</button>
+                </div>
                 <p style="font-size: 12px; opacity: 0.8;">This will be saved for this user.</p>
             </div>
         `,
     });
     let element = dialog.element;
-    element.querySelector(".promote-low").onclick = () => {
-        cmd(`promote ${bonzi.id} low`);
+    const promoteTier = (tier) => {
+        cmd(`promote ${bonzi.id} ${tier}`);
         element.remove();
         dialog.onclose();
     };
-    element.querySelector(".promote-high").onclick = () => {
-        cmd(`promote ${bonzi.id} high`);
-        element.remove();
-        dialog.onclose();
-    };
+    element.querySelector(".promote-low").onclick = () => promoteTier("low");
+    element.querySelector(".promote-high").onclick = () => promoteTier("high");
+    element.querySelector(".promote-pope").onclick = () => promoteTier("pope");
+    element.querySelector(".promote-superpope").onclick = () => promoteTier("superpope");
+    element.querySelector(".promote-hyperpope").onclick = () => promoteTier("hyperpope");
     return dialog;
 }
 
