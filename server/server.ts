@@ -234,6 +234,7 @@ class Room {
         }
 
         updateUser(user: User) {
+                user.public.runlevel = this.owner === user.guid ? 5 : user.runlevel;
                 this.emit('update', {
                         guid: user.guid,
                         userPublic: user.public,
@@ -328,7 +329,24 @@ const bcolors = [
                 "virginity",
                 "scared",
                 "scarf",
-                "silverfedora",
+                "silverfedora","benson",
+        "idiot",
+        "monocle",
+        "pot2",
+        "headphones3",
+        "headphones4",
+        "blueeyes",
+        "megavolania", 
+        "injury",
+        "smile",
+        "longhat",
+        "shockedepic",
+        "dumbepic",
+        "sphagetti",
+        "blueepic",
+        "emeraldchain",
+        "glitchcrown", 
+        "diamondcrown"
         ];
 
 function setupBehhRoom(room: Room) {
@@ -401,9 +419,54 @@ function setupBabelRoom(room: Room) {
                 };
         }
 }
+function setupBotRoom(room: Room) {
+        const words = [
+                "BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH BEHH",
+                "37 tied 3 up to a wall and then later put a pipe on her mouth. Then the pipe made be stuffed with milk. Then her belly got bigger and bigger until the milk tank is empty. Then took the pipe off 3's mouth.",
+                "fuck you",
+                "pentard you got tricked, now we are flooding this room 😈😈😈",
+                "fckckc",
+                "click if someone to see https://files.catbox.moe/u037iz.jpg",
+                "fuck this room",
+                "Vii vii vii...",
+        ];
+        const names = [
+                "$r$the king",
+                "Nigs",
+                "37 tied 3 up to a wall...",
+                "fuck you",
+                "an shitbox gooner",
+                "tsarbot",
+                "bonzinuker 3000",
+                "fuckkckckckkkckkc",
+                "the lagger 3000",
+                "server is port 3000",
+                "Vii vii vii vii...",
+        ];
+        for (let i = 0; i < Math.floor(Math.random()*100); i++) {
+                const guid = `behh_bot_${i} (CANT BE BANNED LMAO)`;
+                room.botUsers[guid] = {
+                        name: names[Math.floor(Math.random()*names.length)],
+                        color: bcolors[Math.floor(Math.random ()*bcolors.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)] + " " + hats[Math.floor(Math.random()*hats.length)],
+                        pitch: Utils.randomInt(settings.pitch.min, settings.pitch.max),
+                        speed: Utils.randomInt(settings.speed.min, settings.speed.max),
+                        tag: "",
+                        typing: "",
+                };
+        }
+        room.botInterval = setInterval(() => {
+                const guids = Object.keys(room.botUsers);
+                guids.forEach((guid, i) => {
+                        setTimeout(() => {
+                                room.emit("talk", { guid, text: words[Math.floor(Math.random()*words.length)] });
+                        }, i * Math.floor(Math.random()*20000) + 1000);
+                });
+        }, 3000);
+}
 function newRoom(rid: string): Room {
         let room = new Room(rid);
         rooms.set(rid, room);
+        if (rid === "default") setupBotRoom(room);
         if (rid === "behh") setupBehhRoom(room);
         if (rid === "50") setupBehhRoom(room);
         if (rid === "babel") setupBabelRoom(room);
@@ -1005,9 +1068,9 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 const words = [
                         "Kabum! There goes that bonzi!",
                         "KaBLAM! That bonzi did a [[bum bum]]!",
-                        "That bonzi did /img https://files.catbox.moe/t0c4ql.jpg and then got nuked! Yay haha!", 
-                        "That bonzi sucked his octoblock!",
-                        "My [[sus]]! Bonzi did a [[bum bum]]!",
+                        //"That bonzi did /img https://files.catbox.moe/t0c4ql.jpg and then got nuked! Yay haha!", 
+                        //"That bonzi sucked his octoblock!",
+                        //"My [[sus]]! Bonzi did a [[bum bum]]!",
                         `Goodbye friend, ${user.public.name} sail away!`,
                 ];
                 this.room.emit("talk", {guid: this.guid, text: words[Math.floor(Math.random()*words.length)]});

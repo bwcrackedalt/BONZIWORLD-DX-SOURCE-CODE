@@ -390,7 +390,28 @@ function time() {
     return `${hourString}:${minuteString} ${ampm}`;
 }
 
-function bonzilog(id, name, html, color, text, single, msgid, pfp) {
+const roleIcons = [
+    { runlevel: 5, name: "Owner", file: "owner" },
+    { runlevel: 4.75, name: "Hyperpope", file: "hyperpope" },
+    { runlevel: 4.5, name: "Superpope", file: "superpope" },
+    { runlevel: 4, name: "Pope", file: "pope" },
+    { runlevel: 3, name: "High King", file: "highk" },
+    { runlevel: 1.5, name: "Low King", file: "lowk" },
+    { runlevel: 1.2, name: "Janitor", file: "janitor" },
+];
+
+function roleIconMarkup(runlevel) {
+    const role = roleIcons.find(role => Number(runlevel) >= role.runlevel);
+    if (!role) return "";
+
+    return `<img class="role_icon" src="img/roles/${role.file}.svg" alt="${role.name}" title="${role.name}">`;
+}
+
+function roleNameMarkup(name, runlevel) {
+    return roleIconMarkup(runlevel) + nmarkup(name);
+}
+
+function bonzilog(id, name, html, color, text, single, msgid, pfp, runlevel) {
     // hacky
     // remind me to rewrite this as this is the biggest peice of dogshit
     let icon = "";
@@ -409,7 +430,7 @@ function bonzilog(id, name, html, color, text, single, msgid, pfp) {
     } else {
         icon = `<div class="log_left_spacing"></div>`;
     }
-    let thisUser = `${id};${name};${color};${pfp || ""}`;
+    let thisUser = `${id};${name};${color};${pfp || ""};${runlevel ?? ""}`;
     let showDelete = (admin || king) && msgid;
     if (thisUser !== lastUser || single) {
         let timeString = `<span class="log_time">${time()}</span>`;
@@ -420,7 +441,7 @@ function bonzilog(id, name, html, color, text, single, msgid, pfp) {
                 <div class="log_message_cont">
                     <div class="reply"></div>
                     ${showDelete ? "<div class=\"delete\"></div><div class=\"ban\"></div>" : ""}
-                    <span><b>${nmarkup(name)}</b> ${name ? timeString : ""}</span>
+                    <span><b>${roleNameMarkup(name, runlevel)}</b> ${name ? timeString : ""}</span>
                     <div class="log_message_content">${html} ${name ? "" : timeString}</div> 
                 </div>
             </div>`);
@@ -1082,7 +1103,7 @@ class Bonzi {
         this.bubbleCont.innerHTML = html;
 
         // here marks the point where i fucking give up
-        bonzilog(this.id, this.userPublic.name, html, this.color, text, quoteHTML !== "", msgid, this.userPublic.pfp);
+        bonzilog(this.id, this.userPublic.name, html, this.color, text, quoteHTML !== "", msgid, this.userPublic.pfp, this.userPublic.runlevel);
 
         if (!say.startsWith("-")) {
             speak.play(say, {
@@ -1135,7 +1156,7 @@ class Bonzi {
         this.bubble.hidden = false;
         let element2 = createPoll(poll);
         let scrolled = chat_log_content.scrollHeight - chat_log_content.clientHeight - chat_log_content.scrollTop <= 1;
-        bonzilog(this.id, this.userPublic.name, "", this.color, `(POLL) ${text}`, true, undefined, this.userPublic.pfp);
+        bonzilog(this.id, this.userPublic.name, "", this.color, `(POLL) ${text}`, true, undefined, this.userPublic.pfp, this.userPublic.runlevel);
         chat_log_content.lastChild.querySelector(".log_message_content").appendChild(element2);
         if (scrolled) {
             chat_log_content.scrollTop = chat_log_content.scrollHeight;
@@ -1158,7 +1179,7 @@ class Bonzi {
         let safeText = text ? markup(text) : "";
         this.bubbleCont.innerHTML = safeText;
         this.bubble.hidden = false;
-        bonzilog(this.id, this.userPublic.name, this.bubbleCont.innerHTML, this.color, text ? `${text} (AUDIO)` : "(AUDIO)", false, msgid, this.userPublic.pfp);
+        bonzilog(this.id, this.userPublic.name, this.bubbleCont.innerHTML, this.color, text ? `${text} (AUDIO)` : "(AUDIO)", false, msgid, this.userPublic.pfp, this.userPublic.runlevel);
 
         let audio = new Audio(url);
         audio.crossOrigin = "anonymous";
@@ -1205,7 +1226,7 @@ class Bonzi {
             this.bubbleCont.innerHTML = html;
             this.bubble.hidden = false;
             this.#mediaReady = true;
-            bonzilog(this.id, this.userPublic.name, html, this.color, `(IMAGE)`, false, msgid, this.userPublic.pfp);
+            bonzilog(this.id, this.userPublic.name, html, this.color, `(IMAGE)`, false, msgid, this.userPublic.pfp, this.userPublic.runlevel);
         };
     }
     rickroll(text) {
@@ -1243,7 +1264,7 @@ class Bonzi {
         this.bubbleCont.innerHTML = anchor;
         this.bubble.hidden = false;
         this.bubble.style.opacity = "1";
-        bonzilog(this.id, this.userPublic.name, anchor, this.color, `(LINK) ${text}`, false, undefined, this.userPublic.pfp);
+        bonzilog(this.id, this.userPublic.name, anchor, this.color, `(LINK) ${text}`, false, undefined, this.userPublic.pfp, this.userPublic.runlevel);
                 
     }
 
@@ -1264,7 +1285,7 @@ class Bonzi {
         }
         this.bubbleCont.innerHTML = html;
         this.bubble.hidden = false;
-        bonzilog(this.id, this.userPublic.name, html, this.color, `(VIDEO)`, false, msgid, this.userPublic.pfp);
+        bonzilog(this.id, this.userPublic.name, html, this.color, `(VIDEO)`, false, msgid, this.userPublic.pfp, this.userPublic.runlevel);
     }
 
     exit() {
@@ -1297,7 +1318,7 @@ class Bonzi {
         } else if (this.userPublic.typing) {
             typing = ` (${this.userPublic.typing})`;
         };
-        this.nametag.innerHTML = nmarkup(this.userPublic.name) + "" + typing;
+        this.nametag.innerHTML = roleNameMarkup(this.userPublic.name, this.userPublic.runlevel) + typing;
     }
 
     updateTag() {
@@ -1627,6 +1648,7 @@ function bonzisCheck() {
             let bonzi = bonzis.get(key);
             let oldName = bonzi.userPublic.name;
             let oldTyping = bonzi.userPublic.typing;
+            let oldRunlevel = bonzi.userPublic.runlevel;
             let oldColor = bonzi.color;
             let oldPfp = bonzi.userPublic.pfp;
             bonzi.userPublic = public;
@@ -1634,7 +1656,7 @@ function bonzisCheck() {
                 let msg = `${nisolate(oldName)} is now known as ${nisolate(public.name)}.`;
                 bonzilog("server", "", markup(msg), null, msg, true)
             }   
-            if (oldTyping !== public.typing || oldName !== public.name) {
+            if (oldTyping !== public.typing || oldName !== public.name || oldRunlevel !== public.runlevel) {
                 bonzi.updateName();
             }
             bonzi.updateTag();
@@ -1917,6 +1939,9 @@ socket.on("updateAll", (data) => {
     }
     bonzisCheck();
     logJoins = true;
+    // Apply the saved appearance after role events have arrived.
+    setTimeout(applyAutoJoin, 100);
+    // Tell the server our current "Disable DMs" preference for this session.
 });
 
 socket.on("update", (data) => {
@@ -2616,6 +2641,23 @@ let settingsDialog;
 let wordBlacklist = [];
 let customStyleEl = null;
 async function themeify(url) {try {const response = await fetch(url);if (!response.ok) {document.querySelector('.settings_textarea').value = ''; settings.set('customCSS',document.querySelector('.settings_textarea').value);throw new Error(`Failed to fetch CSS. Status: ${response.status}`);}/*Read the response as a text string*/const cssString = await response.text();customStyle.textContent=cssString;if(document.querySelector('.settings_textarea') !== null){document.querySelector('.settings_textarea').value = cssString; settings.set('customCSS',document.querySelector('.settings_textarea').value);}} catch (error) {console.error('Error fetching CSS:', error);}}
+function applyAutoJoin() {
+    if (!settings.get("autoApply")) return;
+
+    let color = settings.get("autoColor").trim().toLowerCase();
+    let hats = settings.get("autoHats").trim();
+    let tag = settings.get("autoTag").trim();
+
+    if (color) {
+        const skinCommands = new Set([
+            "angel", "dank", "builder", "glow", "gold",
+            "pope", "smith", "radicalleft", "lolcow"
+        ]);
+        cmd(skinCommands.has(color) ? color : `color ${color.split(/\s+/)[0]}`);
+    }
+    if (hats) cmd(`hat ${hats}`);
+    if (tag && isModRank()) cmd(`tag ${tag}`);
+}
 const settings = {
     schema: {
         hideImages: {
@@ -2676,6 +2718,26 @@ const settings = {
             default: false,
             xml: { tag: "legacyLoginTransition", attr: "on" },
             onLoad: (value) => legacyLoginTransition = value,
+        },
+        autoApply: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "autoApply", attr: "on" },
+        },
+        autoColor: {
+            type: "string",
+            default: "",
+            xml: { tag: "autoColor" },
+        },
+        autoHats: {
+            type: "string",
+            default: "",
+            xml: { tag: "autoHats" },
+        },
+        autoTag: {
+            type: "string",
+            default: "",
+            xml: { tag: "autoTag" },
         },
         /*
         rejunglifiedStartSound: {
@@ -2757,6 +2819,47 @@ const settings = {
                     type: "html",
                     html: "<a href=\"https://bonzi.gay/extra/css_tutorial.html\">CSS tutorial</a>"
                 },*/
+            ],
+        },
+        autojoin: {
+            name: "Auto Join",
+            settings: [
+
+                {
+                    type: "html",
+                    html: "Automatically set your look every time you join a room. Your rank decides what actually sticks — the server has the final say.",
+                },
+                {
+                    key: "autoApply",
+                    type: "checkbox",
+                    label: "Apply on join",
+                    description: "Master switch. When off, nothing below is applied.",
+                },
+                { type: "html", html: "<h1>Color</h1>"},
+                {
+                    key: "autoColor",
+                    type: "textarea",
+                    label: "Color / Skin",
+                    placeholder: "e.g. blue, glow, pope",
+                    description: "Use a color or a supported skin command.",
+                },
+                { type: "html", html: "<h1>Hat</h1>"},
+                {
+                    key: "autoHats",
+                    type: "textarea",
+                    label: "Hats",
+                    placeholder: "space-separated, e.g. tophat dank",
+                    description: "Up to the number of hats allowed by your rank.",
+                },
+                { type: "html", html: "<h1>Tag</h1>", visible: () => isModRank()},
+                {
+                    key: "autoTag",
+                    type: "textarea",
+                    label: "Tag",
+                    placeholder: "Your custom tag",
+                    visible: () => isModRank(),
+                    description: "Mods and above only.",
+                },
             ],
         },
         misc: {
@@ -3000,6 +3103,9 @@ const settings = {
 
 function applyCustomCSS(css) {
     customStyle.textContent = css;
+}
+function isModRank() {
+    return admin || king || highking || pope;
 }
 
 settings.init();
@@ -3275,6 +3381,10 @@ function setThemeColor(color) {
 
         return brightness > 155;
     }
+const getRandomHexColor = () => {
+  const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+  return `#${randomColor.padStart(6, '0')}`;
+};
 
     CSS_COLORS.forEach(function(color) {
         const textColor = isLightColor(color) ? 'black' : 'white';

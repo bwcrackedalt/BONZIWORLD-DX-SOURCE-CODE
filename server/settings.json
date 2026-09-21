@@ -6,10 +6,10 @@
                 "uttp",
                 "thdtc",
                 "ddagymmammn",
-                "eatbot"
+                "eatbot",
+                "rps"
         ],
         "autoNukeWords": [
-                "numbercuck",
         
                 "i dont have this food in de fridge",
                 "commands: !foods , !digest , =dougest",
@@ -99,7 +99,7 @@
                 "cp": 0, 
                 "shitbox": 0,
                 "control": 1.5,
-                "lolcow": 0,
+                "lolcow": 5,
                 "wtf": 0,
                 "endpoem": 0,
                 "rickroll": 0,

@@ -172,7 +172,8 @@ window.BonziData = {
                         {name: "black"},
                 ],
                 command: [
-                        {name: "lolcow"},{name: "angel"},{name: "glow"},{name: "noob"},{name: "gold"},{name: "pope"},
+                        //{name: "lolcow"},
+                        {name: "angel"},{name: "glow"},{name: "noob"},{name: "gold"},{name: "pope"},
                 ],
                 blessed: [
                         "blessed",
@@ -589,11 +590,12 @@ event_list_joke_end:        [        [
                 [{type: "text", text: "Did you also know that HORROR NANO is 13?"}],
         ],
         //=================================================
+        //I'M replacing numbercuck-related content/messages, since i don't even like numberblocks anymore.
         event_list_wtf: [
                 [{type: "text", text: "im a cool nig"}],
                 [{type: "text", text: "i like albuquerque and now i got hate"}],
                 [{type: "text", text: "im a bwi member and i got hate"}],
-                [{type: "text", text: "fuck neathey"}],
+                [{type: "text", text: "fuck albuquerque"}],
                 [{type: "html", text: "OH OH OH OH OH! IM GONNA CUM!"}],
                 [{type: "text", text: "BogenWORLD.exe has encountered an error and you got disconnected from the server just screwed up."}],
                 [
@@ -611,7 +613,7 @@ event_list_joke_end:        [        [
                         {type: "text", text: "i am going to post inflation videos because, remember: \"I inflate people and inflation is my fetish.\""},
                         {type: "image", url: "https://files.catbox.moe/t0c4ql.jpg"},
                 ],
-                [{type: "text", text: "sprunki is my fetish"}],
+                [{type: "text", text: "numberblocks is my fetish"}],
                 [{type: "text", text: "how to make a bonziworld server?"}],
                 [{type: "text", text: "ooooooooooooooooooooooooooooooooooo seamusmario how dare u ban kiddies. thats it. youre grounded for nine hundred & ninety nine years. now im going to ban you like a kiddie i am admin u r not u gay go to bed now and get out fgl alt fgl alt faith golden loverkiko 6666 rejection bitch ass idiot bitch. now stop.", say: "bro i broke"}],
                 [{type: "text", text: "Hi. My name is DanielTR52 and i change my fucking mind every 1 picosecond. Also, ICS fucking sucks. Nope, now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does. Now he doesnt. Now he does.", say: "bro i broke."}],
@@ -656,7 +658,7 @@ event_list_joke_end:        [        [
                 [{type: "text", text: "NEW SOUP! MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM"}],
                 [{type: "text", text: "PenBfdi6711 is a fake bia member"}],
                 [{type: "text", text: "Nooooo we're outta semjg mex"}],
-                [{type: "text", text: "i watch sprunki"}],
+                [{type: "text", text: "numberblocks"}],
                 [{type: "text", text: "i can ban you, my dad is degen_404bonzi"}],
                 [{type: "text", text: "I am Andrej Akan from Collab VM, I am a forkie who loves to destroy Windows with regedit and claim that I live in Pakistan although I actulally live in Croatia.", say: "bro i broke"}],
                 [{type: "text", text: "PinkFong is the worst user ever! Healthy habit is a bitch, baby shark is a bitch, mommy shark is a bitch, daddy shark is a bitch, grandma shark is a bitch, grandpa shark is a bitch, PinkFong is a bitch, nursery rhyme is a bitch, Hogi is a bitch, the potty is a bitch, BabyBus is a bitch, Cocobi is a bitch, JunyTony/Juny & Tony is a bitch, the song \"Let's Poo In The Potty\" is a bitch, Baby Shark Brooklyn's YouTube Account is a bitch, everything is a bitch and pee and poop are bitches so you have to fuck them all! Fuck pinkfong now at www.fuck-pinkfong.com", say: "bro i broke"}],
@@ -666,7 +668,7 @@ event_list_joke_end:        [        [
                 [{type: "text", text: "Stopp stop saying grounded"}],
                 [{type: "text", text: "i hate darllo because of hating perchy"}],
                 [{type: "text", text: "Messi 67 🤯💀🤯💀🤯"}],
-                [{type: "text", text: "i declared war on numberblocks"}],
+                [{type: "text", text: "i declared war on Albuquerque - THE MOVIE"}],
                 [{type: "text", text: "i boycotted 404bonzi"}],
                 [{type: "text", text: "i am penbfdi6767 and i am going to destroy this room and leave to go to room id 50"}],
                 [{type: "text", text: "Noooooo were outta glazed donuts"}],
@@ -710,6 +712,30 @@ event_list_joke_end:        [        [
                 [{type: "text", text: "neathey pls FUCK~~~~~~~~~~~!!!!!!!!!!!!!!!!!!!!!!!!!!"}],
                 [{type: "text", text: "i always beg for bless as fucking usual"}],
                 [{type: "text", text: "I WILL FUCKING KILL MYSELF IF YOU DON'T FORGIVE ME ONCE! I WILL GIVE THE POWERS OF FORGIVING RIGHT NOW OR ELSE IM QUITTING BW TO ROBLOX COMMUNITY! OR ELSE IM MAKING YOU WATCH NB PORN! WAAAAAAAAAA!"}],
+                [
+                        {type: "text", text: "Guys i said badword and got banned in roblox😭"},
+                        {type: "text", text: "What game did you said a bad word in"},
+                        {type: "text", text: "(doors mentioned)"},
+                        {type: "text", text: "i was kid"},
+                        {type: "text", text: `"i was kid" is not a game`},
+                        {type: "text", text: "I'm a kid too"},
+                        {type: "text", text: "ok well so tri2tron2sahur6"},
+                ],
+                [
+                        {type: "text", text: "Hey {NAME}, i have some questions for you!"},
+                        {type: "text", text: "What color is the sky?"},
+                        {type: "text", text: "A library card."},
+                        {type: "text", text: "Sound options."},
+                        {type: "text", text: "Awesome! What flavor is a KitKat bar?"},
+                        {type: "text", text: "A library card."},
+                        {type: "text", text: "Restart boating school."},
+                        {type: "text", text: "Great! What is the sky above us?"},
+                        {type: "text", text: "A library card."},
+                        {type: "text", text: "Sound options."},
+                        {type: "text", text: "Awesome! What color is grass?"},
+                        {type: "text", text: "A library card."},
+                        {type: "text", text: "Restart boating school."},
+                ],
                         ],
 //=====================================================
         event_list_cp_open: [

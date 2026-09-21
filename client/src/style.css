@@ -330,6 +330,14 @@ input[type="text"] {
     overflow: hidden;
 }
 
+.role_icon {
+    width: 1.4em;
+    height: 1.4em;
+    margin-right: 3px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
 .bonzi_tag {
     position: absolute;
     top: -23px;
