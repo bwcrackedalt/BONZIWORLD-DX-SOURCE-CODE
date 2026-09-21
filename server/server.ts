@@ -48,6 +48,23 @@ function godwordRunlevel(godword: string): number {
         return 0;
 }
 
+const promotionTiers = {
+        low: { level: 1.5, tag: "Low King" },
+        high: { level: 3, tag: "High King" },
+        pope: { level: 4, tag: "Pope" },
+        superpope: { level: 4.5, tag: "Superpope" },
+        hyperpope: { level: 4.75, tag: "Hyperpope" },
+} as const;
+
+function promotionTag(level: number): string {
+        if (level >= 4.75) return "Hyperpope";
+        if (level >= 4.5) return "Superpope";
+        if (level >= 4) return "Pope";
+        if (level >= 3) return "High King";
+        if (level >= 1.5) return "Low King";
+        return "";
+}
+
 app.post("/vault", express.json(), async (req, res) => {
         let cookie = req.cookie.token;
         if (!cookie) {
@@ -466,7 +483,7 @@ function setupBotRoom(room: Room) {
 function newRoom(rid: string): Room {
         let room = new Room(rid);
         rooms.set(rid, room);
-        if (rid === "default") setupBotRoom(room);
+        //if (rid === "default") setupBotRoom(room);
         if (rid === "behh") setupBehhRoom(room);
         if (rid === "50") setupBehhRoom(room);
         if (rid === "babel") setupBabelRoom(room);
@@ -1142,13 +1159,16 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let [id, tier] = args.split(" ");
                 let user = findUser(id);
                 if (!user) return;
-                let level = tier === "high" ? 3 : 1.5;
-                user.runlevel = level;
-                user.public.tag = tier === "high" ? "High King" : "Low King";
+                let promotion = promotionTiers[tier as keyof typeof promotionTiers];
+                if (!promotion) {
+                        return this.notify("Use low, high, pope, superpope, or hyperpope.");
+                }
+                user.runlevel = promotion.level;
+                user.public.tag = promotion.tag;
                 user.room.updateUser(user);
                 user.updateAdmin();
                 user.socket.emit("promoted", { tier });
-                await db.setPromotion(user.cookie, level);
+                await db.setPromotion(user.cookie, promotion.level);
         },
         "demote": async function(id) {
                 if (!(this.room.owner === this.guid || this.runlevel >= 4)) {
@@ -1157,7 +1177,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 let user = findUser(id);
                 if (!user) return;
                 user.runlevel = 0;
-                if (user.public.tag === "Low King" || user.public.tag === "High King") {
+                if (["Low King", "High King", "Pope", "Superpope", "Hyperpope"].includes(user.public.tag || "")) {
                         user.public.tag = "";
                 }
                 user.room.updateUser(user);
@@ -1432,7 +1452,7 @@ class User {
 
                 if (promotion && promotion > runlevel) {
                         runlevel = promotion;
-                        userPublic.tag = promotion >= 3 ? "High King" : "Low King";
+                        userPublic.tag = promotionTag(promotion);
                 }
 
                 if (room.owner === guid) {
