@@ -4214,7 +4214,7 @@ document.body.onclick = (e) => {
     if (!e.target.closest("#start_menu, #start_button")) {
         start_menu.hidden = true;
     }
-};if (false) { if (typeof String.prototype.replaceAll === "undefined") {
+};(() => { if (typeof String.prototype.replaceAll === "undefined") {
     String.prototype.replaceAll = function (match, replace) {
         match = match.replace(/[-[\]{}()*+?.\\\/^$|]/g, "\\$&");
         return this.replace(new RegExp(match, "g"), replace);
@@ -8430,4 +8430,4 @@ document.body.onclick = (e) => {
     if (!e.target.closest("#start_menu, #start_button")) {
         start_menu.hidden = true;
     }
-}; }
+}; })();

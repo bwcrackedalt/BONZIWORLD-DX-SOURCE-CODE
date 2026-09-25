@@ -312,8 +312,7 @@
             "tag": "f1",
             "response": "<marquee style=\"padding: 10px; image-rendering: auto;\">Toppest jej <div style=\"width:1000px;display:inline-block;\"></div>Hmm...<div style=\"width:1000px;display:inline-block;\"></div>I could put a hint here...<div style=\"width:1000px;display:inline-block;\"></div>But I won't. Just because you want me to."
         }
-    ]
-}{
+    ],
     "randomDialog": [
         { "tag": "i1", "text": "<font color=orange>Your password is incorrect." },
         "Maybe I should've hidden this room better...",

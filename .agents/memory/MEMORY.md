@@ -1,0 +1,1 @@
+- [Duplicate source diagnostics](duplicate-source-diagnostics.md) — broad redeclaration errors can indicate appended duplicate source or concatenated duplicate JSON.

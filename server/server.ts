@@ -1691,7 +1691,7 @@ class User {
 // import type { IncomingHttpHeaders } from "node:http";
 // import z from "zod";
 
-if (false) {
+ (() => {
 const settings = JSON.parse(
 	readFileSync(new URL("./settings.json", import.meta.url), "utf8"),
 );
@@ -3363,4 +3363,4 @@ class User {
                 this.socket.disconnect(true);
         }
 }
-}
+})();

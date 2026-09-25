@@ -95,6 +95,7 @@ function checkNewYearClock() {
 
 // Start the clock and update it every 1000 milliseconds (1 second)
 setInterval(checkNewYearClock, 1000);
+(() => {
 const ahora = new Date();
 let strengthbed = 0;
 const hora = ahora.getHours(); // Devuelve un número entre 0 y 23
@@ -192,3 +193,4 @@ function checkNewYearClock() {
 
 // Start the clock and update it every 1000 milliseconds (1 second)
 setInterval(checkNewYearClock, 1000);
+});
