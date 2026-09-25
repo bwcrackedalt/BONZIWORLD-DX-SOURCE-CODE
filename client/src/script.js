@@ -589,16 +589,19 @@ class Bonzi {
                     items: {
                         "cancel": {
                             name: "Cancel",
+                            icon: "quit",
                             callback: () => { this.cancel(); }
                         },
                         "userinfo": {
     name: "User Info",
+    icon: "edit",
     callback: () => {
         showUserInfo(this);
     }
 },
                         "mute": {
                             name: () => this.mute ? "Unmute" : "Mute",
+                            icon: "edit",
                             callback: () => {
                                 this.cancel();
                                 this.mute = !this.mute;
@@ -607,6 +610,7 @@ class Bonzi {
                         },
                         "hey": {
                             name: "Call this user",
+                            icon: "add",
                             isHtmlName: true,
                             callback: () => {
                                 socket.emit("talk", {
@@ -616,21 +620,25 @@ class Bonzi {
                         },
                         "insults": {
                         name: "Insults",
+                        icon: "edit",
                             items: { 
                             "asshole": {
                             name: "Call an Asshole",
+                            icon: "delete",
                             callback: () => {
                                 cmd(`asshole ${this.userPublic.name}`);
                             }
                         },
                                 "owo": {
                                     name: "Notice bulge",
+                                    icon: "edit",
                                     callback: () => {
                                         cmd(`owo ${this.userPublic.name}`)
                                     }
                                 },
                         "bitch": {
                             name: "Call a Stupid Bitch",
+                            icon: "delete",
                             callback: () => {
                                 socket.emit("talk", {
                                     text: `Hey ${this.userPublic.name} guess what? You're a stupid bitch! You're a stupid fucking bitch! I can't believe how dumb you are...`,
@@ -639,6 +647,7 @@ class Bonzi {
                         },
                         "stfu": {
                             name: "Tell to STFU",
+                            icon: "quit",
                             callback: () => {
                                 socket.emit("talk", {
                                     text: `${this.userPublic.name} shut the fuck up, ` + (Math.random()>0.5 ? ` because I'm tired of your bullshit` : ` NOW!`),
@@ -650,6 +659,7 @@ class Bonzi {
                         },
                                 "shitbox": {
                                     name: "Call a Shitbox Gooner",
+                                    icon: "delete",
                                     callback: () => {
                                         //cmd(`shitbox ${this.userPublic.name}`)
                                         socket.emit("talk", {
@@ -661,33 +671,39 @@ class Bonzi {
                         },
                         "fun": {
                             name: "Fun (Mod)",
+                            icon: "add",
                             items: {
                                 "bless": {
                                     name: "Bless",
+                                    icon: "add",
                                     callback: () => {
                                         cmd(`bless ${this.id}`);
                                     },
                                 },
                                 "nameedit": {
                                     name: "Change Name",
+                                    icon: "edit",
                                     callback: () => {
                                         cmd(`nameedit ${this.id} ${prompt("give this guy a name")}`);
                                     },
                                 },
                                 "tagedit": {
                                     name: "Change Tag",
+                                    icon: "edit",
                                     callback: () => {
                                         cmd(`tagedit ${this.id} ${prompt("give this guy a tag")}`);
                                     },
                                 },
                                 "nuke": {
                                     name: "NUKE",
+                                    icon: "delete",
                                     callback: () => {
                                         cmd(`nuke ${this.id}`);
                                     }
                                 },
                                 "shitboxify": {
                                     name: "TURN INTO A SHITBOX GOONER",
+                                    icon: "delete",
                                     callback: () => {
                                         cmd(`shitboxify ${this.id}`);
                                     }
@@ -697,9 +713,11 @@ class Bonzi {
                         },
                         "mod": {
                             name: "Mod",
+                            icon: "edit",
                             items: {
                                 "banreason": {
                                     name: "Ban/Kick Reason",
+                                    icon: "edit",
                                     type: "text",
                                     value: this.banReason,
                                     events: {
@@ -710,24 +728,28 @@ class Bonzi {
                                 },
                                 "kick": {
                                     name: "Kick",
+                                    icon: "delete",
                                     callback: () => {
                                         cmd(`kick ${this.id, this.banReason}`);
                                     },
                                 },
                                 "tempban": {
                                     name: "Temp Ban (5m)",
+                                    icon: "delete",
                                     callback: () => {
                                         cmd(`tempban short ${this.id} ${this.banReason}`);
                                     },
                                 },
                                 "tempban2": {
                                     name: "Temp Ban (1h)",
+                                    icon: "delete",
                                     callback: () => {
                                         cmd(`tempban long ${this.id} ${this.banReason}`);
                                     },
                                 },
                                 "shush": {
                                     name: "Shush",
+                                    icon: "quit",
                                     callback: () => {
                                         cmd(`shush ${this.id}`);
                                     },
@@ -752,21 +774,25 @@ class Bonzi {
                         },
                         "pope": {
                             name: "Pope",
+                            icon: "add",
                             items: {
                                 "ban": {
                                     name: "Ban",
+                                    icon: "delete",
                                     callback: () => {
                                         cmd(`ban ${this.id}`);
                                     },
                                 },
                                 "info": {
                                     name: "Leak IP",
+                                    icon: "edit",
                                     callback: () => {
                                     alert('not working :\'(');
                                     },
                                 },
                                 "jannify": {
                                     name: "Jannify",
+                                    icon: "edit",
                                     callback: () => {
                                         cmd(`jannify ${this.id}`);
                                     },
@@ -776,6 +802,7 @@ class Bonzi {
                         },
                         "promote": {
                             name: "Promote...",
+                            icon: "add",
                             callback: () => {
                                 promotePopup(this);
                             },
@@ -783,6 +810,7 @@ class Bonzi {
                         },
                         "demote": {
                             name: "Demote",
+                            icon: "delete",
                             callback: () => {
                                 cmd(`demote ${this.id}`);
                             },

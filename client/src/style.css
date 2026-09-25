@@ -1801,6 +1801,64 @@ gay-biggest {font-size: 5em}
  *
  * Date: @DATE
  */
+@font-face {
+    font-family: context-menu-icons;
+    font-style: normal;
+    font-weight: 400;
+    src: url("https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.1.0/font/context-menu-icons.woff2") format("woff2"),
+         url("https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.1.0/font/context-menu-icons.woff") format("woff");
+}
+
+.context-menu-icon {
+    padding-left: 30px !important;
+}
+
+.context-menu-icon::before {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 28px;
+    font-family: context-menu-icons !important;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1;
+    color: #2980b9;
+    text-align: center;
+    content: "";
+    transform: translateY(-50%);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.context-menu-icon-add::before {
+    content: "\ea01";
+}
+
+.context-menu-icon-copy::before {
+    content: "\ea02";
+}
+
+.context-menu-icon-cut::before {
+    content: "\ea03";
+}
+
+.context-menu-icon-delete::before {
+    content: "\ea04";
+}
+
+.context-menu-icon-edit::before {
+    content: "\ea05";
+}
+
+.context-menu-icon-paste::before {
+    content: "\ea06";
+}
+
+.context-menu-icon-quit::before {
+    content: "\ea07";
+}
+
 .context-menu-icon.context-menu-hover:before {
     color: #FFF;
 }
@@ -2085,4 +2143,9 @@ img.emoji {
 }
 .janitor-welcome-body li {
     margin-bottom: 4px;
+}
+.context-menu-item.icon-custom-check:before {background-image: url('applets/sprite_280.png'); background-repeat: no-repeat; background-position: 4px center; }
+
+.context-menu-item.icon-mi-icono-excel:before {
+    content: "" !important;
 }
