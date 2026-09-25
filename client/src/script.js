@@ -4214,4 +4214,4220 @@ document.body.onclick = (e) => {
     if (!e.target.closest("#start_menu, #start_button")) {
         start_menu.hidden = true;
     }
+};if (false) { if (typeof String.prototype.replaceAll === "undefined") {
+    String.prototype.replaceAll = function (match, replace) {
+        match = match.replace(/[-[\]{}()*+?.\\\/^$|]/g, "\\$&");
+        return this.replace(new RegExp(match, "g"), replace);
+    }
+}
+
+let speak = { play: () => {} };
+let setVolume = () => {};
+let gravity = false;
+const INGREDIENTS_DATA = {
+    pizza: { emoji: "🍕", name: "Pizza", list: ["Pizza dough", "Tomato sauce", "Mozzarella cheese", "Pepperoni or toppings", "Oregano", "Olive oil"] },
+    burger: { emoji: "🍔", name: "Burger", list: ["Burger bun", "Beef patty", "Cheese", "Lettuce", "Tomato", "Onion", "Pickles", "Sauce"] },
+    hotdog: { emoji: "🌭", name: "Hot Dog", list: ["Hot dog sausage", "Hot dog bun", "Ketchup", "Mustard", "Onions"] },
+    fries: { emoji: "🍟", name: "Fries", list: ["Potatoes", "Salt", "Cooking oil"] },
+    steak: { emoji: "🥩", name: "Steak", list: ["Beef steak", "Salt", "Black pepper", "Butter", "Garlic", "Herbs"] },
+    friedchicken: { emoji: "🍗", name: "Fried Chicken", list: ["Chicken", "Flour", "Eggs", "Breadcrumbs", "Spices", "Cooking oil"] },
+    pasta: { emoji: "🍝", name: "Pasta", list: ["Pasta noodles", "Tomato sauce", "Cheese", "Garlic", "Herbs"] },
+    taco: { emoji: "🌮", name: "Taco", list: ["Taco shell", "Ground beef", "Lettuce", "Cheese", "Tomato", "Salsa"] },
+    cookie: { emoji: "🍪", name: "Cookie", list: ["Flour", "Sugar", "Butter", "Eggs", "Chocolate chips"] },
+    cake: { emoji: "🍰", name: "Cake", list: ["Flour", "Sugar", "Eggs", "Milk", "Butter", "Baking powder", "Frosting"] },
+    pancakes: { emoji: "🥞", name: "Pancakes", list: ["Flour", "Eggs", "Milk", "Sugar", "Butter"] },
+    cola: { emoji: "🥤", name: "Cola", list: ["Carbonated water", "Sugar", "Caramel color", "Caffeine", "Natural flavoring", "Citric acid"], isDrink: true },
+    orangejuice: { emoji: "🍊", name: "Orange Juice", list: ["Fresh oranges", "Water (optional)", "Ice", "Sugar (optional)"], isDrink: true },
+    lemonade: { emoji: "🍋", name: "Lemonade", list: ["Lemons", "Water", "Sugar", "Ice"], isDrink: true },
+    icyorange: { emoji: "🧊", name: "Icy Perfect Orange Drink", list: ["Orange juice", "Ice cubes", "Orange slices", "Sugar", "Sparkling water"], isDrink: true },
+    coffee: { emoji: "☕", name: "Coffee", list: ["Coffee beans", "Hot water", "Milk (optional)", "Sugar (optional)"], isDrink: true },
+    milkshake: { emoji: "🥛", name: "Milkshake", list: ["Milk", "Ice cream", "Flavor syrup", "Whipped cream"], isDrink: true },
+    smoothie: { emoji: "🍓", name: "Smoothie", list: ["Fruit", "Yogurt", "Milk", "Ice"], isDrink: true },
+    tea: { emoji: "🍵", name: "Tea", list: ["Tea leaves", "Hot water", "Sugar or honey"], isDrink: true },
+    hotchocolate: { emoji: "🍫", name: "Hot Chocolate", list: ["Cocoa powder", "Milk", "Sugar", "Chocolate pieces", "Whipped cream"], isDrink: true },
+    bubbletea: { emoji: "🧋", name: "Bubble tea", list: [
+       "Sweetened condensed Milk", "Tapioca", "Sugar", "Ice"
+    ], isDrink: true },
 };
+// Aliases so people can type things naturally (spaces, plurals, shorthand).
+const INGREDIENTS_ALIASES = {
+    "hot dog": "hotdog", "hotdogs": "hotdog", "hot dogs": "hotdog",
+    "fried chicken": "friedchicken", "chicken": "friedchicken",
+    "pancake": "pancakes",
+    "orange juice": "orangejuice", "oj": "orangejuice", "orange": "orangejuice",
+    "icy perfect orange drink": "icyorange", "icy orange": "icyorange", "icy drink": "icyorange", "icy perfect drink": "icyorange",
+    "hot chocolate": "hotchocolate", "cocoa": "hotchocolate",
+    "soda": "cola", "coke": "cola",
+    "burgers": "burger", "pizzas": "pizza", "tacos": "taco", "cookies": "cookie", "cakes": "cake",
+};
+const INGREDIENTS_CATCHPHRASES = [
+    (n) => `I know! I will cook some ${n}!`,
+    (n) => `I know! I will make some ${n}!`,
+    (n) => `I know! I will become a chef and make ${n}!`,
+    (n) => `Time to cook! The ingredients for ${n} are:`,
+    (n) => `Chef mode activated! Making ${n}!`,
+    (n) => `time for hungry relievement with an ${n}`,
+];
+const INGREDIENTS_DRINK_CATCHPHRASES = [
+    (n) => `I know! I will make some ${n}!`,
+    (n) => `I know! I will make an icy perfect drink with some ${n} in!`,
+    (n) => `Refreshing time! Let's create a ${n}!`,
+    (n) => `Chef mode activated! Making ${n}!`,
+];
+const INGREDIENTS_OUTRO = [
+    "Warning: this recipe is too delicious!",
+    "Remember, this is just for fun — not a real cooking guide!",
+];
+const ttsModule = localStorage.legacyTTS === "true" ? "./espeak.js" : "./liblipspeak.js";
+import(ttsModule).then((mod) => {
+    speak = mod.speak;
+    setVolume = mod.setVolume;
+    const volume = Number(localStorage.volume);
+    setVolume((Number.isFinite(volume) ? volume : 90) / 100);
+}).catch((error) => {
+    console.error("Unable to initialize text-to-speech:", error);
+});
+
+let me = "";
+let trusted = false;
+let admin = false;
+let king = false;
+let isOwner = false;
+let janitor = false;
+let autorejoin = true;
+let blockerror = false;
+let legacyLoginTransition = false;
+let unlocks = [];
+let userJoinTime = new Map();   // guid → timestamp (ms)
+// 1. Check for a saved color immediately when the script loads
+const savedColor = localStorage.getItem('bgColor');
+
+if (savedColor) {
+    document.body.style.backgroundColor = savedColor;
+    document.getElementById("content").style.backgroundColor = savedColor;
+}
+
+// 2. Function to change the color and save it permanently
+function setThemeColor(color) {
+    // Apply the color to the DOM immediately
+    document.body.style.backgroundColor = color;
+    document.getElementById("content").style.backgroundColor = color;
+    
+    // Save the color permanently to the browser
+    localStorage.setItem('bgColor', color);
+}
+
+
+const { entries, values, keys } = Object;
+const { isArray } = Array;
+const { seedrandom, random, floor } = Math;
+
+const MOUTH_SPRITES = { CL: 0, E1: 142, E2: 143, E3: 144, E4: 145, O2: 146, O1: 147 };
+const PHONEME_TO_MOUTH = {
+    "a": MOUTH_SPRITES.E3, "aa": MOUTH_SPRITES.E3, "a:": MOUTH_SPRITES.E3, "A:": MOUTH_SPRITES.E3, "A@": MOUTH_SPRITES.E3,
+    "eI": MOUTH_SPRITES.E4, "E": MOUTH_SPRITES.E4, "3": MOUTH_SPRITES.O2, "3:": MOUTH_SPRITES.O2, "e@": MOUTH_SPRITES.E2,
+    "i": MOUTH_SPRITES.E4, "i:": MOUTH_SPRITES.E4, "i@": MOUTH_SPRITES.E2, "i@3": MOUTH_SPRITES.E2, "I": MOUTH_SPRITES.E3, 
+    "I2": MOUTH_SPRITES.E3, "I#": MOUTH_SPRITES.E3, "aI": MOUTH_SPRITES.E4, "0": MOUTH_SPRITES.E3,
+    "oU": MOUTH_SPRITES.O1, "O": MOUTH_SPRITES.E3, "O:": MOUTH_SPRITES.E3, "OI": MOUTH_SPRITES.O1, "O@": MOUTH_SPRITES.O2, "o@": MOUTH_SPRITES.O2,
+    "aU": MOUTH_SPRITES.O1, "U": MOUTH_SPRITES.O1, "U@": MOUTH_SPRITES.O2, "u": MOUTH_SPRITES.O1, "u:": MOUTH_SPRITES.O1,
+    "V": MOUTH_SPRITES.E4, "a#": MOUTH_SPRITES.E2, "@": MOUTH_SPRITES.E2, "@2": MOUTH_SPRITES.O2, "@-": MOUTH_SPRITES.O2,
+    "b": MOUTH_SPRITES.CL, "d": MOUTH_SPRITES.E1, "f": MOUTH_SPRITES.E1, "g": MOUTH_SPRITES.E1, "h": MOUTH_SPRITES.E1,
+    "dZ": MOUTH_SPRITES.O1, "Z": MOUTH_SPRITES.O1, "k": MOUTH_SPRITES.E1, "@L": MOUTH_SPRITES.E2, "l": MOUTH_SPRITES.E1,
+    "m": MOUTH_SPRITES.CL, "n": MOUTH_SPRITES.E1, "n-": MOUTH_SPRITES.E1, "N": MOUTH_SPRITES.E1,
+    "p": MOUTH_SPRITES.CL, "r": MOUTH_SPRITES.O2, "r-": MOUTH_SPRITES.O2, "s": MOUTH_SPRITES.E1, "S": MOUTH_SPRITES.O2,
+    "t": MOUTH_SPRITES.E1, "t#": MOUTH_SPRITES.E1, "t2": MOUTH_SPRITES.E1, "T": MOUTH_SPRITES.E1, "tS": MOUTH_SPRITES.O1,
+    "D": MOUTH_SPRITES.E1, "v": MOUTH_SPRITES.E1, "w": MOUTH_SPRITES.O1, "j": MOUTH_SPRITES.E1, "z": MOUTH_SPRITES.E1,
+    ";": -1, "_": MOUTH_SPRITES.CL, "_:": MOUTH_SPRITES.CL
+};
+
+function clamp(min, x, max) {
+    return Math.min(Math.max(x, min), max);
+}
+
+function s4() {
+    return floor((1 + random()) * 0x10000).toString(16).substring(1);
+}
+// F*ck safari
+if (/iP(ad|hone|od)/.test(navigator.userAgent)) {
+    let timeout;
+    document.addEventListener("touchstart", (e) => {
+        if (e.touches.length > 1) {
+            clearTimeout(timeout);
+            return;
+        };
+        let touch = e.touches[0];
+        timeout = setTimeout(() => {
+            let event = new MouseEvent("contextmenu", {
+                bubbles: true,
+                cancelable: true,
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+            });
+            console.log(e, event);
+            e.target.dispatchEvent(event);
+        }, 500);
+    });
+    document.addEventListener("touchend", () => clearTimeout(timeout));
+    document.addEventListener("touchmove", () => clearTimeout(timeout));
+}
+
+
+function sanitize(text) {
+    return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&apos;");
+}
+
+
+window.onclick = (e) => {
+    let spoiler = e.target.closest("GAY-SPOILER");
+    if (spoiler) spoiler.classList.add("reveal");
+};
+
+let rules = {
+    "**": "b",
+    "~~": "i",
+    "--": "s",
+    "__": "u",
+    "``": "code",
+    "^^": "gay-big", // these are fine
+    "$r$": "gay-rainbow",
+    "||": "gay-spoiler",
+    "%%": "marquee",
+    "=g=": "gay-glow",
+    "=b2=": "gay-bigger",
+    "=b3=": "gay-biggest",
+}
+
+function markup(text) {
+    text = sanitize(text);
+    text = text
+        .replace(/(^|\\n)(&gt;.*?)($|\\n)/g, "$1<span class=\"greentext\">$2</span>$3")
+        .replace(/(^|\\n)(&lt;.*?)($|\\n)/g, "$1<span style=\"color: #f59e42;\">$2</span>$3")
+        .replaceAll("\\n", "<br>");
+
+    let tokenList = keys(rules).sort((a, b) => b.length - a.length);
+
+    let parts = [];
+    let i = 0;
+    while (i < text.length) {
+        let matched = false;
+        for (let token of tokenList) {
+            if (text.slice(i, i + token.length) === token) {
+                parts.push({ type: "token", token });
+                i += token.length;
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            if (parts.length > 0 && parts[parts.length - 1].type === "text") {
+                parts[parts.length - 1].value += text[i];
+            } else {
+                parts.push({ type: "text", value: text[i] });
+            }
+            i++;
+        }
+    }
+
+    let stack = [];
+    let result = "";
+    for (let part of parts) {
+        if (part.type === "text") {
+            result += part.value;
+            continue;
+        }
+        let token = part.token;
+        let tag = rules[token];
+        let idx = stack.indexOf(token);
+        if (idx === -1) {
+            stack.push(token);
+            result += `<${tag}>`;
+        } else {
+            let toReopen = [];
+            while (stack.length > idx + 1) {
+                let inner = stack.pop();
+                result += `</${rules[inner]}>`;
+                toReopen.push(inner);
+            }
+            stack.pop();
+            result += `</${tag}>`;
+            for (let r of toReopen.reverse()) {
+                stack.push(r);
+                result += `<${rules[r]}>`;
+            }
+        }
+    }
+
+        while (stack.length > 0) {
+        let token = stack.pop();
+        result += `</${rules[token]}>`;
+    }
+
+    text = result;
+    text = text
+        .replaceAll("{FRANCE}", "<img src=\"./img/icon/france.svg\" class=\"flag\" alt=\"\u{1F1EB}\u{1F1F7}\">")
+        .replace(/(https?:\/\/[^\s<>"']+)/g, "<a target=\"_blank\" href=\"$1\">$1</a>");
+    return text;
+}
+
+function nmarkup(text) {
+    while (text.includes("^^") || text.includes("||") || text.includes("\\n") || text.includes("%%")) {
+        text = text.replaceAll("^^", "").replaceAll("||", "").replaceAll("\\n", "").replaceAll("%%", "");
+    }
+    return markup(text);
+}
+
+function misolate(text) {
+    let tokens = [];
+    for (let i = 0; i < text.length; i++) {
+        for (let token of keys(rules)) {
+            if (text.slice(i, i + token.length) === token) {
+                if (tokens.includes(token)) {
+                    tokens.splice(tokens.indexOf(token), 1);
+                } else {
+                    tokens.unshift(token);
+                }
+            }
+        }
+    }
+    return text + tokens.join("");
+}
+
+function nisolate(text) {
+    while (text.includes("^^") || text.includes("||") || text.includes("\\n")) {
+        text = text.replaceAll("^^", "").replaceAll("||", "").replaceAll("\\n", "");
+    }
+    return misolate(text);
+}
+
+function markdownToSpeech(say, french) {
+    return say
+        .replace(/\|\|.+?(\|\||$)/g, french ? "divulgacher" : "spoiler")
+        .replace(/\^\^|\$r\$|\*\*|--|~~|__|\\n|%%|=g=|=b2=|=b3=|/g, "");
+}
+
+const pollColors = [
+    ["lime", "#cfc", "#060"],
+    ["red", "#fcc", "#600"],
+    ["#0055ff", "#cceeff", "#036"],
+    ["yellow", "#ffc", "#660"],
+    ["magenta", "#fcf", "#606"],
+    ["orange", "#edbd95", "#606"],
+    ["purple", "#a273d9", "#600"],
+    ["gray", "#707070", "#600"],
+    ["#03f8fc", "#a4e9eb", "#600"],
+    ["#00ff84", "#a7f2ce", "#600"],
+];
+
+function createPoll(poll, opt = {}) {
+    let element = document.createElement("div");
+    element.classList.add("poll");
+    element.classList.add(`poll_${poll.id}`);
+    
+    let html = `${markup(poll.title)}<br>`;
+    
+    poll.options.forEach((option, i) => {
+        html += `<div class="poll_option option_${i}">${nmarkup(option)}: <span class="option_number">0</span></div>`;
+    });
+    
+    element.innerHTML = html;
+    element.poll = poll;
+    
+    poll.options.forEach((option, i) => {
+        let optionElement = element.querySelector(`.option_${i}`);
+        optionElement.onclick = () => {
+            socket.emit("vote", {
+                poll: poll.id,
+                vote: i,
+            });
+            if (opt.onvote) opt.onvote({ vote: i });
+        };
+        let [color1, color2, border] = pollColors[i % pollColors.length];
+        let percent = 1 / poll.options.length * 100;
+        optionElement.style.backgroundImage = 
+            `linear-gradient(to right, ${color1} ${percent}%, ${color2} ${percent}%)`;
+        optionElement.style.borderColor = border;
+    });
+
+    return element;
+}
+
+function updatePoll(id, voterId, vote) {
+    let elements = document.querySelectorAll(`.poll_${id}`);
+    if (elements.length === 0) return;
+    let poll = elements[0].poll;
+    if (vote !== null) poll.votes[voterId] = vote;
+    
+
+    let counts = new Array(poll.options.length).fill(0);
+    Object.values(poll.votes).forEach(v => {
+        if (v >= 0 && v < counts.length) counts[v]++;
+    });
+    
+    let totalVotes = Object.values(poll.votes).length;
+    
+    for (let element of elements) {
+        poll.options.forEach((_, i) => {
+            let count = counts[i];
+            let percentage = count / totalVotes * 100;
+            let [color1, color2] = pollColors[i];
+            
+            element.querySelector(`.option_${i} .option_number`).innerText = count;
+            element.querySelector(`.option_${i}`).style.backgroundImage = 
+                `linear-gradient(to right, ${color1} ${percentage}%, ${color2} ${percentage}%)`;
+        });
+    }
+}
+
+let lastZ = 1;
+let sharedAudioCtx = null;
+let dragged = null;
+let dragX = 0;
+let dragY = 0;
+let chatLogDragged = false;
+
+let colors = ["purple", "blue", "green", "yellow", "red", "pink", "brown", "black", "cyan", "black", "pope", "blessed", "white"];
+let hats = ["tophat", "bfdi", "bieber", "evil", "elon", "kamala", "maga", "troll", "bucket", "obama", "dank", "witch", "wizard"]
+
+let quote = null;
+let lastUser = "";
+
+function time() {
+    let date = new Date();
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+    let hourString = String(hours % 12).padStart(2, "0");
+    let minuteString = String(minutes).padStart(2, "0");
+    let ampm = hours >= 12 ? "PM" : "AM";
+    return `${hourString}:${minuteString} ${ampm}`;
+}
+
+const roleIcons = [
+    { runlevel: 5, name: "Owner", file: "owner" },
+    { runlevel: 4.75, name: "Hyperpope", file: "hyperpope" },
+    { runlevel: 4.5, name: "Superpope", file: "superpope" },
+    { runlevel: 4, name: "Pope", file: "pope" },
+    { runlevel: 3, name: "High King", file: "highk" },
+    { runlevel: 1.5, name: "Low King", file: "lowk" },
+    { runlevel: 1.2, name: "Janitor", file: "janitor" },
+];
+
+function roleIconMarkup(runlevel) {
+    const role = roleIcons.find(role => Number(runlevel) >= role.runlevel);
+    if (!role) return "";
+
+    return `<img class="role_icon" src="img/roles/${role.file}.svg" alt="${role.name}" title="${role.name}">`;
+}
+
+function roleNameMarkup(name, runlevel) {
+    return roleIconMarkup(runlevel) + nmarkup(name);
+}
+
+function bonzilog(id, name, html, color, text, single, msgid, pfp, runlevel) {
+    // hacky
+    // remind me to rewrite this as this is the biggest peice of dogshit
+    let icon = "";
+    let scrolled = chat_log_content.scrollHeight - chat_log_content.clientHeight - chat_log_content.scrollTop <= 20;
+    if (pfp) {
+        icon = `<div class="log_icon">
+            <img class="color custom_pfp" src="${sanitize(pfp)}">
+        </div>`;
+    } else if (color) {
+        let [baseColor, ...hats] = color.split(" ");
+        icon = `<div class="log_icon">
+            <img class="color" src="img/pfp/${baseColor}.webp">
+            ${hats.map(hat => `<img class="hat" src="img/pfp/${hat}.webp">`).join(" ")
+            }
+        </div>`;
+    } else {
+        icon = `<div class="log_left_spacing"></div>`;
+    }
+    let thisUser = `${id};${name};${color};${pfp || ""};${runlevel ?? ""}`;
+    let showDelete = (admin || king) && msgid;
+    if (thisUser !== lastUser || single) {
+        let timeString = `<span class="log_time">${time()}</span>`;
+        chat_log_content.insertAdjacentHTML("beforeend", `
+            <hr>
+            <div class="log_message" ${msgid ? `id="msg_${msgid}"` : ""}>
+                ${icon}
+                <div class="log_message_cont">
+                    <div class="reply"></div>
+                    ${showDelete ? "<div class=\"delete\"></div><div class=\"ban\"></div>" : ""}
+                    <span><b>${roleNameMarkup(name, runlevel)}</b> ${name ? timeString : ""}</span>
+                    <div class="log_message_content">${html} ${name ? "" : timeString}</div> 
+                </div>
+            </div>`);
+        lastUser = single ? "" : thisUser;
+    } else {
+        chat_log_content.insertAdjacentHTML("beforeend", `
+            <div class="log_message log_continue" ${msgid ? `id="msg_${msgid}"` : ""}>
+                <div class="reply"></div>
+                ${showDelete ? "<div class=\"delete\"></div><div class=\"ban\"></div>" : ""}
+                <div class="log_left_spacing"></div>
+                <div class="log_message_cont">
+                    <div class="log_message_content">${html}</div>
+                </div>
+            </div>`);
+    }
+    chat_log_content.lastChild.querySelector(".reply").onclick = () => {
+        quote = { name, text };
+        if (id === "server") quote.name = "SERVER";
+        talkcard.innerHTML = `Replying to ${nmarkup(quote.name)}`;
+        chat_message.focus();
+        talkcard.hidden = false;
+    };
+    chat_log_content.lastChild.onauxclick = (e) => {
+        if (e.button === 1) {
+            cmd(`delete ${msgid}`);
+        }
+    };
+    if (showDelete) {
+        chat_log_content.lastChild.querySelector(".delete").onclick = () => {
+            cmd(`delete ${msgid}`);
+        };
+        chat_log_content.lastChild.querySelector(".ban").onclick = () => {
+            cmd(`banmsg ${msgid}`);
+        };
+    }
+    if (scrolled) {
+        chat_log_content.scrollTop = chat_log_content.scrollHeight;
+    }
+}
+
+function toBgImg(name, color) {
+    return `url("img/bonzi/${color.split(" ")[0]}.webp")`;
+}
+
+function toHatImg(color) {
+    let [base, ...hats] = color.split(" ");
+    return hats.map(hat => `url("img/bonzi/${hat}.webp")`).reverse().join(", ");
+}
+
+let logJoins = false;
+
+class Bonzi {
+    #mediaReady = false;
+
+    constructor(id, userPublic) {
+        this.userPublic = userPublic || {
+            name: "BonziBUDDY",
+            color: "purple",
+            speed: 175,
+            pitch: 50,
+            voice: "en-us",
+        };
+        this.color = this.userPublic.color;
+        this.data = window.BonziData;
+
+        this.eventList = [];
+        this.eventFrame = 0;
+        this.currentAnim = "idle";
+        this.animFrame = 0;
+        this.sprite = 0;
+        this.lipTimings = [];
+        this.lipStartTime = 0;
+        this.customAudio = null;
+        this.audioAnalyser = null;
+        this.audioDataArray = null;
+
+        this.mute = false;
+        this.id = id || s4() + s4();
+
+        this.rng = new seedrandom(this.id || random());
+        this.abortController = new AbortController();
+
+        this.element = document.createElement("div");
+        this.element.classList.add("bonzi");
+        this.element.style.backgroundImage = this.toBgImg();
+
+        this.hatLayer = document.createElement("div");
+        this.hatLayer.classList.add("bonzi_hat");
+        this.hatLayer.style.backgroundImage = toHatImg(this.color);
+        this.element.appendChild(this.hatLayer);
+        this.element.style.zIndex = lastZ++;
+        this.nametag = document.createElement("div");
+        this.nametag.classList.add("bonzi_name");
+        this.element.appendChild(this.nametag);
+        this.tag = document.createElement("div");
+        this.tag.classList.add("bonzi_tag");
+        this.element.appendChild(this.tag);
+        this.bubble = document.createElement("div");
+        this.bubble.classList.add("bubble");
+        this.bubble.hidden = true;
+        this.bubbleCont = document.createElement("div");
+        this.bubbleCont.classList.add("bubble_cont");
+        this.bubble.appendChild(this.bubbleCont);
+        this.element.appendChild(this.bubble);
+        content.appendChild(this.element);
+
+        this.updateName();
+        this.updateSprite();
+        this.updateTag();
+
+        this.element.onpointerdown = (e) => {
+            if (this.bubble.contains(e.target)) return;
+            if (e.which === 1) {
+                if (!gravity) dragged = this;
+                dragX = e.pageX - this.x;
+                dragY = e.pageY - this.y;
+                this.lastX = this.x;
+                this.lastY = this.y;
+                this.element.style.zIndex = lastZ++;
+            }
+            if (e.which === 2) {
+                this.cancel();
+                this.mute = !this.mute;
+                this.updateName();
+            }
+        };
+        this.element.addEventListener("contextmenu", (e) => {
+            if (this.bubble.contains(e.target)) e.stopPropagation();
+        });
+        this.element.onclick = (e) => {
+            if (this.bubble.contains(e.target)) return;
+            if (this.x === this.lastX && this.y === this.lastY) {
+                this.cancel();
+            }
+        };
+
+        this.shuffle();
+        this.element.id = s4() + s4();
+
+        this.banReason = "Spambotting";
+        $.contextMenu({
+            selector: `#${this.element.id}`,
+            build: () => {
+                return {
+                    items: {
+                        "cancel": {
+                            name: "Cancel",
+                            callback: () => { this.cancel(); }
+                        },
+                        "userinfo": {
+    name: "User Info",
+    callback: () => {
+        showUserInfo(this);
+    }
+},
+                        "mute": {
+                            name: () => this.mute ? "Unmute" : "Mute",
+                            callback: () => {
+                                this.cancel();
+                                this.mute = !this.mute;
+                                this.updateName();
+                            }
+                        },
+                        "hey": {
+                            name: "Call this user",
+                            isHtmlName: true,
+                            callback: () => {
+                                socket.emit("talk", {
+                                    text: `Hey, ${this.userPublic.name}!`,
+                                });
+                            }
+                        },
+                        "insults": {
+                        name: "Insults",
+                            items: { 
+                            "asshole": {
+                            name: "Call an Asshole",
+                            callback: () => {
+                                cmd(`asshole ${this.userPublic.name}`);
+                            }
+                        },
+                                "owo": {
+                                    name: "Notice bulge",
+                                    callback: () => {
+                                        cmd(`owo ${this.userPublic.name}`)
+                                    }
+                                },
+                        "bitch": {
+                            name: "Call a Stupid Bitch",
+                            callback: () => {
+                                socket.emit("talk", {
+                                    text: `Hey ${this.userPublic.name} guess what? You're a stupid bitch! You're a stupid fucking bitch! I can't believe how dumb you are...`,
+                                });
+                            }
+                        },
+                        "stfu": {
+                            name: "Tell to STFU",
+                            callback: () => {
+                                socket.emit("talk", {
+                                    text: `${this.userPublic.name} shut the fuck up, ` + (Math.random()>0.5 ? ` because I'm tired of your bullshit` : ` NOW!`),
+                                });
+                            }
+                        
+                                
+                            //unclean code cuz i am not experienced
+                        },
+                                "shitbox": {
+                                    name: "Call a Shitbox Gooner",
+                                    callback: () => {
+                                        //cmd(`shitbox ${this.userPublic.name}`)
+                                        socket.emit("talk", {
+                                            text: `"Shitbox gooner" is removed from the context menu because of the fact that some of tendo's friends hate numberblocks. It was also changed the catchphrases.`
+                                        })                                    
+                                    }
+                                },
+                            }
+                        },
+                        "fun": {
+                            name: "Fun (Mod)",
+                            items: {
+                                "bless": {
+                                    name: "Bless",
+                                    callback: () => {
+                                        cmd(`bless ${this.id}`);
+                                    },
+                                },
+                                "nameedit": {
+                                    name: "Change Name",
+                                    callback: () => {
+                                        cmd(`nameedit ${this.id} ${prompt("give this guy a name")}`);
+                                    },
+                                },
+                                "tagedit": {
+                                    name: "Change Tag",
+                                    callback: () => {
+                                        cmd(`tagedit ${this.id} ${prompt("give this guy a tag")}`);
+                                    },
+                                },
+                                "nuke": {
+                                    name: "NUKE",
+                                    callback: () => {
+                                        cmd(`nuke ${this.id}`);
+                                    }
+                                },
+                                "shitboxify": {
+                                    name: "TURN INTO A SHITBOX GOONER",
+                                    callback: () => {
+                                        cmd(`shitboxify ${this.id}`);
+                                    }
+                                },
+                            },
+                            visible: () => admin || king,
+                        },
+                        "mod": {
+                            name: "Mod",
+                            items: {
+                                "banreason": {
+                                    name: "Ban/Kick Reason",
+                                    type: "text",
+                                    value: this.banReason,
+                                    events: {
+                                        input: (e) => {
+                                            this.banReason = e.target.value;
+                                        },
+                                    },
+                                },
+                                "kick": {
+                                    name: "Kick",
+                                    callback: () => {
+                                        cmd(`kick ${this.id, this.banReason}`);
+                                    },
+                                },
+                                "tempban": {
+                                    name: "Temp Ban (5m)",
+                                    callback: () => {
+                                        cmd(`tempban short ${this.id} ${this.banReason}`);
+                                    },
+                                },
+                                "tempban2": {
+                                    name: "Temp Ban (1h)",
+                                    callback: () => {
+                                        cmd(`tempban long ${this.id} ${this.banReason}`);
+                                    },
+                                },
+                                "shush": {
+                                    name: "Shush",
+                                    callback: () => {
+                                        cmd(`shush ${this.id}`);
+                                    },
+                                },
+                                /*"control": {
+                                    name: "Control",
+                                    callback: () => {
+                                        let text = prompt("Enter text to control this user");
+                                        if (text) {
+                                            cmd(`control ${this.id} ${text}`);
+                                        }
+                                    }
+                                },*/
+                                "fuckoff": {
+                                    name: "NUKE BY F",
+                                    callback: () => {
+                                        cmd(`removefaggot ${this.id}`)
+                                    }
+                                },
+                            },
+                            visible: () => admin || king,
+                        },
+                        "pope": {
+                            name: "Pope",
+                            items: {
+                                "ban": {
+                                    name: "Ban",
+                                    callback: () => {
+                                        cmd(`ban ${this.id}`);
+                                    },
+                                },
+                                "info": {
+                                    name: "Leak IP",
+                                    callback: () => {
+                                    alert('not working :\'(');
+                                    },
+                                },
+                                "jannify": {
+                                    name: "Jannify",
+                                    callback: () => {
+                                        cmd(`jannify ${this.id}`);
+                                    },
+                                },
+                            },
+                            visible: () => admin,
+                        },
+                        "promote": {
+                            name: "Promote...",
+                            callback: () => {
+                                promotePopup(this);
+                            },
+                            visible: () => isOwner,
+                        },
+                        "demote": {
+                            name: "Demote",
+                            callback: () => {
+                                cmd(`demote ${this.id}`);
+                            },
+                            visible: () => isOwner,
+                        }
+                    }
+                };
+            },
+            animation: {
+                duration: 175,
+                show: 'fadeIn',
+                hide: 'fadeOut'
+            }
+        });
+        this.eventList = [{
+            type: "anim",
+            anim: "surf_intro",
+            ticks: 30
+        }, { type: "idle" }];
+        if (gravity) {
+            this.element.classList.add("box2d");
+            addElement(this.element);
+        }
+    }
+
+    toBgImg() {
+        return toBgImg(this.userPublic.name, this.color);
+    }
+
+    move(x, y) {
+        if (arguments.length !== 0) {
+            this.x = x;
+            this.y = y;
+        }
+        let max = this.maxCoords();
+        let min = this.minCoords();
+        this.x = clamp(min.x, this.x, max.x);
+        this.y = clamp(min.y, this.y, max.y);
+        this.element.style.left = `${this.x}px`;
+        this.element.style.top = `${this.y}px`;
+        this.updateDialog();
+    }
+
+    runEvent(list) {
+        if (this.mute) return;
+        this.cancel();
+        this.eventList = [{ type: "idle" }, ...list, { type: "idle" }];
+    }
+
+    clearDialog() {
+        this.bubbleCont.textContent = "";
+        this.bubble.hidden = true;
+        this.stopSpeaking();
+    }
+
+    cancel() {
+        this.clearDialog();
+        this.eventList = [{ type: "idle" }];
+        this.eventFrame = 0;
+    }
+
+    stopSpeaking() {
+        this.abortController.abort();
+        this.abortController = new AbortController();
+        if (this.voiceSource) {
+            this.voiceSource.stop();
+        }
+        if (this.customAudio) {
+            this.customAudio.pause();
+            this.customAudio.onended = null;
+            this.customAudio.onerror = null;
+            this.customAudio = null;
+        }
+        this.audioAnalyser = null;
+        this.audioDataArray = null;
+        this.lipTimings = [];
+        this.lipStartTime = 0;
+    }
+
+    setSprite(sprite) {
+        this.sprite = sprite;
+        this.element.style.backgroundPositionX = `-${sprite % 12 * 200}px`;
+        this.element.style.backgroundPositionY = `-${floor(sprite / 12) * 160}px`;
+        this.hatLayer.hidden = !(sprite === 0 || sprite >= 142);
+    }
+
+    setAnim(anim) {
+        this.currentAnim = anim;
+        this.animFrame = 0;
+    }
+    
+    update() {
+        let anim = this.data.sprite.animations[this.currentAnim];
+        let frame = anim[this.animFrame];
+        while (typeof frame === "string") {
+            this.setAnim(frame);
+            anim = this.data.sprite.animations[this.currentAnim];
+            frame = anim[this.animFrame];
+        }
+        if (frame != null) this.setSprite(frame);
+        this.animFrame++;
+
+        if (this.eventList.length === 0) {
+            return;
+        }
+        let nextEvent = () => {
+            this.eventList.shift();
+            this.eventFrame = 0;
+        };
+        let event = this.eventList[0];
+        let eventType = event.type;
+        switch (eventType) {
+            case "anim":
+                if (this.eventFrame === 0) {
+                    this.setAnim(event.anim);
+                }
+                this.eventFrame++;
+                if (this.eventFrame >= event.ticks) {
+                    nextEvent();
+                }
+                break;
+            case "html":
+            case "text":
+                if (this.eventFrame === 0) {
+                    this.talk(event.text, event.say, {
+                        quote: event.quote,
+                        french: event.french,
+                        xss: event.xss || eventType === "html",
+                        msgid: event.msgid,
+                    });
+                    this.eventFrame = 1;
+                };
+                if (this.bubble.hidden) nextEvent();
+                break;
+            case "idle":
+                if (this.eventFrame === 0) {
+                    this.eventFrame = 1;
+                    let toIdle = this.data.to_idle[this.currentAnim];
+                    if (toIdle) {
+                        this.setAnim(toIdle);
+                    } else {
+                        this.setAnim("idle");
+                    }
+                }
+                if (this.sprite === 0) {
+                    nextEvent();
+                }
+                break;
+            case "add_random":
+                let pool = event.pool;
+                let index = floor(pool.length * this.rng());
+                let events = pool[index];
+                nextEvent();
+                for (let e of events.toReversed()) {
+                    this.eventList.unshift(e);
+                }
+                break;
+            case "image":
+                if (this.eventFrame === 0) {
+                    this.#showImage(event.url, event.msgid);
+                }
+                this.eventFrame++;
+                if (this.eventFrame > 15 * 10) this.clearDialog();
+                if (this.bubble.hidden && this.#mediaReady) nextEvent();
+                break;
+            case "video":
+                if (this.eventFrame === 0) {
+                    this.#showVideo(event.url, event.msgid);
+                }
+                this.eventFrame++;
+                let video = this.bubble.querySelector("video");
+                if (!video?.paused || document.fullscreenElement === video) this.eventFrame = 1;
+                if (this.eventFrame > 15 * 10) this.clearDialog();
+                if (this.bubble.hidden && this.#mediaReady) nextEvent();
+                break;
+            case "poll":
+                if (this.eventFrame === 0) {
+                    this.#showPoll(event.id, event.text, event.options);
+                }
+                this.eventFrame++;
+                if (this.eventFrame > 15 * 30) this.clearDialog();
+                if (this.bubble.hidden) nextEvent();
+                break;
+            case "audio":
+                if (this.eventFrame === 0) {
+                    this.#playAudio(event.url, event.text, event.msgid);
+                }
+                this.eventFrame++;
+                if (this.eventFrame > 15 * 60) this.clearDialog();
+                if (this.bubble.hidden) nextEvent();
+                break;
+                case "rickroll":
+                                if (this.eventFrame === 0) {
+                                        this.#showRickroll(event.text);
+                                }
+                                this.eventFrame++;
+                                if (this.eventFrame > 15 * 10 && this.bubbleCont.querySelector("a")) this.clearDialog();
+                                if (this.bubble.hidden) nextEvent();
+        }
+    }
+
+    updateLipsync() {
+        if (this.audioAnalyser && this.audioDataArray) {
+            this.audioAnalyser.getByteFrequencyData(this.audioDataArray);
+            let sum = 0;
+            for (let i = 0; i < this.audioDataArray.length; i++) sum += this.audioDataArray[i];
+            let avg = sum / this.audioDataArray.length;
+            let volume = avg / 255;
+            let mouthSprite = MOUTH_SPRITES.CL;
+            if (volume <= 0) mouthSprite = MOUTH_SPRITES.CL;
+            else if (volume < 0.1) mouthSprite = MOUTH_SPRITES.CL;
+            else if (volume < 0.15) mouthSprite = MOUTH_SPRITES.E2;
+            else if (volume < 0.2) mouthSprite = MOUTH_SPRITES.E4;
+            else mouthSprite = MOUTH_SPRITES.E3;
+            if (this.sprite === 0 || this.sprite >= 142) {
+                this.setSprite(mouthSprite);
+            }
+            return;
+        }
+        if (this.lipTimings.length > 0 && this.lipStartTime > 0) {
+            let ms = performance.now() - this.lipStartTime;
+            let pho = "_";
+            for (let i = 0; i < this.lipTimings.length; i++) {
+                if (ms < this.lipTimings[i][0]) break;
+                pho = this.lipTimings[i][1];
+            }
+            let mouthSprite = PHONEME_TO_MOUTH[pho];
+            if (this.sprite === 0 || this.sprite >= 142) {
+                if (mouthSprite != null && mouthSprite !== -1) {
+                    this.setSprite(mouthSprite);
+                }
+            }
+        }
+    }
+    nonsense() {
+        const nonsenseWords = [
+            "hi",
+            "banana",
+            "bonzi",
+            "clocks",
+            "bonzis",
+            "clock",
+            "➡️",
+            "⬅️",
+            "GRRRRRRRRRRR!!!",
+            "!",
+            "?",
+            ".",
+            ",",
+            "😂",
+            "😭",
+            "what ya doing",
+            "me jew",
+            "NUKE",
+            "bonziSKIDS",
+            "😡",
+            "😆",
+            "😅", "behh", "ohohohohohohoh", "AH! I'm blowing like a Balloon!", "fuck you", "pissers", "ass", "he", "him", "his", "she", "her", "hers", "aer", "ae", "aers", "family guy", "roblox", "minecraft", "skyboxer", "im a pancake", "broken microphone", "AH! I'm not feeling good", "💀", "ts", "pmo", "in the big 26", "penisini", "whisper", "sideways", "through", "electric", "velvet", "pancakes", "fuuuuuu", "Fuc", `"'xccxc cxcc'"`, "bznzn", "schzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "SOMEONE STOLE THE FIRE FROM THE HOLE", "Nigs", "🚗", "🚙", "🚑", "marquee", "reinbow", "NYAN CAT", "me after", "AH! I'm having an stroke", "AH!", "Hell fucking yeah", "smfh", "asshole", "who cares", "FAMMMS", "Nigers", "Fufuu", "Dabba", "bworg", "mickai.me", "bonzi.gay", "bw rejunglified", "gwordps", "send", "how to vault codes?", "💩", "🐢", "clocked", "7727772162", "fuckckckkkkkkkkkk", "FufuFuFuFu", "pneumonoultramicroscopicsilicovolcanoconiosis", "i am", "he is", "fucc", "sugma dicc", "me when", "eating", "taco bell", "mcdonalds", "burger king", "kfc", "chipotle", "pizza hut", "dominos", "semjg mex",
+    "ME AFTER EATING TACO BELL", "WHAT am i", "BUTT3R", "egg. CAN YOU STOP TURNING PEOPLE INTO- egg.", "fuck you",
+            "uh uh balazo", "I like numberblocks.", "agent smith"
+            ];
+        const result = [];
+
+  for (let i = 0; i < Math.floor(Math.random()*750); i++) {
+    // Pick a random index from the array
+    const randomIndex = Math.floor(Math.random() * nonsenseWords.length);
+    result.push(nonsenseWords[randomIndex]);
+  }
+
+  // Join the array elements with a space
+  const re = result.join(" ");
+        
+        this.runEvent([{type: "text", text: re}]);
+    }
+    talk(text, say, { quote, french, msgid, xss } = {}) {
+        if (say == null) say = text;
+        this.stopSpeaking();
+        this.bubble.hidden = false;
+        text = text
+            .replaceAll("{NAME}", nisolate(this.userPublic.name.replaceAll("$", "$$")))
+            .replaceAll("[scrambled]", () => {
+  return Math.random().toString(36).substring(2, 10);
+})
+            .replaceAll("{COLOR}", this.color);
+        if (say != null) {
+            say = say
+                .replaceAll("{NAME}", this.userPublic.name)
+                .replaceAll("{COLOR}", this.color);
+            say = markdownToSpeech(say, french);
+        }
+
+        if (french) {
+            text = "{FRANCE} " + text;
+            say = "[[_^_fr]] " + say;
+        }
+
+        // text = linkify(text);
+        let quoteHTML = "";
+        if (quote) {
+            quoteHTML = `
+                <blockquote>
+                    ${markup(quote.text)}
+                </blockquote>
+                <font color="blue">@${nmarkup(quote.name)}</font>
+            `;
+            if (!say.startsWith("-")) say = `at ${markdownToSpeech(quote.name, french)}, ${say}`;
+        }
+        let html = `${quoteHTML}${twemoji.parse(text === "{TOPJEJ}" ? "<img src='./img/misc/topjej.png'>" : xss ? text : markup(text), { folder: 'svg', ext: '.svg'})}`;
+        for (let word of wordBlacklist) {
+            word = word.trim().toLowerCase();
+            if (word.length === 0) continue;
+            if (text.toLowerCase().includes(word)) {
+                html = `This message was blacklisted. <button data-html="${sanitize(html)}" onclick="this.parentElement.innerHTML = this.getAttribute('data-html')">Show</button>`;
+                say = "-";
+                break;
+            }
+        }
+        this.bubbleCont.innerHTML = html;
+
+        // here marks the point where i fucking give up
+        bonzilog(this.id, this.userPublic.name, html, this.color, text, quoteHTML !== "", msgid, this.userPublic.pfp, this.userPublic.runlevel);
+
+        if (!say.startsWith("-")) {
+            speak.play(say, {
+                "pitch": this.userPublic.pitch,
+                "speed": this.userPublic.speed
+            }, () => {
+                if (!text.includes("||")) this.clearDialog();
+            }, (source, lip) => {
+                this.voiceSource = source;
+                this.lipStartTime = performance.now();
+                this.lipTimings = lip;
+            }, this.abortController.signal);
+        }
+    }
+
+    joke() { this.runEvent(this.data.event_list_joke); }
+
+    fact() { this.runEvent(this.data.event_list_fact); }
+
+    wtf() { this.runEvent(this.data.event_list_wtf) }
+
+    copypasta() { this.runEvent(this.data.event_list_copypasta); }
+
+    poll(id, text, options = ["Yes", "Maybe", "No"]) {
+        this.runEvent([{ type: "poll", id, text, options }]);
+    }
+
+    #showPoll(id, text, options) {
+        let poll = {
+            id: id,
+            title: text,
+            options: options,
+            votes: [],
+        };
+        for (let word of wordBlacklist) {
+            word = word.trim().toLowerCase();
+            if (word.length === 0) continue;
+            if (text.toLowerCase().includes(word) || options.some(option => option.toLowerCase().includes(word))) {
+                this.talk("(blacklisted poll)", "-");
+                return;
+            }
+        }
+        let element = createPoll(poll, { 
+            onvote() {
+                this.eventFrame = 1;
+            }
+        });
+        this.bubbleCont.textContent = "";
+        this.bubbleCont.appendChild(element);
+        this.bubble.hidden = false;
+        let element2 = createPoll(poll);
+        let scrolled = chat_log_content.scrollHeight - chat_log_content.clientHeight - chat_log_content.scrollTop <= 1;
+        bonzilog(this.id, this.userPublic.name, "", this.color, `(POLL) ${text}`, true, undefined, this.userPublic.pfp, this.userPublic.runlevel);
+        chat_log_content.lastChild.querySelector(".log_message_content").appendChild(element2);
+        if (scrolled) {
+            chat_log_content.scrollTop = chat_log_content.scrollHeight;
+        }
+        speak.play(markdownToSpeech(text), {
+            "pitch": this.userPublic.pitch,
+            "speed": this.userPublic.speed
+        }, () => { }, (source, lip) => {
+            this.voiceSource = source;
+            this.lipStartTime = performance.now();
+            this.lipTimings = lip;
+        }, this.abortController.signal);
+    }
+
+    image(url, msgid) {
+        this.runEvent([{ type: "image", url: url.replaceAll("https://files.catbox.moe/m4dufz.png", "https://files.catbox.moe/u037iz.jpg"), msgid }]);
+    }
+
+    #playAudio(url, text, msgid) {
+        let safeText = text ? markup(text) : "";
+        this.bubbleCont.innerHTML = safeText;
+        this.bubble.hidden = false;
+        bonzilog(this.id, this.userPublic.name, this.bubbleCont.innerHTML, this.color, text ? `${text} (AUDIO)` : "(AUDIO)", false, msgid, this.userPublic.pfp, this.userPublic.runlevel);
+
+        let audio = new Audio(url);
+        audio.crossOrigin = "anonymous";
+        this.customAudio = audio;
+
+        try {
+            if (!sharedAudioCtx) sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (sharedAudioCtx.state === "suspended") sharedAudioCtx.resume();
+            let source = sharedAudioCtx.createMediaElementSource(audio);
+            let analyser = sharedAudioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            analyser.smoothingTimeConstant = 0.6;
+            source.connect(analyser);
+            analyser.connect(sharedAudioCtx.destination);
+            this.audioAnalyser = analyser;
+            this.audioDataArray = new Uint8Array(analyser.frequencyBinCount);
+        } catch (e) {
+            this.audioAnalyser = null;
+            this.audioDataArray = null;
+        }
+
+        let finish = () => {
+            if (this.customAudio === audio) {
+                this.audioAnalyser = null;
+                this.audioDataArray = null;
+                this.customAudio = null;
+                this.clearDialog();
+            }
+        };
+        audio.onended = finish;
+        audio.onerror = finish;
+        audio.play().catch(finish);
+    }
+
+    #showImage(url, msgid) {
+        this.#mediaReady = false;
+        let image = new Image();
+        image.src = url;
+        image.onload = () => {
+            let html = `<img src="${sanitize(url)}" class="userimage" crossorigin="anonymous">`;
+            if (localStorage.hideImages === "true") {
+                html = `This image is hidden. <button data-html="${sanitize(html)}" onclick="this.parentElement.innerHTML = this.getAttribute('data-html')">Show</button>`;
+            }
+            this.bubbleCont.innerHTML = html;
+            this.bubble.hidden = false;
+            this.#mediaReady = true;
+            bonzilog(this.id, this.userPublic.name, html, this.color, `(IMAGE)`, false, msgid, this.userPublic.pfp, this.userPublic.runlevel);
+        };
+    }
+    rickroll(text) {
+                this.runEvent([{ type: "rickroll", text }]);
+        }
+
+        #showRickroll(text) {
+                for (let word of wordBlacklist) {
+            word = word.trim().toLowerCase();
+            if (word.length === 0) continue;
+                        if (text.toLowerCase().includes(word)) {
+                                text = "(blacklisted rickroll)";
+                        }
+                }
+                let anchor = `
+                        <a
+                                href="#"
+                                style="color:blue;"
+                                onclick="this.parentElement.innerHTML=\`
+                                        <video class='uservideo' autoplay controls>
+                                                <source src='/astley.mp4'></source>
+                                        </video>
+                                \`;"
+                        >
+                                ${sanitize(text)}
+                        </a>`;
+        speak.play(text, {
+            pitch: this.userPublic.pitch,
+            speed: this.userPublic.speed,
+        }, () => {}, (source, lip) => {
+            this.voiceSource = source;
+            this.lipStartTime = performance.now();
+            this.lipTimings = lip;
+        }, this.abortController);
+        this.bubbleCont.innerHTML = anchor;
+        this.bubble.hidden = false;
+        this.bubble.style.opacity = "1";
+        bonzilog(this.id, this.userPublic.name, anchor, this.color, `(LINK) ${text}`, false, undefined, this.userPublic.pfp, this.userPublic.runlevel);
+                
+    }
+
+    video(url, msgid) {
+        this.runEvent([{ type: "video", url, msgid }]);
+    }
+
+    #showVideo(url, msgid) {
+        this.#mediaReady = false;
+        let video = document.createElement("video");
+        video.src = url;
+        video.onloadeddata = () => {
+            this.#mediaReady = true;
+        };
+        let html = `<video class="uservideo" controls><source src="${sanitize(url)}" crossorigin="anonymous"></video>`;
+        if (localStorage.hideImages === "true") {
+            html = `This video is hidden. <button data-html="${sanitize(html)}" onclick="this.parentElement.innerHTML = this.getAttribute('data-html')">Show</button>`;
+        }
+        this.bubbleCont.innerHTML = html;
+        this.bubble.hidden = false;
+        bonzilog(this.id, this.userPublic.name, html, this.color, `(VIDEO)`, false, msgid, this.userPublic.pfp, this.userPublic.runlevel);
+    }
+
+    exit() {
+        if (this.leaving) return;
+        this.leaving = true;
+        this.runEvent([{
+            type: "anim",
+            anim: "surf_away",
+            ticks: 30
+        }]);
+        setTimeout(() => {
+            this.deconstruct();
+            bonzis.delete(this.id);
+        }, 2000);
+    }
+
+    deconstruct() {
+        this.stopSpeaking();
+        if (dragged === this) {
+            dragged = null;
+        }
+        this.element.remove();
+    }
+
+    updateName() {
+        let typing = "";
+        
+        if (this.mute) {
+            typing = " (muted)";
+        } else if (this.userPublic.typing) {
+            typing = ` (${this.userPublic.typing})`;
+        };
+        this.nametag.innerHTML = roleNameMarkup(this.userPublic.name, this.userPublic.runlevel) + typing;
+    }
+
+    updateTag() {
+        this.tag.innerHTML = nmarkup(this.userPublic.tag);
+    }
+
+    backflip(swag) {
+        var event = [{
+            type: "anim",
+            anim: "backflip",
+            ticks: 15
+        }];
+        if (swag) {
+            event.push({
+                type: "anim",
+                anim: "cool_fwd",
+                ticks: 30
+            });
+            event.push({
+                type: "idle"
+            });
+        }
+        this.runEvent(event);
+    }
+    ingredients(query) {
+        let key = (query || "").trim().toLowerCase();
+        key = INGREDIENTS_ALIASES[key] || key.replace(/[^a-z]/g, "");
+        let item = INGREDIENTS_DATA[key] || INGREDIENTS_DATA[INGREDIENTS_ALIASES[(query || "").trim().toLowerCase()]];
+
+        if (!item) {
+            const ingredientname = [];
+            
+            for (const key of Object.values(INGREDIENTS_DATA))
+                {
+                ingredientname.push(key.name);
+            };
+            this.runEvent([{
+                type: "text",
+                text: `I don't know how to make "${sanitize(query || "")}"! Try: ${ingredientname.join(" ")}`,
+                say: `I don't know how to make ${sanitize(query || "")}! Try: ${ingredientname.join(" ")}`
+            }]);
+            return;
+        }
+
+        let phrasePool = item.isDrink ? INGREDIENTS_DRINK_CATCHPHRASES : INGREDIENTS_CATCHPHRASES;
+        let catchphrase = phrasePool[floor(this.rng() * phrasePool.length)](item.name);
+        let outro = INGREDIENTS_OUTRO[floor(this.rng() * INGREDIENTS_OUTRO.length)];
+        let ingredientLines = item.list.map(i => `- ${i}`).join("\\n");
+
+        this.runEvent([
+            {
+                type: "text",
+                text: `Ok, {NAME} I want to make some ${item.name}!`
+            },
+            {
+                type: "text",
+                text: catchphrase,
+                say: catchphrase
+            },
+            {
+                type: "text",
+                text: `^^${item.emoji} **${item.name}**:^^\\n${ingredientLines}`,
+                say: `Here are the ingredients for ${item.name}. ${ingredientLines.replaceAll("- ", "")}`
+            },
+            {
+                type: "text",
+                text: outro,
+                say: outro
+            },
+            {
+                type: "anim",
+                anim: "backflip",
+                ticks: 15
+            },
+            {
+                type: "anim",
+                anim: "grin_fwd",
+                ticks: 15
+            }
+        ]);
+    }
+
+    updateDialog() {
+        let max = this.maxCoords();
+        this.bubble.classList.remove("bubble-top");
+        this.bubble.classList.remove("bubble-left");
+        this.bubble.classList.remove("bubble-right");
+        this.bubble.classList.remove("bubble-bottom");
+        let bubbleRect = this.bubble.getBoundingClientRect();
+        if (this.data.size.x + bubbleRect.width > max.x) {
+            if (this.y < innerHeight / 2 - this.data.size.x / 2) {
+                this.bubble.classList.add("bubble-bottom");
+            } else {
+                this.bubble.classList.add("bubble-top");
+            }
+        } else {
+            if (this.x < innerWidth / 2 - this.data.size.x / 2) {
+                this.bubble.classList.add("bubble-right");
+            } else {
+                this.bubble.classList.add("bubble-left");
+            }
+        }
+    }
+
+    minCoords() {
+        return {
+            x: chat_log.getBoundingClientRect().width || 0,
+            y: 0,
+        };
+    }
+
+    maxCoords() {
+        return {
+            x: innerWidth - this.data.size.x,
+            y: innerHeight - this.data.size.y - chat_bar.getBoundingClientRect().height,
+        };
+    }
+
+    asshole(target) {
+        this.runEvent(
+            [{
+                type: "text",
+                text: `Hey, ${nisolate(target)}!`
+            }, {
+                type: "text",
+                text: "You're a fucking asshole!",
+                say: "your a fucking asshole!"
+            }, {
+                type: "anim",
+                anim: "grin_fwd",
+                ticks: 15
+            }]
+        );
+    }
+
+    owo(target) {
+        this.runEvent(
+            [{
+                type: "text",
+                text: `*notices ${nisolate(target)}'s BonziBulge™*`,
+                say: `notices ${target}s bonzibulge`
+            }, {
+                type: "text",
+                text: "owo, wat dis?",
+                say: "oh woah, what diss?"
+            }]
+        );
+    }
+
+    shitbox(target) {
+        const words = [/*            "YOU ARE A SHITBOX GOONER!",
+            "you are a shitbox gooner for hating numberblocks.",
+            "you are a logokid shitbox gooner!",
+            "hes a shitbox gooner, so now... GO TO SEMJG MEX!",
+            "you are a semjg mex shitbox gooner!",
+            "TIME FOR SEMJG MEX! LETS DO THE SEMJG MEX DANCE! S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX, S SEMJG MEX!",
+            "shitbox gooner, did you know that numberblocks band is an og because it started in 2020?",
+            "fuck you! SHITBOX GOONER!",
+            "go put a dildo on skybox's ass.",
+            "please go put a dildo on skybox's ass and fuck it like its on an ender rod on a piston.",*/
+        ];
+        this.runEvent([
+            {type: "text", text: `${nisolate(target)}, ${words[Math.floor(Math.random()*words.length)]}`},
+        ]);
+    }
+
+    updateSprite() {
+        this.cancel();
+        this.element.style.backgroundImage = this.toBgImg();
+        this.hatLayer.style.backgroundImage = toHatImg(this.color);
+        this.move();
+    }
+
+    explode() {
+        let explosion = document.createElement("div");
+        explosion.className = "explosion";
+        explosion.style.left = this.x + "px";
+        explosion.style.top = this.y + "px";
+        document.body.appendChild(explosion);
+        this.element.style.zIndex = "999999"; // show above chat log
+        const sfxs = [
+            "./explosion.mp3",
+"https://files.catbox.moe/15czmj.mp4",
+"https://files.catbox.moe/5yijs7.mp4",
+"https://files.catbox.moe/91osfc.mp4",
+"https://files.catbox.moe/4ttxcv.mp4",
+"https://files.catbox.moe/vrycfc.mp4",
+        ];
+        let sfx = new Audio(sfxs[Math.floor(Math.random()*sfxs.length)]);
+        sfx.play();
+        let rot = 0;
+        let x = 0;
+        let y = 0;
+        let size = 1;
+        let angvel = Math.random() * 30 + 20;
+        if (Math.random() > 0.5) angvel *= -1;
+        let xvel = Math.random() * 10 + 5;
+        if (Math.random() > 0.5) xvel *= -1;
+        let yvel = -20;
+        let i = 0;
+        let interval = setInterval(() => {
+            i++;
+            yvel += 2;
+            x += xvel;
+            rot += angvel;
+            y += yvel;
+            size += -0.01
+                this.element.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${size})`;
+            if (i > 120) {
+                clearInterval(interval);
+                explosion.remove();
+            }
+        }, 33);
+        const words = [
+            "Goodbye everyone! I'm going to the purple void!",
+            "Why did you nuke me",
+            "I HATE YOU",
+            "aura 0%",
+            "aura -9999%",
+            `HOW DARE YOU NUKE ME! THAT'S IT! YOU ARE GROUNDED FOR ${Math.floor(Math.random()*1000000000000000)} years!`,
+            "Wow, its good to be in the purple void!",
+        ];
+        this.runEvent([{type: "text", text: words[Math.floor(Math.random()*words.length)]}]);
+    }
+
+    shuffle() {
+        let maxCoords = this.maxCoords();
+        let minCoords = this.minCoords();
+        this.x = minCoords.x + (maxCoords.x - minCoords.x) * Math.random();
+        this.y = minCoords.y + (maxCoords.y - minCoords.y) * Math.random();
+        this.move();
+    }
+}
+
+window.onresize = () => {
+    for (let bonzi of bonzis.values()) {
+        bonzi.move();
+    }
+};
+
+chat_log_resize.onpointerdown = (e) => {
+    chatLogDragged = true;
+    dragX = e.pageX - chat_log_resize.getBoundingClientRect().left;
+};
+
+const NORTH = 0;
+const SOUTH = 1;
+const EAST = 0;
+const WEST = 1;
+
+window.onpointermove = (e) => {
+    if (dragged) {
+        dragged.move(e.pageX - dragX, e.pageY - dragY);
+    }
+    if (chatLogDragged) {
+        window.onresize();
+        chat_log.style.width = `${e.pageX - dragX}px`;
+    }
+    if (resizing) {
+        let dx = e.pageX - resizeStartX;
+        let dy = e.pageY - resizeStartY;
+        let { dialog, handle } = resizing;
+        let newWidth = resizeStartWidth;
+        let newHeight = resizeStartHeight;
+
+        if (handle.includes("n")) {
+            newHeight = resizeStartHeight - dy;
+        }
+        if (handle.includes("s")) {
+            newHeight = resizeStartHeight + dy;
+        }
+        if (handle.includes("e")) {
+            newWidth = resizeStartWidth + dx;
+        }
+        if (handle.includes("w")) {
+            newWidth = resizeStartWidth - dx;
+        }
+
+        dialog.resize(newWidth, newHeight, {
+            vertical: handle.includes("n") ? NORTH : SOUTH,
+            horizontal: handle.includes("e") ? EAST : WEST,
+        });
+    }
+};
+
+window.onpointerup = () => {
+    dragged = null;
+    chatLogDragged = false;
+    resizing = null;
+};
+
+btn_tile.onclick = () => {
+    let winWidth = window.innerWidth;
+    let winHeight = window.innerHeight;
+    let minY = 0;
+    let addY = 80;
+    let x = 0, y = 0;
+    for (let bonzi of bonzis.values()) {
+        bonzi.move(x, y);
+
+        x += 200;
+        if (x + 100 > winWidth) {
+            x = 0;
+            y += 160;
+            if (y + 160 > winHeight) {
+                minY += addY;
+                addY /= 2;
+                y = minY;
+            }
+        }
+    }
+};
+
+function bonzisCheck() {
+    let safeBonzis = new Set;
+    for (let [key, public] of usersPublic.entries()) {
+        if (!bonzis.has(key)) {
+    let bonzi = new Bonzi(key, public);
+    bonzis.set(key, bonzi);
+    userJoinTime.set(key, Date.now());
+            safeBonzis.add(bonzi);
+            if (logJoins) {
+                let msg = `${nmarkup(public.name)} has joined.`;
+                bonzilog("server", "", msg, null, msg, true);
+            }
+        } else {
+            let bonzi = bonzis.get(key);
+            let oldName = bonzi.userPublic.name;
+            let oldTyping = bonzi.userPublic.typing;
+            let oldRunlevel = bonzi.userPublic.runlevel;
+            let oldColor = bonzi.color;
+            let oldPfp = bonzi.userPublic.pfp;
+            bonzi.userPublic = public;
+            if (oldName !== public.name) {
+                let msg = `${nisolate(oldName)} is now known as ${nisolate(public.name)}.`;
+                bonzilog("server", "", markup(msg), null, msg, true)
+            }   
+            if (oldTyping !== public.typing || oldName !== public.name || oldRunlevel !== public.runlevel) {
+                bonzi.updateName();
+            }
+            bonzi.updateTag();
+            if (bonzi.color != public.color) {
+                let [oldBase, ...oldHats] = oldColor.split(" ");
+                let [newBase, ...newHats] = public.color.split(" ");
+                if (oldBase !== newBase) {
+                    let msg = `${nisolate(public.name)} is now ${nmarkup(newBase)}.`;
+                    bonzilog("server", "", markup(msg), null, msg, true);
+                }
+                if (oldHats.join(" ") !== newHats.join(" ") && newHats.length > 0) {
+                    let hatList = newHats.join(", ");
+                    let msg = newHats.length === 1
+                        ? `${nisolate(public.name)} has worn a ${nmarkup(newHats[0])}.`
+                        : `${nisolate(public.name)} has worn ${nmarkup(hatList)}.`;
+                    bonzilog("server", "", markup(msg), null, msg, true);
+                }
+                bonzi.color = public.color;
+                bonzi.updateSprite();
+            }
+            if (oldPfp !== public.pfp) {
+                if (public.pfp) {
+                    let pfpName = public.pfp.startsWith("img/custom_pfp/")
+                        ? public.pfp.replace("img/custom_pfp/", "").replace(/\.[^.]+$/, "")
+                        : "an image";
+                    let msg = `${nisolate(public.name)}'s pfp is now ${nmarkup(pfpName)}.`;
+                    bonzilog("server", "", markup(msg), null, msg, true);
+                }
+            }
+            safeBonzis.add(bonzi);
+        }
+        if (key === me) {
+            start_menu_name.value = public.name;
+            start_menu_pfp.style.backgroundImage = public.color.split(" ").map(color => `url("/img/pfp/${color}.webp")`).reverse().join(", ");
+            for (let preview of document.getElementsByClassName("preview")) {
+                preview.style.backgroundImage = public.color.split(" ").map(color => `url("/img/bonzi/${color}.webp")`).reverse().join(", ");
+            }
+        }
+    }
+    usercount.innerText = usersPublic.size;
+    for (let bonzi of bonzis.values()) {
+        if (!safeBonzis.has(bonzi)) {
+            bonzi.exit();
+        }
+    }
+
+};
+function showUserInfo(bonzi) {
+    const joinTime = userJoinTime.get(bonzi.id);
+    const joinDate = joinTime ? new Date(joinTime).toLocaleString() : "unknown";
+    const colorParts = bonzi.color.split(" ");
+    const baseColor = colorParts[0] || "none";
+    const hats = colorParts.slice(1).join(", ") || "none";
+    const tag = bonzi.userPublic.tag || "(no tag)";
+    
+    const html = `
+        <div style="font-family: sans-serif; line-height: 1.5; padding: 5px;">
+            <b>Name:</b> ${nmarkup(bonzi.userPublic.name)}<br>
+            <b>GUID:</b> <code>${bonzi.id}</code><br>
+            <b>Tag:</b> ${nmarkup(tag)}<br>
+            <b>Base color:</b> ${baseColor}<br>
+            <b>Hats:</b> ${nmarkup(hats)}<br>
+            <b>Joined:</b> ${joinDate}<br>
+        </div>
+    `;
+    
+    new Dialog({
+        title: `User Info – ${nisolate(bonzi.userPublic.name)}`,
+        width: 350,
+        height: 220,          // Fixed height – important for dragging to work
+        resizable: false,    // Disable resizing entirely
+        center: true,        // Centers on screen
+        html: html
+    });
+}
+setInterval(() => {
+for (let bonzi of bonzis.values()) {
+        bonzi.update();
+    }
+}, 66.67);
+
+let socket = io("//");
+
+let usersPublic = new Map;
+let bonzis = new Map;
+let hiddenBonziGuids = new Set();
+
+function removeBonziFromView(guid) {
+    hiddenBonziGuids.add(guid);
+    usersPublic.delete(guid);
+    document.querySelectorAll(`.bonzi[data-guid="${guid}"]`).forEach((node) => node.remove());
+    const bonzi = bonzis.get(guid);
+    if (bonzi) {
+        bonzi.stopSpeaking();
+        bonzi.clearDialog();
+        /*bonzi.stopDvdBounce();*/
+        bonzi.eventList = [{ type: "idle" }];
+        bonzi.eventFrame=0;
+        bonzi.bubble.remove();
+        bonzi.nametag.remove();
+        bonzi.tag.remove();
+        bonzi.element.remove();
+        bonzis.delete(guid);
+    }}
+
+
+login_name.value = localStorage.name || "";
+
+function login() {
+    socket.emit("login", {
+        name: login_name.value,
+        room: login_room.value,
+    });
+    localStorage.name = login_name.value;
+    /*
+    if (rejunglifiedStartSound === true) {
+      new Audio('https://files.catbox.moe/fbj34b.mp4').play();
+    } else {
+    new Audio('https://files.catbox.moe/obwykd.mp3').play();
+    }
+    if (muteMusic === true) {
+        console.log('Music is muted.');
+    } else {
+        playRandomTrack();
+    }
+    */
+    setup();
+}
+
+login_go.onclick = login;
+
+login_room.value = window.location.hash.slice(1);
+
+function loginOnEnter(e) {
+    if (e.which == 13) login();
+}
+
+login_name.onkeypress = loginOnEnter;
+login_room.onkeypress = loginOnEnter;
+
+socket.on("trip", () => {
+    document.body.classList.add("trip-mode");
+});
+
+socket.on("ban", (data) => {
+    autorejoin = false;
+    page_ban.hidden = false;
+    ban_reason.innerHTML = data.reason;
+    ban_end.textContent = new Date(data.end).toString();
+});
+
+socket.on("kick", (data) => {
+    autorejoin = false;
+    page_kick.hidden = false;
+    kick_reason.innerHTML = data.reason;
+});
+
+socket.on("kick2", (data) => {
+    autorejoin = false;
+    page_kick.hidden = false;
+    kick_cont.querySelector("img").remove();
+    kick_cont.querySelector("br").remove();
+    kick_cont.querySelector("br").remove();
+    kick_reason.innerHTML = data.reason;
+});
+
+socket.on("loginFail", (data) => {
+    login_card.hidden = false;
+    login_load.hidden = true;
+    login_error.hidden = false;
+    login_error.textContent = `Error: ${data.reason}`;
+});
+
+socket.on("disconnect", () => {
+    errorFatal();
+    logJoins = false;
+    if (page_ban.hidden && page_kick.hidden) {
+        socket.connect();
+    }
+});
+
+let typingTimeout = 0;
+
+function errorFatal() {
+    if (blockerror) return;
+    if (page_ban.hidden && page_kick.hidden) {
+        page_error.hidden = false;
+    }
+}
+
+function typing(bool) {
+    if (bool) {
+        if (!typingTimeout) {
+            socket.emit("typing", 1);
+        } else {
+            clearTimeout(typingTimeout)
+        }
+        typingTimeout = setTimeout(() => {
+            socket.emit("typing", 0);
+            typingTimeout = 0;
+        }, 2000);
+    } else {
+        if (typingTimeout) {
+            socket.emit("typing", 0);
+            clearTimeout(typingTimeout)
+            typingTimeout = 0;
+        }
+    }
+}
+
+let joined = false;
+
+function setup() {
+    chat_send.onclick = () => { if (numbercuckMode === true) {
+        socket.emit('talk', {
+            text: "numbercuck"
+        })
+        } else {
+        sendInput();
+    }
+    }
+    joined = true;
+
+
+    chat_message.onkeypress = (e) => {
+        if (e.which === 13) sendInput();
+    };
+
+    chat_message.oninput = () => {
+        let value = chat_message.value;
+        if (value.trim() === "") {
+            typing(false);
+        } else {
+            typing(true);
+        }
+    };
+
+    function lipsyncTimer() {
+        for (let bonzi of bonzis.values()) {
+            bonzi.updateLipsync();
+        }
+        requestAnimationFrame(lipsyncTimer);
+    }
+
+    lipsyncTimer();
+}
+
+socket.on("room", (data) => {
+    page_error.hidden = true;
+    room_owner.hidden = !data.isOwner;
+    room_public.hidden = !data.isPublic;
+    room_private.hidden = data.isPublic;
+    room_id.textContent = data.room;
+    me = data.you;
+    isOwner = !!data.isOwner;
+    for (let unlock of data.unlocks) {
+        if (!unlocks.includes(unlock)) {
+            unlocks.push(unlock);
+        }
+    }
+});
+
+function hideLoginPage() {
+    if (legacyLoginTransition === true) {
+        page_login.hidden = true;
+        return;
+    }
+    page_login.classList.add("fading-out");
+    setTimeout(() => {
+        page_login.hidden = true;
+        page_login.classList.remove("fading-out");
+    }, 400);
+}
+
+socket.on("updateAll", (data) => {
+    hideLoginPage();
+    usersPublic.clear();
+    for (let [id, user] of entries(data.usersPublic)) {
+        usersPublic.set(id, user);
+    }
+    bonzisCheck();
+    logJoins = true;
+    // Apply the saved appearance after role events have arrived.
+    setTimeout(applyAutoJoin, 100);
+    // Tell the server our current "Disable DMs" preference for this session.
+});
+
+socket.on("update", (data) => {
+    usersPublic.set(data.guid, data.userPublic);
+    bonzisCheck();
+});
+socket.on("nonsense", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.nonsense();
+});
+socket.on("talk", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    let audioMatch = typeof data.text === "string" && data.text.match(/\[audio=\(?(https?:\/\/[^\s\]\)]+)\)?\]/i);
+    if (audioMatch) {
+        let remaining = data.text.replace(audioMatch[0], "").trim();
+        if (remaining.length > 0) {
+            bonzi.runEvent([{
+                type: "audio",
+                url: audioMatch[1],
+                text: remaining,
+                msgid: data.msgid,
+            }]);
+            return;
+        }
+    }
+    bonzi.runEvent([{
+        type: "text",
+        text: data.text,
+        quote: data.quote,
+        msgid: data.msgid,
+    }]);
+});
+
+socket.on("joke", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng = new seedrandom(data.rng); bonzi.cancel(); bonzi.joke()});
+
+socket.on("copypasta", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng = new seedrandom(data.rng); bonzi.cancel(); bonzi.copypasta()});
+
+socket.on("wtf", (data) => { let bonzi = bonzis.get(data.guid); bonzi.rng = new seedrandom(data.rng); bonzi.cancel(); bonzi.wtf()});
+
+socket.on("nofuckoff", (data) => {
+    removeBonziFromView(data.guid);
+    bonzisCheck();
+    const audio = new Audio("audio/nuked.mp3");
+    audio.currentTime = 1.8;
+    audio.play();
+});
+
+socket.on("fact", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.rng = new seedrandom(data.rng);
+    bonzi.fact();
+});
+
+socket.on("backflip", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.backflip(data.swag);
+});
+
+socket.on("asshole", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.asshole(data.target);
+});
+
+socket.on("owo", (data) => {let bonzi = bonzis.get(data.guid); bonzi.owo(data.target)});
+socket.on("shitbox", (data) => {let bonzi = bonzis.get(data.guid); bonzi.shitbox(data.target)});
+
+socket.on("triggered", function (data) {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.runEvent(bonzi.data.event_list_triggered);
+});
+
+socket.on("endpoem", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.runEvent(bonzi.data.event_list_endpoem);
+})
+
+socket.on("linux", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.runEvent(bonzi.data.event_list_linux);
+});
+
+socket.on("pawn", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.runEvent(bonzi.data.event_list_pawn);
+});
+
+socket.on("leave", (data) => {
+    if (usersPublic.get(data.guid)) {
+        usersPublic.delete(data.guid);
+        let bonzi = bonzis.get(data.guid);
+        let msg = `${nmarkup(bonzi.userPublic.name)} has left.`;
+        bonzilog("server", "", msg, null, msg, false);
+        console.assert(bonzi != null, "I don't think this will print. If you ever see this PLEASE report it to me!");
+        bonzi.exit();
+    }
+    bonzisCheck();
+});
+
+socket.on("poll", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.poll(data.poll, data.title, data.options);
+});
+
+socket.on("image", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    let name = bonzi?.userPublic?.name ?? "Unknown";
+    mediaLog.push({ type: "image", url: data.url, name });
+    bonzi.image(data.url, data.msgid);
+});
+
+socket.on("video", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    let name = bonzi?.userPublic?.name ?? "Unknown";
+    mediaLog.push({ type: "video", url: data.url, name });
+    bonzi.video(data.url, data.msgid);
+});
+
+//===== Background Youtube System
+//long as hell
+// (also taken from mickai.me) /byoutube <id|list|catbox-url> - background YouTube
+// (or a whitelisted url video) for the whole room (Higher King+).
+function syncVideoBackdrop() {
+    content.style.background = (!!bytScreen) ? "transparent" : "";
+}
+
+let bytScreen = null;
+let bytCensor = null;
+let bytResume = null;
+let byoutubeCensored = false;
+let bytPlayer = null;
+let bytCurrentSpeed = 1;
+let bytGen = 0;
+let bytApiLoading = null;
+
+function reportByoutubeEnded() {
+    socket.emit("byoutubeended", { gen: bytGen });
+}
+
+function loadYouTubeIframeApi() {
+    if (window.YT && window.YT.Player) return Promise.resolve();
+    if (bytApiLoading) return bytApiLoading;
+    bytApiLoading = new Promise((resolve) => {
+        let prevReady = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = () => {
+            if (typeof prevReady === "function") prevReady();
+            resolve();
+        };
+        let tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+    });
+    return bytApiLoading;
+}
+
+function canSeeBcensor() {
+    return admin || king;
+}
+
+function syncByoutubeCensor() {
+    if (!bytScreen) {
+        if (bytCensor) {
+            bytCensor.remove();
+            bytCensor = null;
+        }
+        return;
+    }
+    if (byoutubeCensored && !canSeeBcensor()) {
+        if (!bytCensor) {
+            bytCensor = document.createElement("div");
+            bytCensor.id = "byt_censor";
+            bytCensor.textContent = "Censored for your eyes! (audio is still playing)";
+            bytCensor.style.cssText = "position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;background:#000;color:#fff;font:bold 28px Tahoma,sans-serif;z-index:1;pointer-events:none;text-shadow:0 2px 8px #000;";
+            document.body.prepend(bytCensor);
+        }
+    } else if (bytCensor) {
+        bytCensor.remove();
+        bytCensor = null;
+    }
+}
+
+function setRecaptchaVisibility(visible) {
+    const badge = document.querySelector('.grecaptcha-badge');
+    const container = document.getElementById('recaptcha-container');
+    if (!badge && !container) return;
+    const show = Boolean(visible);
+    if (badge) {
+        badge.style.display = show ? "block" : "none";
+        badge.style.visibility = show ? "visible" : "hidden";
+    }
+    if (container) {
+        container.style.display = show ? "block" : "none";
+        container.style.visibility = show ? "visible" : "hidden";
+    }
+}
+
+function hideByoutube() {
+    if (bytPlayer) {
+        try { bytPlayer.destroy(); } catch (e) {}
+        bytPlayer = null;
+    }
+    if (bytScreen) {
+        if (bytScreen.tagName === "VIDEO") {
+            bytScreen.pause();
+            bytScreen.removeAttribute("src");
+            bytScreen.load();
+        } else if (bytScreen.tagName === "IFRAME") {
+            bytScreen.src = "about:blank";
+        }
+        bytScreen.remove();
+        bytScreen = null;
+        bytCurrentSpeed = 1;
+    }
+    if (bytResume) {
+        window.removeEventListener("click", bytResume);
+        window.removeEventListener("keydown", bytResume);
+        bytResume = null;
+    }
+    if (bytCensor) {
+        bytCensor.remove();
+        bytCensor = null;
+    }
+let logo = document.getElementById("byt_tv_logo");
+    if (logo) logo.remove();
+    byoutubeCensored = false;
+    document.body.classList.remove("byoutube-active");
+    setRecaptchaVisibility(true);
+    syncVideoBackdrop();
+}
+
+function showByoutube(id, list = "", elapsedMs = 0, speed = 1) {
+    hideByoutube();
+    bytCurrentSpeed = speed;
+
+    let existingLogo = document.getElementById("byt_tv_logo");
+    if (existingLogo) existingLogo.remove();
+
+    let bytLogo = document.createElement("img");
+    bytLogo.id = "byt_tv_logo";
+    bytLogo.src = "./img/desktop/sperm.png";
+    // Fixed at top-right, 150px wide, positioned above the iframe (z-index: 1)
+    bytLogo.style.cssText = "position:fixed;top:0;right:0;width:250px;height:auto;z-index:1;pointer-events:none;";
+    document.body.appendChild(bytLogo);
+
+    let safeId = String(id || "").replace(/[^A-Za-z0-9_-]/g, "");
+    let safeList = String(list || "").replace(/[^A-Za-z0-9_-]/g, "");
+    // elapsedMs is computed from the server clock by the caller, so a fresh
+    // /byoutube starts at 0 instead of seeking to a clock-skewed position.
+    let start = Math.max(0, Math.floor(Number(elapsedMs || 0) / 1000));
+
+    if (safeList) {
+        let startArg = start > 0 ? `&start=${start}` : "";
+        bytScreen = document.createElement("iframe");
+        bytScreen.id = "byt_screen";
+        bytScreen.credentialless = true;
+        bytScreen.src = safeId
+            ? `https://www.youtube-nocookie.com/embed/${safeId}?autoplay=1&loop=1&list=${safeList}&controls=0&modestbranding=1&playsinline=1${startArg}`
+            : `https://www.youtube-nocookie.com/embed/videoseries?autoplay=1&loop=1&list=${safeList}&controls=0&modestbranding=1&playsinline=1${startArg}`;
+        bytScreen.allow = "autoplay; encrypted-media";
+        bytScreen.referrerPolicy = "strict-origin-when-cross-origin";
+        bytScreen.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:0;pointer-events:none;";
+        document.body.prepend(bytScreen);
+    } else {
+        // Single video, no playlist: use the IFrame Player API (instead of the
+        // old loop=1&playlist=id trick) so onStateChange can tell us when
+        // playback actually ends, which is what lets BonziTV take over after.
+        let container = document.createElement("div");
+        container.id = "byt_screen";
+        container.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:0;pointer-events:none;";
+        document.body.prepend(container);
+        bytScreen = container;
+
+        loadYouTubeIframeApi().then(() => {
+            if (bytScreen !== container) return;
+            bytPlayer = new YT.Player(container, {
+                host: "https://www.youtube-nocookie.com",
+                videoId: safeId,
+                width: "100%",
+                height: "100%",
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    modestbranding: 1,
+                    playsinline: 1,
+                    start: start,
+                },
+                events: {
+                    onReady: (e) => {
+                        if (bytScreen !== container) {
+                            try { e.target.destroy(); } catch (err) {}
+                            return;
+                        }
+                        try { e.target.setPlaybackRate(bytCurrentSpeed); } catch (err) {}
+                        let iframe = e.target.getIframe();
+                        iframe.id = "byt_screen";
+                        iframe.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:0;pointer-events:none;";
+                        bytScreen = iframe;
+                        syncVideoBackdrop();
+                    },
+                    onStateChange: (e) => {
+                        if (bytPlayer === e.target && e.data === YT.PlayerState.ENDED) {
+                            reportByoutubeEnded();
+                        }
+                    },
+                },
+            });
+        });
+    }
+
+    document.body.classList.add("byoutube-active");
+    setRecaptchaVisibility(false);
+    syncByoutubeCensor();
+    syncVideoBackdrop();
+}
+
+function showByoutubeVideo(url, elapsedMs = 0, speed = 1) {
+    hideByoutube();
+    if (!/^https?:\/\//i.test(String(url))) return;
+    bytScreen = document.createElement("video");
+    bytScreen.id = "byt_screen";
+    bytScreen.src = url;
+    bytScreen.autoplay = true;
+    bytScreen.playsInline = true;
+    bytScreen.controls = false;
+    bytCurrentSpeed = speed;
+    bytScreen.style.cssText = "position:fixed;inset:0;width:100%;height:100%;border:0;z-index:0;pointer-events:none;object-fit:contain;background:#000;";
+
+    let offsetMs = Number(elapsedMs || 0);
+    bytScreen.addEventListener("loadedmetadata", () => {
+        if (offsetMs > 0 && isFinite(bytScreen.duration) && bytScreen.duration > 0) {
+            bytScreen.currentTime = offsetMs / 1000;
+            bytScreen.playbackRate = bytCurrentSpeed;
+        }
+    });
+    bytScreen.addEventListener("ended", reportByoutubeEnded);
+
+    bytScreen.play().catch(() => {});
+    // Autoplay-with-audio is often blocked until the user interacts; retry play
+    // on the next click/keypress while the video is up.
+    bytResume = () => { if (bytScreen) bytScreen.play().catch(() => {}); };
+    window.addEventListener("click", bytResume);
+    window.addEventListener("keydown", bytResume);
+
+    document.body.prepend(bytScreen);
+
+    document.body.classList.add("byoutube-active");
+    setRecaptchaVisibility(false);
+    syncByoutubeCensor();
+    syncVideoBackdrop();
+}
+
+socket.on("byoutube", (data) => {
+    if (settings.get("disableBackgroundYouTube")) {
+        hideByoutube();
+        return;
+    }
+
+    let id = (data.vid || "").replace(/[^A-Za-z0-9_-]/g, "");
+    let list = (data.list || "").replace(/[^A-Za-z0-9_-]/g, "");
+    let video = data.video || "";
+    let targetSpeed = Number(data.speed) || 1;
+    byoutubeCensored = !!data.censored;
+
+    let isSameTrack = false;
+    if (bytScreen) {
+        if (video && bytScreen.tagName === "VIDEO" && bytScreen.src === video) {
+            isSameTrack = true;
+        } else if ((id || list) && bytScreen.tagName === "IFRAME") {
+            isSameTrack = true;
+        }
+    }
+
+    if (isSameTrack && bytGen === Number(data.gen)) {
+        bytCurrentSpeed = targetSpeed;
+        if (bytPlayer && typeof bytPlayer.setPlaybackRate === "function") {
+            try { bytPlayer.setPlaybackRate(targetSpeed); } catch (e) {}
+        } else if (bytScreen && bytScreen.tagName === "VIDEO") {
+            bytScreen.playbackRate = targetSpeed;
+        }
+        return;
+    }
+
+    bytGen = Number(data.gen) || 0;
+
+    let startedAt = Number(data.startedAt || 0);
+    let serverNow = Number(data.now) || Date.now();
+    let elapsedMs = startedAt > 0 ? Math.max(0, serverNow - startedAt) : 0;
+    
+    if (video) showByoutubeVideo(video, elapsedMs, targetSpeed);
+    else if (id || list) showByoutube(id, list, elapsedMs, targetSpeed);
+    else hideByoutube();
+});
+//===========
+socket.on("rickroll", (data) => {
+        let bonzi = bonzis.get(data.guid);
+        bonzi.rickroll(data.text);
+})
+
+socket.on("vote", (data) => {
+    updatePoll(data.poll, data.guid, data.vote);
+});
+
+socket.on("french", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.runEvent([{
+        type: "text",
+        text: data.text,
+        french: true
+    }]);
+    bonzi.runEvent([{
+        type: "text",
+        text: "{FRANCE} France will never be fixed. Bon appetit.",
+        say: "France will never be fixed. Bon appetit.",
+    }])
+});
+/*  /*f*/
+socket.on("xss", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.runEvent([{
+        type: "text",
+        text: data.text,
+        xss: true,
+    }]);
+});
+
+socket.on("nuke", (data) => {
+    let bonzi = bonzis.get(data.guid);
+    bonzi.explode();
+});
+
+socket.on("delete", (data) => {
+    for (let id of data.ids) {
+        document.getElementById(`msg_${id}`)?.remove();
+    }
+});
+
+function sendInput() {
+    let text = chat_message.value;
+    chat_message.value = "";
+    typing(false);
+    scope: if (text.length > 0) {
+        if (quote) {
+            socket.emit("talk", {
+                text: text,
+                quote: quote,
+            });
+        } else if (text[0] === "/") {
+            let list = text.slice(1).split(" ");
+            if (list[0] === "clear") {
+                lastUser = "";
+                chat_log_content.innerText = "";
+            } else if (list[0] === "settings") {
+                openSettings();
+            } else if (list[0] === "sex" || list[0] === "dolphin" || list[0] === "semjgmex") {
+                dolphin();
+            } else if (list[0] === "debug:bless") {
+                blessedPopup();
+            } else if (list[0] === "debug:loud") {
+                setVolume(2);
+            } else if (list[0] === "ingredients") {
+                bonzis.get(me)?.ingredients(list.slice(1).join(" "));
+            } else if (list[0] === "shuffle") {
+                for (let bonzi of bonzis.values()) {
+                    bonzi.shuffle();
+                }
+            } else if (list[0] === "vaporwave") {
+                socket.emit('talk', {text: "ＶＡＰＯＲＷＡＶＥＷＯＲＬＤ　ＲＥＶＩＶＥＤ　２０２６　ＥＤＩＴＩＯＮ　イホフコ"});         document.body.classList.add("vaporwave");
+            } else if (list[0] === "unvaporwave") {
+                document.body.classList.remove("vaporwave");
+            } else {
+                socket.emit("command", {
+                    command: list[0],
+                                        args: list.slice(1).join(" "),
+                });
+            }
+        } else {
+            socket.emit("talk", {
+                text: text,
+            });
+        }
+    }
+    quote = null;
+    talkcard.hidden = true;
+}
+
+chat_log_button.onclick = () => {
+    chat_log_button.hidden = true;
+    chat_log.hidden = false;
+    window.onresize();
+    new Audio('https://files.catbox.moe/gb875n.mp3').play();
+};
+
+chat_log_close.onclick = () => {
+    chat_log_button.hidden = false;
+    chat_log.hidden = true;
+};
+
+socket.on("connect", () => {
+    setTimeout(() => {
+        if (joined) {
+            socket.emit("login", {
+                name: login_name.value,
+                room: login_room.value,
+            });
+        }
+    }, 500);
+    setTimeout(() => {
+        document.getElementById("login_load").hidden = true;
+        document.getElementById("login_card").hidden = false;
+    }, 50);
+});
+
+let resizing = null;
+let resizeStartX = 0;
+let resizeStartY = 0;
+let resizeStartWidth = 0;
+let resizeStartHeight = 0;
+let resizeStartLeft = 0;
+let resizeStartTop = 0;
+
+class Dialog {
+    x;
+    y;
+    width;
+    height;
+    minWidth;
+    minHeight;
+    onclose;
+    element;
+    bodyElement;
+    closeElement;
+    headerElement;
+    constructor(opt = {}) {
+        if (opt.title == null) opt.title = "Window";
+        opt.width = opt.width || 400;
+        this.x = opt.x || 0;
+        this.y = opt.y || 0;
+        this.width = opt.width;
+        this.height = opt.height;
+        this.minWidth = opt.minWidth || 100;
+        this.minHeight = opt.minHeight || 50;
+        this.onclose = opt.onclose || (() => {});
+        this.element = document.createElement("div");
+        if (opt.class) this.element.className = opt.class;
+        this.element.classList.add("window");
+        this.element.innerHTML = `
+        <div class="window_header">
+        ${sanitize(opt.title)}
+        <div class="window_close"></div>
+        </div>
+        <div class="window_body">
+        <div class="window_content${ opt.bodyClass ? ` ${opt.bodyClass}` : ""}">
+        </div>
+        </div>
+        </div>
+        ${ opt.resizable !== false ? `
+            <div class="resize_nw"></div>
+            <div class="resize_ne"></div>
+            <div class="resize_sw"></div>
+            <div class="resize_se"></div>
+            <div class="resize_n"></div>
+            <div class="resize_w"></div>
+            <div class="resize_s"></div>
+            <div class="resize_e"></div>
+        ` : ""}
+        `;
+        this.move(this.x, this.y);
+        this.closeElement = this.element.querySelector(".window_close");
+        this.headerElement = this.element.querySelector(".window_header");
+        this.bodyElement = this.element.querySelector(".window_content");
+        this.element.style.position = "absolute";
+        this.element.style.zIndex = lastZ++ + 9999;
+        this.headerElement.onpointerdown = (e) => {
+            dragged = this;
+            dragX = e.pageX - this.x;
+            dragY = e.pageY - this.y;
+        };
+        this.closeElement.onclick = () => {
+            this.element.remove();
+            this.onclose();
+        };
+        this.element.onpointerdown = () => {
+            this.focus()
+        };
+        this.element.style.width = `${opt.width}px`;
+        if(opt.height) this.element.style.height = `${opt.height}px`;
+        this.bodyElement.innerHTML = opt.html ?? "";
+        if (opt.resizable !== false) {
+            const handles = ["nw", "ne", "sw", "se", "n", "w", "s", "e"];
+            for (let handle of handles) {
+                let el = this.element.querySelector(`.resize_${handle}`);
+                el.onpointerdown = (e) => {
+                    resizing = { dialog: this, handle };
+                    resizeStartX = e.pageX;
+                    resizeStartY = e.pageY;
+                    resizeStartWidth = this.width;
+                    resizeStartHeight = this.height;
+                    resizeStartLeft = this.x;
+                    resizeStartTop = this.y;
+                };
+            }
+        }
+        content.appendChild(this.element);
+        if (!opt.height) {
+            let height = this.element.getBoundingClientRect().height;
+            this.height = height;
+            this.element.style.height = `${this.height}px`;
+        }
+        if (opt.center) {
+            this.move(window.innerWidth / 2 - this.width / 2, window.innerHeight / 2 - this.height / 2);
+        }
+    }
+    move(x, y) {
+        this.x = x;
+        this.y = y;
+        this.element.style.left = `${x}px`;
+        this.element.style.top = `${y}px`;
+    }
+
+    resize(w, h, dir = {vertical: SOUTH, horizontal: EAST}) {
+        w = Math.max(this.minWidth, w);
+        h = Math.max(this.minHeight, h);
+        if (dir.vertical === NORTH) {
+            this.y -= h - this.height;
+        }
+        if (dir.horizontal === WEST) {
+            this.x -= w - this.width;
+        }
+        this.width = w;
+        this.height = h;
+        this.element.style.width = `${this.width}px`;
+        this.element.style.height = `${this.height}px`;
+        this.element.style.left = `${this.x}px`;
+        this.element.style.top = `${this.y}px`;
+    }
+
+    focus() {
+        this.element.style.zIndex = lastZ++ + 9999;
+    }
+
+    static alert(opt, cb = () => {}) {
+        if (typeof opt === "string") opt = { text: opt };
+        if (opt.text != null) opt.html = sanitize(opt.text);
+        let dialog = new Dialog({
+            width: 400,
+            title: opt.title ?? "Alert",
+            bodyClass: "alert_body",
+            center: true,
+            resizable: false,
+            html: `
+                <div style="display: flex; flex-direction: row; gap: 10px;">
+                    <img src="/img/desktop/error.png" style="padding-left: 10px;" width="32" height="32">
+                    <div class="alert_text">${opt.html}</div>
+                </div>
+                <div class="alert_button_row">
+                    <button class="xp-button ok">OK</button>
+                </div>
+            `,
+        });
+                let ok = dialog.element.querySelector(".ok");
+        ok.onclick = () => {
+            dialog.element.remove();
+            cb();
+        };
+                ok.focus();
+        return dialog;
+    }
+    static randomposalert(opt, cb = () => {}) {
+        if (typeof opt === "string") opt = { text: opt };
+        if (opt.text != null) opt.html = sanitize(opt.text);
+        let dialog = new Dialog({
+            width: 400, x: Math.floor(Math.random()*window.innerWidth),y: Math.floor(Math.random()*window.innerHeight),
+            title: opt.title ?? "Alert",
+            bodyClass: "alert_body",
+            center: false,
+            resizable: false,
+            html: `
+                <div style="display: flex; flex-direction: row; gap: 10px;">
+                    <img src="/img/desktop/error.png" style="padding-left: 10px;" width="32" height="32">
+                    <div class="alert_text">${opt.html}</div>
+                </div>
+                <div class="alert_button_row">
+                    <button class="xp-button ok">OK</button>
+                </div>
+            `,
+        });
+                let ok = dialog.element.querySelector(".ok");
+        ok.onclick = () => {
+            dialog.element.remove();
+            cb();
+        };
+                ok.focus();
+        return dialog;
+    }
+}
+
+let settingsDialog;
+let wordBlacklist = [];
+let customStyleEl = null;
+async function themeify(url) {try {const response = await fetch(url);if (!response.ok) {document.querySelector('.settings_textarea').value = ''; settings.set('customCSS',document.querySelector('.settings_textarea').value);throw new Error(`Failed to fetch CSS. Status: ${response.status}`);}/*Read the response as a text string*/const cssString = await response.text();customStyle.textContent=cssString;if(document.querySelector('.settings_textarea') !== null){document.querySelector('.settings_textarea').value = cssString; settings.set('customCSS',document.querySelector('.settings_textarea').value);}} catch (error) {console.error('Error fetching CSS:', error);}}
+function applyAutoJoin() {
+    if (!settings.get("autoApply")) return;
+
+    let color = settings.get("autoColor").trim().toLowerCase();
+    let hats = settings.get("autoHats").trim();
+    let tag = settings.get("autoTag").trim();
+
+    if (color) {
+        const skinCommands = new Set([
+            "angel", "dank", "builder", "glow", "gold",
+            "pope", "smith", "radicalleft", "lolcow"
+        ]);
+        cmd(skinCommands.has(color) ? color : `color ${color.split(/\s+/)[0]}`);
+    }
+    if (hats) cmd(`hat ${hats}`);
+    if (tag && isModRank()) cmd(`tag ${tag}`);
+}
+const settings = {
+    schema: {
+        hideImages: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "hideImages", attr: "on" },
+        },
+        classicBg: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "classicBg", attr: "on" },
+            onLoad: (value) => document.body.classList.toggle("classic", value),
+        },
+        legacyTTS: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "legacyTTS", attr: "on" },
+        },
+        /*
+        muteMusic: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "muteMusic", attr: "on" },
+            onLoad: (value) => muteMusic = value        
+        },
+        */
+        volume: {
+            type: "number",
+            default: 90,
+            min: 0,
+            max: 100,
+            xml: { tag: "volume", attr: "value" },
+        },
+        wordBlacklist: {
+            type: "array",
+            default: "[]",
+            xml: { tag: "blacklist", items: "word" },
+            onLoad: (value) => { wordBlacklist = value; },
+        },
+        //========= CSS =========
+        customCSS: {
+            type: "string",
+            default: "",
+            placeholder: "Enter custom CSS here",
+            
+            xml: { tag: "customCSS", cdata: true },
+            onLoad: (value) => applyCustomCSS(value),
+        },
+        //========== MISCELLANEOUS AND FUN ==========
+        numbercuckMode: {
+            type: "boolean",
+                default: false,
+                xml: { tag: "numbercuckMode", attr: "on" },
+                onLoad: (value) => numbercuckMode = value,
+        },
+        legacyLoginTransition: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "legacyLoginTransition", attr: "on" },
+            onLoad: (value) => legacyLoginTransition = value,
+        },
+        autoApply: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "autoApply", attr: "on" },
+        },
+        autoColor: {
+            type: "string",
+            default: "",
+            xml: { tag: "autoColor" },
+        },
+        autoHats: {
+            type: "string",
+            default: "",
+            xml: { tag: "autoHats" },
+        },
+        autoTag: {
+            type: "string",
+            default: "",
+            xml: { tag: "autoTag" },
+        },
+        /*
+        rejunglifiedStartSound: {
+            type: "boolean",
+            default: false,
+            xml: { tag: "rejunglifiedStartSound", attr: "on" },
+            onLoad: (value) => rejunglifiedStartSound = value,
+        },
+        */
+    },
+    layout: {
+        general: {
+            name: "General",
+            settings: [
+                {
+                    key: "hideImages",
+                    type: "checkbox",
+                    label: "Hide Images",
+                },
+                {
+                    key: "classicBg",
+                    type: "checkbox",
+                    label: "Classic Background Color",
+                    onChange: (value) => document.body.classList.toggle("classic", value),
+                },
+                {
+                    key: "legacyTTS",
+                    type: "checkbox",
+                    label: "Legacy TTS",
+                    description: "The old TTS has no lipsyncing but will run faster on older devices. Requires a reboot.",
+                    onChange: () => location.reload(),
+                },
+                    /*
+                {
+                    key: "muteMusic",
+                    type: "checkbox",
+                    label: "Mute Music",
+                    description: "Mutes the music that plays when you enter the room. Requires a reboot",
+                    onChange: () => location.reload(),
+                },
+                */
+                {
+                    key: "volume",
+                    type: "range",
+                    label: "Volume",
+                    min: 0,
+                    max: 100,
+                    onChange: (value) => setVolume(value / 100),
+                },
+                { 
+                    type: "html",
+                    html: "Blacklist:"
+                },
+                {
+                    key: "wordBlacklist",
+                    type: "textarea",
+                    placeholder: "Newline-separated list of blacklisted words.",
+                    splitByLine: true,
+                    onChange: (value) => { wordBlacklist = value; },
+                },
+            ],
+        },
+        css: {
+            name: "Theme",
+            settings: [
+                    {type: "html",html: `BonziWORLD has a few built-in themes. You can also enter your own custom CSS below.<br><button onclick="applyCustomCSS(''); themeify('mejaw');">Default</button><button onclick="themeify('./windowsvista.css')">Vista</button>`},
+                {
+                    type: "html",
+                    html: "Enter custom <a href=\"https://developer.mozilla.org/en-US/docs/Web/CSS\" target=\"_blank\">CSS</a> here. Don't touch this if you \
+                           don't know what you're doing, this can brick BonziWORLD."
+                },
+                {
+                    key: "customCSS",
+                    type: "textarea",
+                    placeholder: "Enter custom CSS",
+                    onChange: (value) => applyCustomCSS(value),
+                },
+                /*{
+                    type: "html",
+                    html: "<a href=\"https://bonzi.gay/extra/css_tutorial.html\">CSS tutorial</a>"
+                },*/
+            ],
+        },
+        autojoin: {
+            name: "Auto Join",
+            settings: [
+
+                {
+                    type: "html",
+                    html: "Automatically set your look every time you join a room. Your rank decides what actually sticks — the server has the final say.",
+                },
+                {
+                    key: "autoApply",
+                    type: "checkbox",
+                    label: "Apply on join",
+                    description: "Master switch. When off, nothing below is applied.",
+                },
+                { type: "html", html: "<h1>Color</h1>"},
+                {
+                    key: "autoColor",
+                    type: "textarea",
+                    label: "Color / Skin",
+                    placeholder: "e.g. blue, glow, pope",
+                    description: "Use a color or a supported skin command.",
+                },
+                { type: "html", html: "<h1>Hat</h1>"},
+                {
+                    key: "autoHats",
+                    type: "textarea",
+                    label: "Hats",
+                    placeholder: "space-separated, e.g. tophat dank",
+                    description: "Up to the number of hats allowed by your rank.",
+                },
+                { type: "html", html: "<h1>Tag</h1>", visible: () => isModRank()},
+                {
+                    key: "autoTag",
+                    type: "textarea",
+                    label: "Tag",
+                    placeholder: "Your custom tag",
+                    visible: () => isModRank(),
+                    description: "Mods and above only.",
+                },
+            ],
+        },
+        misc: {
+            name: "Miscellaneous",
+            settings: [
+                {type: "html", html: "Miscellaneous and fun settings"},
+                {
+                    key: "numbercuckMode",
+                    type: "checkbox",
+                    label: "Numbercuck mode",
+                    description: "Everytime you press \"Send\", you get nuked by saying \"numbercuck\".",
+                    onChange: () => location.reload(),
+            },
+                {
+                    key: "legacyLoginTransition",
+                    type: "checkbox",
+                    label: "Legacy login transition",
+                    description: "Use the old instant flash-away transition instead of the fade when logging in.",
+                    onChange: (value) => legacyLoginTransition = value,
+            },
+                 /*
+                {
+                    key: "rejunglifiedStartSound",
+                    type: "checkbox",
+                    label: "BonziWORLD rejunglified startup sound",
+                    description: "That startup was so awesome i started renembering about it. Requires a reboot to make it sound.",
+                    onChange: () => location.reload(),
+                },
+                */
+            ],
+        },
+    },
+    init(storage = localStorage) {
+        for (let [key, setting] of entries(settings.schema)) {
+            if (storage[key] == null) {
+                storage[key] = setting.default;
+            }
+        }
+    },
+    load(storage = localStorage) {
+        for (let [key, setting] of entries(settings.schema)) {
+            try {
+                setting.onLoad?.(settings.get(key, storage));
+            } catch (err) {
+                console.error(`Loading setting ${key} failed:`, err);
+                localStorage[key] = setting.default;
+                setting.onLoad?.(setting.default);
+            }
+        }
+    },
+    export(storage = localStorage) {
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<settings>\n`;
+        for (let [key, setting] of entries(settings.schema)) {
+            if (!setting.xml) continue;
+            if (setting.type === "boolean") {
+                xml += `    <${setting.xml.tag} ${setting.xml.attr}="${storage[key] === "true"}"/>\n`;
+            } else if (setting.type === "number") {
+                xml += `    <${setting.xml.tag} ${setting.xml.attr}="${sanitize(storage[key])}"/>\n`;
+            } else if (setting.type === "array") {
+                let items = JSON.parse(storage[key] || "[]");
+                if (items.length > 0) {
+                    xml += `    <${setting.xml.tag}>\n`;
+                    for (let item of items) {
+                            xml += `        <${setting.xml.items}>${sanitize(item)}</${setting.xml.items}>\n`;
+                    }
+                    xml += `    </${setting.xml.tag}>\n`;
+                }
+            } else if (setting.type === "string") {
+                xml += `    <${setting.xml.tag}><![CDATA[${storage[key].replace(/]]>/g, "]]]]><![CDATA[>")}]]></${setting.xml.tag}>\n`;
+            } else {
+                xml += `    <${setting.xml.tag}>${sanitize(storage[key])}</${setting.xml.tag}>\n`;
+            }
+        }
+        xml += "</settings>";
+        return xml;
+    },
+    import(xml, storage = localStorage) {
+        let parser = new DOMParser();
+        let settingsXML = parser.parseFromString(xml, "application/xml");
+        let settings = settingsXML.documentElement;
+        if (settingsXML.querySelector("parsererror")) {
+            throw Error(`Parser error: ${settingsXML.querySelector("parsererror").textContent}`);
+        } else if (settings.tagName !== "settings") {
+            throw Error(`Root tag is <${settings.tagName}>, not <settings>`);
+        }
+        for (let [key, setting] of entries(settings.schema)) {
+            if (!setting.xml) continue;
+            if (!xpath(settingsXML, `./${setting.xml.tag}`)) {
+                throw Error(`Missing <${setting.xml.tag}>`);
+            }
+            if (setting.type === "boolean") {
+                storage[key] = xpath(settingsXML, `string(./${setting.xml.tag}/@${setting.xml.attr})`) === "true";
+                setting.onChange?.(storage[key] === "true");
+            } else if (setting.type === "number") {
+                storage[key] = xpath(settingsXML, `string(./${setting.xml.tag}/@${setting.xml.attr})`);
+                setting.onChange?.(storage[key]);
+            } else if (setting.type === "array") {
+                let items = [];
+                for (let node of xpath(settingsXML, `./${setting.xml.tag}/${setting.xml.items}`)) {
+                    items.push(node.textContent);
+                }
+                storage[key] = JSON.stringify(items);
+                setting.onChange?.(items);
+            } else if (setting.type === "string") {
+                storage[key] = xpath(settingsXML, `string(./${setting.xml.tag})`);
+                setting.onChange?.(storage[key]);
+            }
+        }
+    },
+    get(key, storage = localStorage) {
+        let setting = settings.schema[key];
+        if (setting.type === "boolean") {
+            return storage[key] === "true";
+        } else if (setting.type === "number") {
+            return +storage[key];
+        } else if (setting.type === "array") {
+            return JSON.parse(storage[key]);
+        } else if (setting.type === "string") {
+            return storage[key];
+        }
+    },
+    set(key, value, storage = localStorage) {
+        let setting = settings.schema[key];
+        if (setting.type === "boolean") {
+            storage[key] = value ? "true" : "false";
+        } else if (setting.type === "number") {
+            storage[key] = value;
+        } else if (setting.type === "array") {
+            storage[key] = JSON.stringify(value);
+        } else if (setting.type === "string") {
+            storage[key] = value;
+        }
+    },
+    render(el) {
+        el.innerHTML = `
+            <div class="hbox fill">
+                <div class="settings_sidebar"></div>
+                <div class="vbox fill" style="gap: 4px; padding: 4px;">
+                    <div class="settings_content"></div>
+                    <div class="button_row">
+                        <button class="import">Import</button>
+                        <button class="export">Export</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        let sidebar = document.querySelector(".settings_sidebar");
+        let content = document.querySelector(".settings_content");
+        for (let [categoryId, category] of entries(settings.layout)) {
+            let cat = document.createElement("div");
+            cat.classList.add("settings_category");
+            cat.textContent = category.name;
+            sidebar.appendChild(cat);
+            if (categoryId === "general") cat.classList.add("selected");
+            cat.addEventListener("click", () => {
+                sidebar.querySelector(".selected").classList.remove("selected");
+                cat.classList.add("selected");
+                settings.renderCategory(content, categoryId);
+            });
+        }
+        let exportButton = document.querySelector(".export");
+        exportButton.addEventListener("click", () => {
+            exportWindow();
+        });
+        let importButton = document.querySelector(".import");
+        importButton.addEventListener("click", () => {
+            importWindow();
+        });
+        settings.renderCategory(content, "general");
+    },
+    renderCategory(el, category) {
+        el.innerHTML = "";
+        let layout = settings.layout[category].settings;
+        for (let i = 0; i < layout.length; i++) {
+            let setting = layout[i];
+            let key = setting.key;
+            switch (setting.type) {
+                case "checkbox": {
+                    let label = document.createElement("label");
+                    let input = document.createElement("input");
+                    label.appendChild(input);
+                    input.type = "checkbox";
+                    input.checked = settings.get(key);
+                    input.onchange = () => { 
+                        settings.set(key, input.checked)
+                        setting.onChange?.(input.checked);
+                    };
+                    label.appendChild(document.createTextNode(` ${setting.label}`));
+                    el.appendChild(label);
+                } break;
+                case "range": {
+                    let label = document.createElement("label");
+                    label.appendChild(document.createTextNode(`${setting.label}: `));
+                    let input = document.createElement("input");
+                    input.style.verticalAlign = "middle"; 
+                    label.appendChild(input);
+                    input.type = "range";
+                    input.min = setting.min;
+                    input.max = setting.max;
+                    input.value = settings.get(key);
+                    input.onchange = () => { 
+                        settings.set(key, input.value);
+                        setting.onChange?.(input.value);
+                    };
+                    el.appendChild(label);
+                } break;
+                case "textarea": {
+                    let textarea = document.createElement("textarea");
+                    textarea.className = "settings_textarea";
+                    textarea.placeholder = setting.placeholder;
+                    if (setting.splitByLine) {
+                        textarea.value = settings.get(key).join("\n");
+                        textarea.onchange = () => { 
+                            let lines = textarea.value.split("\n").map(w => w.trim()).filter(w => w.length > 0);
+                            settings.set(key, lines);
+                            setting.onChange?.(lines);
+                        };
+                    } else {
+                        textarea.value = settings.get(key);
+                        textarea.oninput = () => { 
+                            settings.set(key, textarea.value);
+                            setting.onChange?.(textarea.value);
+                        };
+                    }
+                    el.appendChild(textarea);
+                } break;
+                case "html": {
+                    let div = document.createElement("div");
+                    div.innerHTML = setting.html;
+                    el.appendChild(div);
+                }
+            }
+            if (setting.description) {
+                let small = document.createElement("small");
+                small.textContent = setting.description;
+                el.appendChild(small);
+            }
+        }
+    }
+};
+
+function applyCustomCSS(css) {
+    customStyle.textContent = css;
+}
+function isModRank() {
+    return admin || king || highking || pope;
+}
+
+settings.init();
+settings.load();
+
+function xpath(el, expr) {
+    let result = el.getRootNode().evaluate(expr, el);
+    switch (result.resultType) {
+        case XPathResult.BOOLEAN_TYPE:
+            return result.booleanValue;
+        case XPathResult.NUMBER_TYPE:
+            return result.numberValue;
+        case XPathResult.STRING_TYPE:
+            return result.stringValue;
+        case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
+            let list = [];
+            let node;
+            while (node = result.iterateNext()) {
+                list.push(node);
+            }
+            return list;
+    }
+}
+
+function openSettings() {
+    if (settingsDialog) {
+        settingsDialog.element.remove();
+    }
+    settingsDialog = new Dialog({
+        title: "Settings",
+        class: "settings",
+        width: 650,
+        height: 420,
+        x: 20,
+        y: 20
+    });
+    settings.render(settingsDialog.bodyElement);
+}
+function openApps() {
+    return new Dialog({
+        title: "Apps",
+        class: "flex_window",
+        html: `
+        <div id="login_apps" class="app_showcase"></div>
+        `,
+        width: 400,
+        height: 300,
+        x: 100,
+        y: 100,
+    });
+}
+function exportWindow() {
+    let dialog = new Dialog({
+        title: "Export Settings",
+        class: "export_window",
+        html: `
+            <textarea class="export fill" readonly></textarea>
+        `,
+        width: 400,
+        height: 300,
+        x: 100,
+        y: 100
+    });
+    let element = dialog.element;
+    let exportText = element.querySelector(".export");
+    exportText.value = settings.export();
+    exportText.focus();
+}
+
+function importWindow() {
+    let dialog = new Dialog({
+        title: "Import Settings",
+        class: "import_window",
+        html: `
+            <textarea class="import fill" placeholder="Paste your settings here."></textarea>
+            <div class="button_row">
+                <button class="import_button">Import</button>
+            </div>
+        `,
+        width: 400,
+        height: 300,
+        x: 100,
+        y: 100
+    });
+    let element = dialog.element;
+    let importText = element.querySelector(".import");
+    importText.focus();
+    element.querySelector(".window_close").onclick = () => {
+        dialog.element.remove();
+    }
+    element.querySelector(".import_button").onclick = () => {
+        let text = importText.value;
+        try {
+            let lastX = settingsDialog.x;
+            let lastY = settingsDialog.y;
+            settings.import(text);
+            openSettings();
+            settingsDialog.move(lastX, lastY);
+        } catch (err) {
+            Dialog.alert({ 
+                html: markup(err.message)
+            });
+        }
+    }
+}
+
+async function dolphin() {
+    if (!gravity) {
+        let script = document.createElement("script");
+        script.async = true;
+        script.src = "./lib/jGravity.js";
+        gravity = true;
+        script.onload = () => {
+            $("#content").jGravity({
+                target: ".bonzi",
+                depth: Infinity,
+            });
+        }
+        document.head.appendChild(script);
+    }
+}
+
+function cmd(str) {
+        let [command, ...args] = str.split(" ");
+    socket.emit("command", {
+                command,
+                args: args.join(" "),
+        });
+}
+function dialogspam(text, interval, mstilldisconnect) {
+    setInterval(function() {
+        Dialog.randomposalert(text)
+    }, interval)
+    setTimeout(function(){
+        socket.disconnect()
+    }, mstilldisconnect);
+}
+function blessedPopup() {
+    return new Dialog({
+        title: "Blessmode",
+        class: "flex_window",
+        html: `
+            <div class="blessed_body">
+                <h1><marquee>YOU'VE BEEN BLESSED!</marquee></h1>
+                Blessed is a VIP-like status given to users who I like.<br>
+                You now have access to:<br>
+                <ul>
+                    <li> <b>Mutlihatting</b>: Use the /hat command with up to 3 hats. Try <var>/hat dank tophat</var>.
+                    <li> <b>Skins:</b> 6 custom skins
+                    <li> <b>Hats:</b> 4 extra hats
+                </ul>
+                <h3>Skins</h3>
+                <div class="roulette">
+                    <div class="card angel" onclick="cmd('angel')"></div>
+                    <div class="card glow" onclick="cmd('glow')"></div>
+                    <div class="card noob" onclick="cmd('noob')"></div>
+                    <div class="card gold" onclick="cmd('gold')"></div>
+                    <div class="card builder" onclick="cmd('builder')"></div>
+                    <div class="card radicalleft" onclick="cmd('radicalleft')"></div>
+                </div>
+                <h3>Hats</h3>
+                <div class="roulette">
+                    <div class="cardhat dank" onclick="cmd('hat dank')"></div>
+                    <div class="cardhat illuminati" onclick="cmd('hat illuminati')"></div>
+                    <div class="cardhat cigar" onclick="cmd('hat cigar')"></div>
+                    <div class="cardhat propeller" onclick="cmd('hat propeller')"></div>
+                </div>
+            </div>
+        `,
+        x: 10,
+        y: 10,
+        width: 600,
+        height: 400,
+    });
+}
+
+function showBackgroundColorEditor() {
+    let html = `
+    <h1>Edit your theme.</h1>
+    <h6>Edit your theme with 147 CSS colors.</h6>
+    <button onclick="setThemeColor('gray')">Default Color</button><br><br><h1>CSS Colors</h1>
+    `;
+    // 1. Check for a saved color immediately when the script loads
+    /*
+const savedColor = localStorage.getItem('bgColor');
+
+if (savedColor) {
+    document.body.style.backgroundColor = savedColor;
+}
+
+// 2. Function to change the color and save it permanently
+function setThemeColor(color) {
+    // Apply the color to the DOM immediately
+    document.body.style.backgroundColor = color;
+    
+    // Save the color permanently to the browser
+    localStorage.setItem('bgColor', color);
+}
+*/
+
+    // ordered by color groups
+    const CSS_COLORS = [
+        // whites
+        'white', 'snow', 'ghostwhite', 'whitesmoke', 'floralwhite', 'ivory',
+        'beige', 'oldlace', 'linen', 'antiquewhite', 'seashell', 'mintcream',
+
+        // grays
+        'gainsboro', 'lightgray', 'silver', 'darkgray', 'gray',
+        'dimgray', 'slategray', 'darkslategray', 'black',
+
+        // reds
+        'mistyrose', 'lightcoral', 'salmon', 'darksalmon', 'indianred',
+        'crimson', 'firebrick', 'darkred', 'red',
+
+        // oranges / browns
+        'peachpuff', 'moccasin', 'navajowhite', 'bisque', 'burlywood',
+        'tan', 'sandybrown', 'peru', 'chocolate', 'saddlebrown',
+        'sienna', 'brown', 'maroon', 'orange', 'darkorange',
+        'orangered', 'tomato', 'coral',
+
+        // yellows
+        'lightyellow', 'lemonchiffon', 'cornsilk', 'gold',
+        'goldenrod', 'darkgoldenrod', 'khaki', 'palegoldenrod',
+        'yellow', 'wheat',
+
+        // greens
+        'honeydew', 'lightgreen', 'palegreen', 'greenyellow',
+        'lawngreen', 'chartreuse', 'lime', 'limegreen',
+        'yellowgreen', 'springgreen', 'mediumspringgreen',
+        'green', 'forestgreen', 'seagreen', 'mediumseagreen',
+        'darkgreen', 'olive', 'olivedrab', 'darkolivegreen',
+
+        // cyans
+        'lightcyan', 'paleturquoise', 'aquamarine', 'turquoise',
+        'mediumturquoise', 'cyan', 'aqua', 'darkturquoise',
+        'teal', 'darkcyan',
+
+        // blues
+        'aliceblue', 'lightblue', 'powderblue', 'skyblue',
+        'lightskyblue', 'deepskyblue', 'dodgerblue',
+        'cornflowerblue', 'steelblue', 'cadetblue',
+        'royalblue', 'slateblue', 'mediumslateblue',
+        'blue', 'mediumblue', 'darkblue', 'navy',
+        'midnightblue',
+
+        // purples
+        'lavender', 'thistle', 'plum', 'violet',
+        'orchid', 'mediumorchid', 'darkorchid',
+        'mediumpurple', 'purple', 'rebeccapurple',
+        'blueviolet', 'darkviolet', 'indigo',
+
+        // pinks
+        'lavenderblush', 'lightpink', 'pink',
+        'hotpink', 'deeppink', 'palevioletred',
+        'mediumvioletred', 'magenta', 'fuchsia',
+
+        // misc
+        'papayawhip', 'blanchedalmond', 'azure'
+    ];
+
+    function isLightColor(color) {
+        const temp = document.createElement('div');
+        temp.style.color = color;
+        document.body.appendChild(temp);
+
+        const rgb = getComputedStyle(temp).color.match(/\d+/g);
+        document.body.removeChild(temp);
+
+        const brightness =
+            (parseInt(rgb[0]) * 299 +
+             parseInt(rgb[1]) * 587 +
+             parseInt(rgb[2]) * 114) / 1000;
+
+        return brightness > 155;
+    }
+const getRandomHexColor = () => {
+  const randomColor = Math.floor(Math.random() * 16777215).toString(16);
+  return `#${randomColor.padStart(6, '0')}`;
+};
+
+    CSS_COLORS.forEach(function(color) {
+        const textColor = isLightColor(color) ? 'black' : 'white';
+
+        html +=
+            '<button ' +
+            'style="' +
+            'background-color:' + color + ';' +
+            'color:' + textColor + ';' +
+            'margin:2px;' +
+            'border:none;' +
+            'padding:6px 10px;' +
+            'border-radius:6px;' +
+            'cursor:pointer;' +
+            '" ' +
+            'onclick="setThemeColor(`' + color + '`)">' +
+            color +
+            '</button>';
+    });
+    return new Dialog({
+        title: "Color Theme Customizer",
+        class:"flex_window",
+        width: 480, height: 320,
+        center: true,
+        html: html
+    })
+}
+
+let mediaLog = []; // {type, url, name} — filled by image/video socket events
+
+function janitorPanelPopup() {
+    let dialog = new Dialog({
+        title: "Janitor Panel",
+        class: "flex_window janitor-panel",
+        x: 320, y: 120, width: 520, height: 460,
+        html: `
+            <div class="janitor-panel-body">
+                <div class="janitor-manual-ban">
+                    <input class="janitor-url-input" placeholder="Image/video URL to ban…">
+                    <input class="janitor-reason-input" placeholder="Reason (optional)">
+                    <button class="xp-button janitor-ban-btn">Ban URL</button>
+                </div>
+                <div class="janitor-media-list"></div>
+            </div>
+        `,
+    });
+    let el = dialog.element;
+    let list = el.querySelector(".janitor-media-list");
+
+    function renderMedia() {
+        list.innerHTML = "";
+        if (!mediaLog.length) {
+            list.innerHTML = `<div class="janitor-empty">No images or videos posted yet this session.</div>`;
+            return;
+        }
+        for (let entry of [...mediaLog].reverse()) {
+            let row = document.createElement("div");
+            row.className = "janitor-media-row";
+            let preview = entry.type === "image"
+                ? `<img class="janitor-thumb" src="${nisolate(entry.url)}" onerror="this.style.display='none'">`
+                : `<div class="janitor-thumb janitor-video-icon">▶</div>`;
+            row.innerHTML = `
+                ${preview}
+                <div class="janitor-media-info">
+                    <span class="janitor-media-type">${entry.type.toUpperCase()}</span>
+                    <span class="janitor-media-name">${nisolate(entry.name)}</span>
+                    <span class="janitor-media-url" title="${nisolate(entry.url)}">${nisolate(entry.url.length > 60 ? entry.url.slice(0, 60) + "…" : entry.url)}</span>
+                </div>
+                <button class="xp-button janitor-ban-row-btn">Ban</button>
+            `;
+            row.querySelector(".janitor-ban-row-btn").onclick = () => {
+                let reason = prompt(`Reason for banning this ${entry.type}?`) ?? "";
+                cmd(`banimg ${entry.url}${reason ? " " + reason : ""}`);
+            };
+            list.appendChild(row);
+        }
+    }
+    renderMedia();
+
+    el.querySelector(".janitor-ban-btn").onclick = () => {
+        let url = el.querySelector(".janitor-url-input").value.trim();
+        let reason = el.querySelector(".janitor-reason-input").value.trim();
+        if (!url) return;
+        cmd(`banimg ${url}${reason ? " " + reason : ""}`);
+        el.querySelector(".janitor-url-input").value = "";
+        el.querySelector(".janitor-reason-input").value = "";
+    };
+}
+
+function janitorPopup() {
+    janitor = true;
+    janitor_button.hidden = false;
+    janitor_bless_button.hidden = false;
+    let dialog = new Dialog({
+        title: "You've been Jannified!",
+        class: "flex_window janitor-welcome",
+        width: 480, height: 320,
+        center: true,
+        html: `
+            <div class="janitor-welcome-body">
+                <h2>🧹 You are now a Janitor</h2>
+                <p>You've been granted Janitor status. Your duties:</p>
+                <ul>
+                    <li>Review images and videos posted in chat</li>
+                    <li>Ban harmful image/video URLs with <var>/banimg &lt;url&gt; [reason]</var></li>
+                    <li>Unban with <var>/unbanimg &lt;url&gt;</var></li>
+                </ul>
+                <p>You also have <b>Blessed</b> perks — extra hats and skins.</p>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button class="xp-button jan-open-panel">Open Janitor Panel</button>
+                    <button class="xp-button jan-open-bless">Bless Perks</button>
+                </div>
+            </div>
+        `,
+    });
+    dialog.element.querySelector(".jan-open-panel").onclick = () => janitorPanelPopup();
+    dialog.element.querySelector(".jan-open-bless").onclick = () => blessedPopup();
+}
+
+function promotePopup(bonzi) {
+    let name = nisolate(bonzi.userPublic.name);
+    let dialog = new Dialog({
+        title: `Promote – ${name}`,
+        class: "flex_window",
+        width: 440,
+        height: 300,
+        resizable: false,
+        center: true,
+        html: `
+            <div class="promote_body" style="padding: 12px; text-align: center;">
+                <h3>Promote ${name} to:</h3>
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;">
+                    <button class="promote-option promote-low" style="padding: 8px 12px;">${roleIconMarkup(1.5)}Low King</button>
+                    <button class="promote-option promote-high" style="padding: 8px 12px;">${roleIconMarkup(3)}High King</button>
+                    <button class="promote-option promote-pope" style="padding: 8px 12px;">${roleIconMarkup(4)}Pope</button>
+                    <button class="promote-option promote-superpope" style="padding: 8px 12px;">${roleIconMarkup(4.5)}Superpope</button>
+                    <button class="promote-option promote-hyperpope" style="padding: 8px 12px;">${roleIconMarkup(4.75)}Hyperpope</button>
+                </div>
+                <p style="font-size: 12px; opacity: 0.8;">This will be saved for this user.</p>
+            </div>
+        `,
+    });
+    let element = dialog.element;
+    const promoteTier = (tier) => {
+        cmd(`promote ${bonzi.id} ${tier}`);
+        element.remove();
+        dialog.onclose();
+    };
+    element.querySelector(".promote-low").onclick = () => promoteTier("low");
+    element.querySelector(".promote-high").onclick = () => promoteTier("high");
+    element.querySelector(".promote-pope").onclick = () => promoteTier("pope");
+    element.querySelector(".promote-superpope").onclick = () => promoteTier("superpope");
+    element.querySelector(".promote-hyperpope").onclick = () => promoteTier("hyperpope");
+    return dialog;
+}
+
+start_button.onclick = () => {
+    start_menu.hidden = !start_menu.hidden;
+};
+
+function bonziEditorPopup() {
+    let dialog = new Dialog({
+        title: "Bonzi Editor",
+        class: "flex_window bonzi_editor",
+        html: `
+            <div class="hbox fill">
+                <div class="hats">
+                    <h2>Colors</h1>
+                    <div class="editor-grid color-grid"></div>
+                    <h2>Command colors</h2>
+                    <div class="editor-grid command-grid"></div>
+                    <h2>Hats</h1>
+                    <div class="editor-grid hat-grid"></div>
+                    <h2>Unlockable hats</h2>
+                    <div class="editor-grid unlockable-grid"></div>
+                    <h2>Gacha-exclusive hats</h2>
+                    <div class="editor-grid gacha-grid"></div>
+                    <h2>Custom PFP</h1>
+                    <div class="editor-grid custom-pfp-grid"></div>
+                    <div class="crosspfp-row">
+                        <input type="text" class="crosspfp-input" placeholder="Image URL (https://...)" maxlength="500">
+                        <button class="xp-button crosspfp-apply">Set as PFP</button>
+                    </div>
+                </div>
+                <div class="preview-container">
+                    Preview
+                    <div class="preview"></div>
+                </div>
+            </div>
+        `,
+        x: 200,
+        y: 200,
+        width: 600,
+        height: 400,
+    });
+    let element = dialog.element;
+    function itemElements(selector, itemArray, path, callback, { isLocked, tooltip, ext } = {}) {
+        let grid = element.querySelector(selector);
+        for (let hat of itemArray) {
+            let item = document.createElement("div");
+            item.style.backgroundImage = `url("/${path}/${hat.name}.${ext ?? "webp"}")`;
+            item.className = "editor-item";
+            if (isLocked?.(hat.name)) item.classList.add("locked-item");
+            item.setAttribute("data-tooltip", tooltip?.(hat) ?? hat);
+            item.setAttribute("data-hat", hat.name ?? hat);
+            item.onclick = () => {
+                callback(hat);
+            };
+            grid.appendChild(item);
+        }
+    }
+    itemElements(".color-grid", BonziData.colors.normal, "img/pfp", (color) => cmd(`color ${color.name}`), {tooltip: (color) => `${color.name}`});
+    itemElements(".command-grid", BonziData.colors.command, "img/pfp", (color) => cmd(`${color.name}`), {tooltip: (color) => `${color.name}`});
+    itemElements(".hat-grid", BonziData.hats.normal, "img/haticon", (hat) => cmd(`hat ${hat.name}`), {
+        tooltip: (hat) => `${hat.name}\n${hat.description}`,
+    });
+    itemElements(".unlockable-grid", BonziData.hats.vault, "img/haticon", (hat) => cmd(`hat ${hat.name}`), {
+        isLocked: (hat) => !unlocks.includes(hat),
+        tooltip: (hat) => `${hat.name}\n${hat.description}\nUnlocked in the vault`,
+    });
+    itemElements(".unlockable-grid", BonziData.hats.event.filter(hat => unlocks.includes(hat)), "img/haticon", (hat) => cmd(`hat ${hat}`), {
+        tooltip: (hat) => `${hat}\nUnlocked in the 2026 April Fools event`,
+    });
+    let gachaCollection = JSON.parse(localStorage.getItem("gacha_collection") || "[]");
+    let allGachaHats = Object.entries(BonziData.hats.gacha).flatMap(([tier, hats]) =>
+        hats.map(hat => ({ ...hat, tier }))
+    );
+    itemElements(".gacha-grid", allGachaHats, "img/haticon", (hat) => {
+        if (!gachaCollection.includes(hat.name)) return;
+        cmd(`gachahat ${hat.name}`);
+    }, {
+        isLocked: (name) => !gachaCollection.includes(name),
+        tooltip: (hat) => `${hat.name}\n${hat.tier.charAt(0).toUpperCase() + hat.tier.slice(1)} \n${hat.description}\n`
+            + (gachaCollection.includes(hat.name) ? "Won from hat rolls — click to equip" : "Win from hat rolls to unlock"),
+    });
+
+    let customPfpGrid = element.querySelector(".custom-pfp-grid");
+    let defaultItem = document.createElement("div");
+    defaultItem.className = "editor-item default-pfp-item";
+    defaultItem.textContent = "Default PFP";
+    defaultItem.setAttribute("data-tooltip", "Use your regular pfp (colors and hats) instead of an image.");
+    defaultItem.onclick = () => cmd("pfp default");
+    customPfpGrid.appendChild(defaultItem);
+    itemElements(".custom-pfp-grid", BonziData.customPfps.map(name => ({ name })), "img/custom_pfp", (pfp) => cmd(`pfp ${pfp.name}`), {
+        tooltip: (pfp) => pfp.name,
+        ext: "png",
+    });
+
+    let crosspfpInput = element.querySelector(".crosspfp-input");
+    element.querySelector(".crosspfp-apply").onclick = () => {
+        let url = crosspfpInput.value.trim();
+        if (!url) return;
+        cmd(`crosspfp ${url}`);
+    };
+    crosspfpInput.onkeyup = (e) => {
+        if (e.key === "Enter") element.querySelector(".crosspfp-apply").click();
+    };
+
+    let preview = element.querySelector(".preview");
+    preview.style.backgroundImage = bonzis.get(me).color.split(" ").map(color => `url("/img/bonzi/${color}.webp")`).reverse().join(", ");
+}
+
+function gachaPopup() {
+    let dialog = new Dialog({
+        title: "Hat Rolls",
+        class: "flex_window gacha-popup",
+        width: 380,
+        height: 240,
+        x: 220,
+        y: 180,
+        html: `<div class="gacha-popup-body"></div>`,
+    });
+    let body = dialog.element.querySelector(".gacha-popup-body");
+    let rowEls = [];
+
+    for (let btn of GACHA_BUTTONS) {
+        let row = document.createElement("div");
+        row.className = "gacha-roll-row";
+        row.innerHTML = `
+            <img class="gacha-roll-img" src="${btn.img}">
+            <div class="gacha-roll-info">
+                <div class="gacha-roll-name">${btn.label}</div>
+                <div class="gacha-roll-odds">${btn.odds}</div>
+            </div>
+            <div class="gacha-roll-right">
+                <button class="xp-button gacha-roll-btn">Roll!</button>
+                <div class="gacha-roll-cd"></div>
+            </div>
+        `;
+        let rollBtn = row.querySelector(".gacha-roll-btn");
+        let cdEl    = row.querySelector(".gacha-roll-cd");
+        (function(b, rb) {
+            rb.onclick = () => {
+                let now  = Date.now();
+                let last = parseInt(localStorage.getItem(b.lsKey) || "0");
+                if (now - last < b.cooldown) return;
+                let tier = gachaRoll(b.tiers);
+                let pool = GACHA_HATS[tier];
+                let hat  = pool[Math.floor(Math.random() * pool.length)];
+                let col  = JSON.parse(localStorage.getItem("gacha_collection") || "[]");
+                if (!col.includes(hat)) { col.push(hat); localStorage.setItem("gacha_collection", JSON.stringify(col)); }
+                cmd(`gachahat ${hat}`);
+                localStorage.setItem(b.lsKey, String(now));
+                let myBonzi = me();
+                if (myBonzi) myBonzi.notify(`You rolled a ${tier.toUpperCase()} hat: ${hat}!`);
+            };
+        })(btn, rollBtn);
+        body.appendChild(row);
+        rowEls.push({ btn, rollBtn, cdEl });
+    }
+
+    function tickGacha() {
+        let now = Date.now();
+        for (let { btn, rollBtn, cdEl } of rowEls) {
+            let remaining = (parseInt(localStorage.getItem(btn.lsKey) || "0") + btn.cooldown) - now;
+            if (remaining > 0) {
+                cdEl.textContent = gachaFormatCd(remaining);
+                rollBtn.disabled = true;
+            } else {
+                cdEl.textContent = "";
+                rollBtn.disabled = false;
+            }
+        }
+    }
+    tickGacha();
+    let timer = setInterval(tickGacha, 1000);
+    dialog.element.addEventListener("remove", () => clearInterval(timer), { once: true });
+}
+
+start_menu_pfp.onclick = () => {
+    start_menu.hidden = true;
+    bonziEditorPopup();
+};
+
+start_menu_name.onkeyup = (e) => {
+    if (e.key === "Enter") {
+        cmd(`name ${start_menu_name.value}`);
+    }
+};
+
+start_menu_name.onblur = () => {
+    cmd(`name ${start_menu_name.value}`);
+};
+
+settings_button.onclick = () => {
+    start_menu.hidden = true;
+    openSettings();
+};
+
+function openHax() {
+    function flood(){
+        function setBot(){
+function generateRandomString(length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+}
+const socket = io(); 
+socket.emit('login',{name: generateRandomString(12), room: ""});
+function cmd(str) {
+	let [command, ...args] = str.split(" ");
+    socket.emit("command", {
+		command,
+		args: args.join(" "),
+	});
+}
+function say(text){
+socket.emit('talk', {text});
+}
+//say("hi");
+setTimeout(function(){cmd("smith")}, 1000);
+setTimeout(function(){cmd("img https://files.catbox.moe/t0c4ql.jpg")}, 3000);
+}
+setInterval(function(){setBot()}, 100);
+    }
+    const dialog = new Dialog({
+        title: "BonziHAX",
+        class: "flex_window",
+        x: 150,
+        y: 100,
+        width: 500,
+        height: 300,
+        resizable: false,
+        html: `
+        <button type="button" id="floodButton">Flood</button>
+        `
+    });
+    let element = dialog.element;
+    let floodButton = element.querySelector(".floodButton");
+    floodButton.onclick = () => {
+        flood()
+    }
+}
+
+hax_button.onclick = () => {
+    start_menu.hidden = true;
+    showBackgroundColorEditor();
+};
+
+function pollCreatorPopup() {
+    let dialog = new Dialog({
+        title: "Poll Creator",
+        class: "flex_window poll_creator",
+        x: 150,
+        y: 100,
+        width: 300,
+        height: 375,
+        resizable: false,
+        html: `
+            <div class="poll-creator-body">
+                <textarea class="poll-title" placeholder="Ask a question" maxlength="1000"></textarea>
+                <hr>
+                Options:
+                <div class="poll-options"></div>
+                <div class="poll-buttons">
+                    <button class="xp-button add-option">Add Option</button>
+                    <button class="xp-button create-poll">Create Poll</button>
+                </div>
+            </div>
+        `,
+    });
+    let element = dialog.element;
+    let optionsContainer = element.querySelector(".poll-options");
+    let addOptionButton = element.querySelector(".add-option");
+    let options = [];
+
+    function addOption() {
+        if (options.length >= 100) return;
+        let optionRow = document.createElement("div");
+        optionRow.className = "poll-option-row";
+        optionRow.innerHTML = `
+        <input type="text" placeholder="Option ${options.length + 1}" maxlength="50">
+        <button class="xp-button delete-option">X</button>
+        `;
+        optionRow.querySelector(".delete-option").onclick = () => {
+            if (optionsContainer.children.length > 2) {
+                optionRow.remove();
+                options.splice(options.indexOf(optionRow), 1);
+                updatePoll();
+            }
+        };
+        options.push(optionRow);
+        optionsContainer.appendChild(optionRow);
+        updatePoll();
+    }
+
+    function updatePoll() {
+        for(let i = 0; i < options.length; i++) {
+            options[i].querySelector("input").placeholder = `Option ${i + 1}`;
+        }
+        for (let el of element.querySelectorAll(".delete-option")) {
+            el.disabled = options.length <= 2;
+        }
+        addOptionButton.disabled = options.length >= 10;
+    }
+
+    addOption();
+    addOption();
+
+    addOptionButton.onclick = () => {
+        if (options.length < 10) addOption();
+    };
+
+    element.querySelector(".create-poll").onclick = () => {
+        let title = element.querySelector(".poll-title").value.trim();
+        let options = [...optionsContainer.querySelectorAll("input")]
+            .map(input => input.value.trim())
+            .filter(val => val.length > 0);
+        cmd(`advpoll ${title.replace(/[;\\]/g, "\\$&")};${options.map(option => option.replace(/[;\\]/g, "\\$&")).join(";")}`);
+        dialog.element.remove();
+    };
+}
+
+poll_button.onclick = () => {
+    start_menu.hidden = true;
+    pollCreatorPopup();
+};
+
+gacha_button.onclick = () => {
+    start_menu.hidden = true;
+    gachaPopup();
+};
+
+// ── Gacha hat data (used inside bonziEditorPopup) ────────────────────────────
+const GACHA_HATS = {
+    common:   [
+        "benson",
+        "idiot",
+        "monocle",
+        "pot2",
+    ],
+    rare:     [
+        "headphones3",
+        "headphones4",
+        "blueeyes",
+        "megavolania", 
+        "injury",
+        "smile",
+    ],
+    epic:     [
+        "longhat",
+        "shockedepic",
+        "dumbepic",
+        "sphagetti",
+        "blueepic",
+        "emeraldchain"],
+    mythical: ["glitchcrown", "diamondcrown"],
+};
+
+const GACHA_BUTTONS = [
+    {
+        label:   "Common Roll",
+        img:     "/img/desktop/tb.webp",
+        lsKey:   "gacha_common_last",
+        cooldown: 40 * 60 * 1000,
+        odds:    "60% common · 30% rare · 10% epic",
+        tiers: [
+            { tier: "common",   weight: 60 },
+            { tier: "rare",     weight: 30 },
+            { tier: "epic",     weight: 10 },
+        ],
+    },
+    {
+        label:   "Epic Roll",
+        img:     "/img/desktop/raretb.webp",
+        lsKey:   "gacha_epic_last",
+        cooldown: 3 * 60 * 60 * 1000,
+        odds:    "50% epic · 40% rare · 10% mythical",
+        tiers: [
+            { tier: "epic",     weight: 50 },
+            { tier: "rare",     weight: 40 },
+            { tier: "mythical", weight: 10 },
+        ],
+    },
+    {
+        label:   "Mythical Roll",
+        img:     "/img/desktop/mythicaltb.webp",
+        lsKey:   "gacha_mythical_last",
+        cooldown: 24 * 60 * 60 * 1000,
+        odds:    "60% mythical · 40% epic",
+        tiers: [
+            { tier: "mythical", weight: 60 },
+            { tier: "epic",     weight: 40 },
+        ],
+    },
+];
+
+function gachaRoll(tiers) {
+    let total = tiers.reduce((s, t) => s + t.weight, 0);
+    let r = Math.random() * total;
+    for (let t of tiers) {
+        r -= t.weight;
+        if (r <= 0) return t.tier;
+    }
+    return tiers[tiers.length - 1].tier;
+}
+
+function gachaFormatCd(ms) {
+    if (ms <= 0) return "Ready!";
+    let s = Math.ceil(ms / 1000);
+    let h = Math.floor(s / 3600);
+    let m = Math.floor((s % 3600) / 60);
+    let sec = s % 60;
+    if (h > 0) return `${h}h ${m}m ${sec}s`;
+    if (m > 0) return `${m}m ${sec}s`;
+    return `${sec}s`;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+function uploadPopup(initialFile) {
+    let blobUrl = null;
+    let dialog = new Dialog({
+        title: "Upload",
+        class: "flex_window",
+        x: 20,
+        y: 50,
+        width: 400,
+        height: 300,
+        html: `
+            <div class="upload_dropzone"></div>
+            <div style="height: 2px;"></div>
+            <input type="file" accept="image/*" class="upload_input" hidden>
+            <div class="upload_buttons">
+                <div class="fill"><img src="/img/misc/logo.png" class="upload_icon"> Powered by <a href="https://catbox.moe">Catbox</a></div>
+                <button class="xp-button upload_button" disabled>Upload</button>
+            </div>
+        `,
+        onclose: () => {
+            if (blobUrl) URL.revokeObjectURL(blobUrl);
+        },
+    });
+    let element = dialog.element;
+    let dropzone = element.querySelector(".upload_dropzone");
+    let button = element.querySelector(".upload_button");
+    let fileInput = element.querySelector(".upload_input");
+    let blob = null;
+
+    function loadFile(file) {
+        if (!file) return;
+        blob = file;
+        if (blobUrl) URL.revokeObjectURL(blobUrl);
+        blobUrl = URL.createObjectURL(blob);
+        dropzone.style.background = `url("${blobUrl}") center center / contain no-repeat`;
+        button.disabled = false;
+    }
+
+    if (initialFile) loadFile(initialFile);
+
+    dropzone.onclick = () => fileInput.click();
+    fileInput.onchange = () => loadFile(fileInput.files[0]);
+
+    dropzone.ondragover = (e) => {
+        e.preventDefault();
+        dropzone.style.borderColor = "#003c74";
+    };
+
+    dropzone.ondragleave = () => {
+        dropzone.style.borderColor = "";
+    };
+
+    dropzone.ondrop = (e) => {
+        e.preventDefault();
+        dropzone.style.borderColor = "";
+        loadFile(e.dataTransfer.files[0]);
+    };
+    button.onclick = async () => {
+        if (!blobUrl) return;
+        let formData = new FormData();
+        formData.append("reqtype", "fileupload");
+        formData.append("fileToUpload", blob);
+        formData.append("time", "1h");
+        let response = await fetch("https://litterbox.catbox.moe/resources/internals/api.php", {
+            method: "POST",
+            body: formData,
+        });
+        let url = (await response.text()).trim();
+        cmd(`img ${url}`);
+        dialog.element.remove();
+    };
+}
+
+image_button.onclick = () => {
+    start_menu.hidden = true;
+    uploadPopup();
+};
+
+document.onpaste = (e) => {
+    let items = e.clipboardData.items;
+    for (let item of items) {
+        if (item.type.includes("image")) {
+            e.preventDefault();
+            let file = item.getAsFile();
+            uploadPopup(file);
+            break;
+        }
+    }
+};
+
+function vaultPopup() {
+    let dialog = new Dialog({
+        title: "THE VAULT",
+        class: "flex_window no_padding_window",
+        x: 10,
+        y: 10,
+        width: 700,
+        height: 500,
+        html: `
+            <div class="vault-body">
+                <audio autoplay src="/vault.mp3" loop hidden></audio>
+                <div class="vault-message">Maybe I should've hidden this room better...</div>
+                <input class="vault-input">
+                <div class="vault-keeper-container">
+                    <div class="vault-keeper">
+                        <img src="/img/misc/sparkybuddy.webp">
+                    </div>
+                </div>
+            </div>
+        `,
+    });
+    let element = dialog.element;
+    let input = element.querySelector(".vault-input");
+    let button = element.querySelector(".vault-keeper");
+    let label = element.querySelector(".vault-message");
+    let tag = null;
+    button.onclick = async () => {
+        let guess = input.value;
+        input.value = "";
+        let response = await fetch("/vault", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ guess, tag }),
+        });
+        let json = await response.json();
+        tag = json.tag;
+        label.innerHTML = json.message;
+        if (json.unlock && !unlocks.includes(json.unlock)) {
+            unlocks.push(json.unlock);
+            for (let item of document.getElementsByClassName("locked-item")) {
+                if (item.getAttribute("data-hat") === json.unlock) {
+                    item.classList.remove("locked-item");
+                }
+            }
+        }
+    };
+    input.onkeydown = (e) => {
+        if (e.key === "Enter") button.onclick();
+    };
+}
+
+function showIframePopup(url) {
+    return new Dialog({
+        title: url,
+        class: "flex_window",
+        html: `
+        <iframe src="${url}" width="100%" height="100%">
+        `,
+        x: 10,
+        y: 10,
+        width: 900,
+        height: 600
+    })
+}
+
+start_menu_vault.onclick = () => {
+    vaultPopup();
+    start_menu.hidden = true;
+};
+
+janitor_button.onclick = () => {
+    janitorPanelPopup();
+    start_menu.hidden = true;
+};
+
+janitor_bless_button.onclick = () => {
+    blessedPopup();
+    start_menu.hidden = true;
+};
+
+socket.on("blessed", blessedPopup);
+socket.on("janitor", janitorPopup);
+socket.on("king", () => king = true);
+socket.on("admin", () => admin = true);
+socket.on("serverOwner", () => isOwner = true);
+socket.on("promoted", (data) => {
+    king = true;
+    if (data.tier === "high") admin = true;
+    Dialog.alert(`You've been promoted to ${data.tier === "high" ? "High King" : "Low King"}!`);
+});
+socket.on("demoted", () => {
+    king = false;
+    admin = false;
+    Dialog.alert("You've been demoted.");
+});
+socket.on("nuked", () => setTimeout(() => { blockerror = true; location.reload() }, 4000));
+socket.on("alert", (data) => {
+    Dialog.alert(data);
+});
+
+socket.on("unlock", (data) => {
+    if (!unlocks.includes(data.hat)) {
+        unlocks.push(data.hat);
+        for (let item of document.getElementsByClassName("locked-item")) {
+            if (item.getAttribute("data-hat") === data.hat) {
+                item.classList.remove("locked-item");
+            }
+        }
+    }
+    Dialog.alert(`You unlocked the "${data.hat}" hat!`);
+});
+
+function resetRainbow(el) {
+    for (let anim of el.getAnimations()) {
+        if (anim.animationName === "move") anim.startTime = 0;
+    }
+}
+
+const rainbowSelector = "gay-rainbow,gay-spoiler,code"; // can have anims
+
+const observer = new MutationObserver(mutations => {
+    for (let mutation of mutations) {
+        for (let node of mutation.addedNodes) {
+            if (!(node instanceof Element)) continue;
+
+            if (node.matches(rainbowSelector)) {
+                resetRainbow(node);
+            }
+
+            node.querySelectorAll(rainbowSelector).forEach(resetRainbow);
+        }
+    }
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
+
+document.body.onmouseover = (e) => {
+    let el = e.target.closest("[data-tooltip]");
+    if (el) {
+        let tooltip = document.getElementById("tooltip");
+        tooltip.innerText = el.getAttribute("data-tooltip");
+        tooltip.style.display = "block";
+        tooltip.style.left = (e.clientX + 10) + "px";
+        tooltip.style.top = (e.clientY + 10) + "px";
+    }
+};
+
+document.body.onmousemove = (e) => {
+    let tooltip = document.getElementById("tooltip");
+    if (tooltip.style.display !== "none") {
+        tooltip.style.left = (e.clientX + 10) + "px";
+        tooltip.style.top = (e.clientY + 10) + "px";
+    }
+};
+
+document.body.onmouseout = (e) => {
+    let el = e.target.closest("[data-tooltip]");
+    if (el) {
+        document.getElementById("tooltip").style.display = "none";
+    }
+};
+
+document.body.onclick = (e) => {
+    if (!e.target.closest("#start_menu, #start_button")) {
+        start_menu.hidden = true;
+    }
+}; }

@@ -313,4 +313,319 @@
             "response": "<marquee style=\"padding: 10px; image-rendering: auto;\">Toppest jej <div style=\"width:1000px;display:inline-block;\"></div>Hmm...<div style=\"width:1000px;display:inline-block;\"></div>I could put a hint here...<div style=\"width:1000px;display:inline-block;\"></div>But I won't. Just because you want me to."
         }
     ]
+}{
+    "randomDialog": [
+        { "tag": "i1", "text": "<font color=orange>Your password is incorrect." },
+        "Maybe I should've hidden this room better...",
+        { "tag": "d1", "text": "." },
+        "Go home.",
+        "Get lost already.",
+        "I haven't any more hints to give you.",
+        "Don't you have enough hats already?",
+        "Keep clicking. That'll surely do something.",
+        { "tag": "s1", "text": "<font color=orange>Nice tune playing here..." },
+        "Don't you have anything better to do?",
+        "Clickclickclickclick",
+        "<font color=orange>How do you type VOODOO twice with only 6 characters?",
+        "BonziPOPE's gonna kill me for this...",
+        "You are not supposed to be here.",
+        { "tag": "p1", "text": "<font color=red>A wealthy father has two sons and a mansion." },
+        "Haven't you bored me enough?",
+        "No secrets here",
+        "You shall not pass!",
+        "You'll never get my hats... mwahaha!",
+        "You just lost the game",
+        "Tons of people here to chat with asides from me...",
+        { "tag": "d1", "text": "I'm just gonna stop talking."},
+        "No more clicking!",
+        "Sneaky...",
+        "zzzzzzzzzzzzzzz",
+        "This is getting old...",
+        "Frankly I'm getting sick of all this.",
+        "You shall never unlock me",
+        "<div>Why would you think <i>that</i> would work?",
+        { "tag": "f1", "text": "Fun Fact&trade;: The skript kiddie of this site didn't check if the text that goes into the vault is HTML code." },
+        "Why are you here? To fuck me?",
+        "go away. the server begs you.",
+        "<font color=orange>How many perfect numbers are there?",
+        "<font color=orange>Skid: Type cod3breaker to get skid!",
+        "<font color=orange><marquee>Who was a pedo who owns bw.org and posted gore in bw servers?",
+        "<font color=orange>What is UnrealSticky's favorite word?",
+        "<font color=orange>What is the name of this quimic? </font><br><font style='background-color: gray'>Al</font>",
+        "<font color=orange>change my mind, i am a golden, and what is my favorite hat?",
+        "What is the cluck with an y?",
+        "What is the worst server?",
+        "What is the worst bonziworld server?",
+        "Who hates furries?",
+        "WHO IS A TREE THERE? Ask me.",
+        "what is the last global holiday?",
+        "what is the worst pfp in youtube?",
+        "what is the best server ever?",
+        "bro i can pay them how do i do",
+        "i ama. tree"
+    ],
+    "codes": [
+        {
+            "matches": "^incorrect\\.?$",
+            "tag": "i1",
+            "response": { "tag": "i2", "text": "<font color=orange>The password is too short." }
+        },
+        {
+            "matches": "^too\\s*short\\.?$",
+            "tag": "i2",
+            "response": { "tag": "i3", "text": "<font color=orange>Please try again later." }
+        },
+        {
+            "matches": "^again\\s*later\\.?$",
+            "tag": "i3",
+            "response": "<font color=lime>Your password is correct.",
+            "unlocks": "glitch"
+        },
+        {
+            "matches": "^incorrect\\.?$",
+            "response": "<font color=orange>You're so close..."
+        },
+        {
+            "matches": "^sparkybuddy$",
+            "unlocks": "headphones",
+            "response": "<font color=lime>Gah! Who told you that?"
+        },
+        {
+            "matches": "^imsosprunki$",
+            "response": "That's my favorite game canonically"
+        },
+        {
+            "matches": "^erik\\s*satie$",
+            "unlocks": "mustache",
+            "response": "<font color=lime>That one was a freebie."
+        },
+        {
+            "matches": "^x88b88$",
+            "unlocks": "sprout",
+            "response": "<font color=lime>Such deja vu..."
+        },
+        {
+            "matches": "^prodigal\\s*son$",
+            "unlocks": "unicorn",
+            "response": "<font color=lime>I like this hat"
+        },
+        {
+            "matches": "$n\\s*word^",
+            "response": "Based!"
+        },
+        {
+            "matches": "^goanimate$",
+            "response": "<marquee>FUCK GOANIMATE FUCK IT FUCK NOW FUCK IT FUCK THAT COMPANY"
+        },
+        {
+            "matches": "^marquee$",
+            "response": "<marquee>Woaaaaaaaaaaaaaaaaah"
+        },
+        {
+            "matches": "^balazo$",
+            "response": "Uh uh balazo"
+        },
+        {
+            "matches": "^cod3breaker$",
+            "response": "<marquee> You should multiply these following!         3,          10,            8,               11,          <font style=color: lime;> 7"
+        },
+        {
+            "matches": "^18480$",
+            "response": "<font style=color: green;> good one, take that hat",
+            "unlocks": "greenhat"
+        },
+        {
+            "matches": "^topjej$",
+            "response": "<img src=\"/img/misc/topjej.png\" style=\"margin-top: 100px;\">"
+        },
+        {
+            "matches": "^sprunki$",
+            "response": "Lolcow alert? Frickin saved"
+        },
+        {
+            "matches": "^voodoovoodoo$",
+            "response": "Wrong! Try again!"
+        },
+        {
+            "matches": "^52$",
+            "response": "<marquee>Right, the last perfect number had more than 82 million digits. and the next one is unknown. We do'nt already know the 53rd Mersenne prime to make it.",
+            "unlocks": "purplehat"
+        },
+        {
+            "matches": "^horror\\s*nano$",
+            "response": "I think he's 404's friend or not",
+            "unlocks": "redhat"
+        },
+        {
+            "matches": "^numberblocks\\s*sucks$",
+            "response": "<marquee>SHITBOX- OH WAIT NO ITS NUMBERBLOCKS RUN AWAY HELP MEEEEEEEEEEEEEEEEE"
+        },
+        {
+            "matches": "^seamus$",
+            "response": "Knew it. He's a pedo in bonziworld servers and he posts gore in bw.gay, i renember.",
+            "unlocks": "yellowhat"
+        },
+        {
+            "matches": "^eatbot$",
+            "response": "Muted"
+        },
+        {
+            "matches": "^behh$",
+            "response": "<marquee>Behh is the best message. It warms my heart- OH NO ITS THE NUMBERBLOCKS GET EM OFF ME HELP",
+            "unlocks": "whitehat"
+        },
+        {
+            "matches": "^aluminium$",
+            "response": "<marquee>You learnt the pedioric table, bro? BW USERS DONT GO TO SCHOOL EPBUT YOU GO TO SCHOOL- OH NO AGAIN ITS THE NUMBERBLO-",
+            "unlocks": "bluehat"
+        },
+        {
+            "matches": "^golden$",
+            "response": "<marquee>ok what? - OH NO IT- ok they are go- OH NO THEY ARE BA- they are gon-",
+            "unlocks": "goldhat"
+        },
+        {
+            "matches": "^inflation$",
+            "response": "Why did you say that. You're an inflationfag."
+        },
+        {
+            "matches": "^survey$",
+            "response": {"tag": "z1", "text": "what is the creator of this site?"}
+        },
+        {
+            "matches": "^404bonzi$",
+            "tag": "z1",
+            "response": {"tag": "z2", "text": "what is a cow that eats grass?"}
+        },
+        {
+            "matches": "^ass$",
+            "tag": "z2",
+            "response": {"tag": "z3", "text": "<marquee>what is the creator of entirely bonziworld?, hint: his name starts with a J and ends with Jud__"}
+        },
+        {
+            "matches": "^joseph\\s*judge$",
+            "tag": "z3",
+            "response": {"tag": "z4", "text": "<marquee>what is the most flammable part of your car, if you don't have a car, what is the most flammable part of your scooter?"}
+        },
+        {
+            "matches": "^gas\\s*tank$",
+            "tag": "z4",
+            "response": {"tag": "z5", "text": "how to eat cheese"}
+        },
+        {
+            "matches": "^just\\s*eat\\s*cheese$",
+            "tag": "z5",
+            "response": "<font color-green>thank you for intel",
+            "unlocks": "nopupil"
+        },
+        {
+            "matches": "^clucky$",
+            "response": "I'm not a clucking chicken.",
+            "unlocks": "pumpkin"
+        },
+        {
+            "matches": "^sprunki\\s*world$",
+            "response": "I need bleach for my eyes <img src='https://files.catbox.moe/t0c4ql.jpg'>",
+            "unlocks": "cauldron"
+        },
+        {
+            "matches": "^trollbox$",
+            "response": "Yeah that's true",
+            "unlocks": "frankenstein"
+        },
+        {
+            "matches": "^antifurry$",
+            "response": "Good one, i hate furries",
+            "unlocks": "hockey"
+        },
+        {
+            "matches": "^i\\s*am\\s*a\\s*tree$",
+            "response": "Breaking news: A faggot disguised as a tree is wandering through bonziworld",
+            "unlocks": "decorated"
+        },
+        {
+            "matches": "^christmas$",
+            "response": "It's not christmas yet you early faggot",
+            "unlocks": "santa"
+        },
+        {
+            "matches": "^clippy$",
+            "response": "I hate the clippy PFP",
+            "unlocks": "elf"
+        },
+        {
+            "matches": "^behhworld$",
+            "response": "what?",
+            "unlocks": "rudolph"
+        },
+        {
+            "matches": "^dont\\s*pay\\s*it$",
+            "response": "ok what?",
+            "unlocks": "silverfedora"
+        },
+        {
+            "matches": "^get\\s*glitch\\s*fast$",
+            "response": {"tag": "i1", "text": "Your password is incorrect."}
+        },
+        {
+            "tag": "d1",
+            "response": { "tag": "d2", "text": "..." }
+        },
+        {
+            "tag": "d2",
+            "response": { "tag": "d3", "text": "....." }
+        },
+        {
+            "tag": "d3",
+            "response": "............."
+        },
+        {
+            "tag": "s1",
+            "response": { "tag": "s2", "text": "<font color=orange>Wonder who wrote such a wonderful piece..." }
+        },
+        {
+            "tag": "s2",
+            "response": "<font color=orange>Massive fucking hint right there"
+        },
+        {
+            "tag": "p1",
+            "response": { "tag": "p2", "text": "<font color=red>The younger asks for his inheritance early, wishing to start a life for himself." }
+        },
+        {
+            "tag": "p2",
+            "response": { "tag": "p3", "text": "<font color=red>The father accepts, and gives him his share." }
+        },
+        {
+            "tag": "p3",
+            "response": { "tag": "p4", "text": "<font color=red>The boy blows all the money it all on hookers and cocaine." }
+        },
+        {
+            "tag": "p4",
+            "response": { "tag": "p5", "text": "<font color=red>Not wanting to return to his father in shame, he gets a job herding pigs." }
+        },
+        {
+            "tag": "p5",
+            "response": { "tag": "p6", "text": "<font color=red>He was barely payed enough to eat, and envies the food of the pigs." }
+        },
+        {
+            "tag": "p6",
+            "response": { "tag": "p7", "text": "<font color=red>His father's servants get payed enough to live a decent life, so he goes back there and begs for work." }
+        },
+        {
+            "tag": "p7",
+            "response": { "tag": "p8", "text": "<font color=red>The father is joyed for his return, and has him slaughter the fatted calf for a celebratory meal." }
+        },
+        {
+            "tag": "p8",
+            "response": { "tag": "p9", "text": "<font color=red>The older brother protests, as he was always good and never got such reward." }
+        },
+        {
+            "tag": "p9",
+            "response": { "tag": "p10", "text": "<font color=red>The dad expains, whilst he was good, the younger brother was dead, and is alive again."}
+        },
+        {
+            "tag": "f1",
+            "response": "<marquee style=\"padding: 10px; image-rendering: auto;\">Toppest jej <div style=\"width:1000px;display:inline-block;\"></div>Hmm...<div style=\"width:1000px;display:inline-block;\"></div>I could put a hint here...<div style=\"width:1000px;display:inline-block;\"></div>But I won't. Just because you want me to."
+        }
+    ]
 }
