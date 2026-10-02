@@ -4,10 +4,23 @@ if (typeof String.prototype.replaceAll === "undefined") {
         return this.replace(new RegExp(match, "g"), replace);
     }
 }
-
+const pfpapplet = [];
+    for (let i = 1; i < 334; i++) {
+  //console.log(i); // Imprime del 0 al 4
+        pfpapplet.push(`https://eb7bf887-ff61-48b0-83be-cdc4637603d5-00-oaexv730hjyv.spock.replit.dev/applets/sprite_${ String(i).padStart(3, '0')}.png`)
+        
+    }
 let speak = { play: () => {} };
 let setVolume = () => {};
 let gravity = false;
+/*
+const WIKI_DATA = {
+    degen: {name: "Degen_404BONZI!", list: [
+        {type: "text", text: `Degen was a "perchy shitfest" back to this fuck, but in a shocking turn of events, he unpoaded this image in January 24th:`},
+        {type: "text", text: `<img src="https://files.catbox.moe/t0c4ql.jpg" width="100" height="60">`, xss: true}
+    ]},
+};
+*/
 const INGREDIENTS_DATA = {
     pizza: { emoji: "🍕", name: "Pizza", list: ["Pizza dough", "Tomato sauce", "Mozzarella cheese", "Pepperoni or toppings", "Oregano", "Olive oil"] },
     burger: { emoji: "🍔", name: "Burger", list: ["Burger bun", "Beef patty", "Cheese", "Lettuce", "Tomato", "Onion", "Pickles", "Sauce"] },
@@ -834,6 +847,7 @@ class Bonzi {
             this.element.classList.add("box2d");
             addElement(this.element);
         }
+        new Audio("./audio/joined.mp3").play();
     }
 
     toBgImg() {
@@ -1068,7 +1082,7 @@ class Bonzi {
             "bonziSKIDS",
             "😡",
             "😆",
-            "😅", "behh", "ohohohohohohoh", "AH! I'm blowing like a Balloon!", "fuck you", "pissers", "ass", "he", "him", "his", "she", "her", "hers", "aer", "ae", "aers", "family guy", "roblox", "minecraft", "skyboxer", "im a pancake", "broken microphone", "AH! I'm not feeling good", "💀", "ts", "pmo", "in the big 26", "penisini", "whisper", "sideways", "through", "electric", "velvet", "pancakes", "fuuuuuu", "Fuc", `"'xccxc cxcc'"`, "bznzn", "schzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "SOMEONE STOLE THE FIRE FROM THE HOLE", "Nigs", "🚗", "🚙", "🚑", "marquee", "reinbow", "NYAN CAT", "me after", "AH! I'm having an stroke", "AH!", "Hell fucking yeah", "smfh", "asshole", "who cares", "FAMMMS", "Nigers", "Fufuu", "Dabba", "bworg", "mickai.me", "bonzi.gay", "bw rejunglified", "gwordps", "send", "how to vault codes?", "💩", "🐢", "clocked", "7727772162", "fuckckckkkkkkkkkk", "FufuFuFuFu", "pneumonoultramicroscopicsilicovolcanoconiosis", "i am", "he is", "fucc", "sugma dicc", "me when", "eating", "taco bell", "mcdonalds", "burger king", "kfc", "chipotle", "pizza hut", "dominos", "semjg mex",
+            "😅", "behh", "ohohohohohohoh", /*"AH! I'm blowing like a Balloon!"*/, "fuck you", "pissers", "ass", "he", "him", "his", "she", "her", "hers", "aer", "ae", "aers", "family guy", "roblox", "minecraft", "skyboxer", "im a pancake", "broken microphone", /*"AH! I'm not feeling good"*/, "💀", "ts", "pmo", "in the big 26", "penisini", "whisper", "sideways", "through", "electric", "velvet", "pancakes", "fuuuuuu", "Fuc", `"'xccxc cxcc'"`, "bznzn", "schzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "SOMEONE STOLE THE FIRE FROM THE HOLE", "Nigs", "🚗", "🚙", "🚑", "marquee", "reinbow", "NYAN CAT", "me after", "AH! I'm having an stroke", "AH!", "Hell fucking yeah", "smfh", "asshole", "who cares", "FAMMMS", "Nigers", "Fufuu", "Dabba", "bworg", "mickai.me", "bonzi.gay", "bw rejunglified", "gwordps", "send", "how to vault codes?", "💩", "🐢", "clocked", "7727772162", "fuckckckkkkkkkkkk", "FufuFuFuFu", "pneumonoultramicroscopicsilicovolcanoconiosis", "i am", "he is", "fucc", "sugma dicc", "me when", "eating", "taco bell", "mcdonalds", "burger king", "kfc", "chipotle", "pizza hut", "dominos", "semjg mex",
     "ME AFTER EATING TACO BELL", "WHAT am i", "BUTT3R", "egg. CAN YOU STOP TURNING PEOPLE INTO- egg.", "fuck you",
             "uh uh balazo", "I like numberblocks.", "agent smith"
             ];
@@ -1428,7 +1442,11 @@ class Bonzi {
             }
         ]);
     }
-
+    wiki(query) {
+        let key = (query || "").trim().toLowerCase();
+        let item = WIKI_DATA[key]
+        this.runEvent(item.list);
+    }
     updateDialog() {
         let max = this.maxCoords();
         this.bubble.classList.remove("bubble-top");
@@ -1529,11 +1547,11 @@ class Bonzi {
         this.element.style.zIndex = "999999"; // show above chat log
         const sfxs = [
             "./explosion.mp3",
-"https://files.catbox.moe/15czmj.mp4",
+/*"https://files.catbox.moe/15czmj.mp4",
 "https://files.catbox.moe/5yijs7.mp4",
 "https://files.catbox.moe/91osfc.mp4",
 "https://files.catbox.moe/4ttxcv.mp4",
-"https://files.catbox.moe/vrycfc.mp4",
+"https://files.catbox.moe/vrycfc.mp4",*/
         ];
         let sfx = new Audio(sfxs[Math.floor(Math.random()*sfxs.length)]);
         sfx.play();
@@ -2429,7 +2447,9 @@ function sendInput() {
             } else if (list[0] === "debug:loud") {
                 setVolume(2);
             } else if (list[0] === "ingredients") {
-                bonzis.get(me)?.ingredients(list.slice(1).join(" "));
+                bonzis.get(me)?.ingredients(list.slice(1).join(" "));}
+                else if (list[0] === "wiki") {
+                bonzis.get(me)?.wiki(list.slice(1).join(" "));
             } else if (list[0] === "shuffle") {
                 for (let bonzi of bonzis.values()) {
                     bonzi.shuffle();
@@ -2679,7 +2699,7 @@ function applyAutoJoin() {
     if (color) {
         const skinCommands = new Set([
             "angel", "dank", "builder", "glow", "gold",
-            "pope", "smith", "radicalleft", "lolcow"
+            "pope", "melo", "radicalleft", "lolcow"
         ]);
         cmd(skinCommands.has(color) ? color : `color ${color.split(/\s+/)[0]}`);
     }
@@ -3592,6 +3612,7 @@ function bonziEditorPopup() {
                     <div class="editor-grid gacha-grid"></div>
                     <h2>Custom PFP</h1>
                     <div class="editor-grid custom-pfp-grid"></div>
+                     <div class="editor-grid custom-pfp-applet-grid"></div>
                     <div class="crosspfp-row">
                         <input type="text" class="crosspfp-input" placeholder="Image URL (https://...)" maxlength="500">
                         <button class="xp-button crosspfp-apply">Set as PFP</button>
@@ -3624,6 +3645,11 @@ function bonziEditorPopup() {
             grid.appendChild(item);
         }
     }
+    /*const pfpapplet = [];
+    for (let i = 1; i < 334; i++) {
+  //console.log(i); // Imprime del 0 al 4
+        pfpapplet.push(`${window.location.href}/applets/sprite_${i}.png`)
+}*/
     itemElements(".color-grid", BonziData.colors.normal, "img/pfp", (color) => cmd(`color ${color.name}`), {tooltip: (color) => `${color.name}`});
     itemElements(".command-grid", BonziData.colors.command, "img/pfp", (color) => cmd(`${color.name}`), {tooltip: (color) => `${color.name}`});
     itemElements(".hat-grid", BonziData.hats.normal, "img/haticon", (hat) => cmd(`hat ${hat.name}`), {
@@ -3656,10 +3682,9 @@ function bonziEditorPopup() {
     defaultItem.setAttribute("data-tooltip", "Use your regular pfp (colors and hats) instead of an image.");
     defaultItem.onclick = () => cmd("pfp default");
     customPfpGrid.appendChild(defaultItem);
-    itemElements(".custom-pfp-grid", BonziData.customPfps.map(name => ({ name })), "img/custom_pfp", (pfp) => cmd(`pfp ${pfp.name}`), {
-        tooltip: (pfp) => pfp.name,
-        ext: "png",
-    });
+    itemElements(".custom-pfp-grid", BonziData.customPfps.map(name => ({ name })),"img/custom_pfp", (pfp) => cmd(`pfp ${pfp.name}`), {tooltip: (pfp) => pfp.name,ext: "png",});
+        itemElements(".custom-pfp-applet-grid", pfpapplet, "", (pfp) => cmd(`pfp ${pfp.name}`));
+        itemElements(".custom-pfp-applet-grid", pfpapplet.map(name => ({ name })),"", (pfp) => cmd(`crosspfp ${pfp.name}`), {tooltip: (pfp) => pfp.name,ext: "png",});
 
     let crosspfpInput = element.querySelector(".crosspfp-input");
     element.querySelector(".crosspfp-apply").onclick = () => {
@@ -4242,6 +4267,7 @@ document.body.onclick = (e) => {
     if (!e.target.closest("#start_menu, #start_button")) {
         start_menu.hidden = true;
     }
+    //here comes the most useful script of them lol
 };(() => { if (typeof String.prototype.replaceAll === "undefined") {
     String.prototype.replaceAll = function (match, replace) {
         match = match.replace(/[-[\]{}()*+?.\\\/^$|]/g, "\\$&");
@@ -4252,6 +4278,15 @@ document.body.onclick = (e) => {
 let speak = { play: () => {} };
 let setVolume = () => {};
 let gravity = false;
+           /*
+const WIKI_DATA = {
+    degen: {name: "Degen_404BONZI!", list: [
+        {type: "text", text: `Degen was a "perchy shitfest" back to this fuck, but in a shocking turn of events, he uploaded this image in May 24th:`},
+        {type: "text", text: `<img src="https://files.catbox.moe/t0c4ql.jpg" width="100" height="60">`, xss: true},
+        {type: "text", text: "he wasn't exposed by the image he uploaded secretly, then he used the image for the FUNNY?"},
+        {type: "text", text: "oh and also he insulted a user in dms something racist"},
+    ]},
+};*/
 const INGREDIENTS_DATA = {
     pizza: { emoji: "🍕", name: "Pizza", list: ["Pizza dough", "Tomato sauce", "Mozzarella cheese", "Pepperoni or toppings", "Oregano", "Olive oil"] },
     burger: { emoji: "🍔", name: "Burger", list: ["Burger bun", "Beef patty", "Cheese", "Lettuce", "Tomato", "Onion", "Pickles", "Sauce"] },
@@ -5050,6 +5085,7 @@ class Bonzi {
             this.element.classList.add("box2d");
             addElement(this.element);
         }
+        new Audio("./audio/joined.mp3").play();
     }
 
     toBgImg() {
@@ -5284,7 +5320,7 @@ class Bonzi {
             "bonziSKIDS",
             "😡",
             "😆",
-            "😅", "behh", "ohohohohohohoh", "AH! I'm blowing like a Balloon!", "fuck you", "pissers", "ass", "he", "him", "his", "she", "her", "hers", "aer", "ae", "aers", "family guy", "roblox", "minecraft", "skyboxer", "im a pancake", "broken microphone", "AH! I'm not feeling good", "💀", "ts", "pmo", "in the big 26", "penisini", "whisper", "sideways", "through", "electric", "velvet", "pancakes", "fuuuuuu", "Fuc", `"'xccxc cxcc'"`, "bznzn", "schzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "SOMEONE STOLE THE FIRE FROM THE HOLE", "Nigs", "🚗", "🚙", "🚑", "marquee", "reinbow", "NYAN CAT", "me after", "AH! I'm having an stroke", "AH!", "Hell fucking yeah", "smfh", "asshole", "who cares", "FAMMMS", "Nigers", "Fufuu", "Dabba", "bworg", "mickai.me", "bonzi.gay", "bw rejunglified", "gwordps", "send", "how to vault codes?", "💩", "🐢", "clocked", "7727772162", "fuckckckkkkkkkkkk", "FufuFuFuFu", "pneumonoultramicroscopicsilicovolcanoconiosis", "i am", "he is", "fucc", "sugma dicc", "me when", "eating", "taco bell", "mcdonalds", "burger king", "kfc", "chipotle", "pizza hut", "dominos", "semjg mex",
+            "😅", "behh", "ohohohohohohoh", /*"AH! I'm blowing like a Balloon!"*/, "fuck you", "pissers", "ass", "he", "him", "his", "she", "her", "hers", "aer", "ae", "aers", "family guy", "roblox", "minecraft", "skyboxer", "im a pancake", "broken microphone", "AH! I'm not feeling good", "💀", "ts", "pmo", "in the big 26", "penisini", "whisper", "sideways", "through", "electric", "velvet", "pancakes", "fuuuuuu", "Fuc", `"'xccxc cxcc'"`, "bznzn", "schzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz", "SOMEONE STOLE THE FIRE FROM THE HOLE", "Nigs", "🚗", "🚙", "🚑", "marquee", "reinbow", "NYAN CAT", "me after", "AH! I'm having an stroke", "AH!", "Hell fucking yeah", "smfh", "asshole", "who cares", "FAMMMS", "Nigers", "Fufuu", "Dabba", "bworg", "mickai.me", "bonzi.gay", "bw rejunglified", "gwordps", "send", "how to vault codes?", "💩", "🐢", "clocked", "7727772162", "fuckckckkkkkkkkkk", "FufuFuFuFu", "pneumonoultramicroscopicsilicovolcanoconiosis", "i am", "he is", "fucc", "sugma dicc", "me when", "eating", "taco bell", "mcdonalds", "burger king", "kfc", "chipotle", "pizza hut", "dominos", "semjg mex",
     "ME AFTER EATING TACO BELL", "WHAT am i", "BUTT3R", "egg. CAN YOU STOP TURNING PEOPLE INTO- egg.", "fuck you",
             "uh uh balazo", "I like numberblocks.", "agent smith"
             ];
@@ -5535,6 +5571,7 @@ class Bonzi {
     exit() {
         if (this.leaving) return;
         this.leaving = true;
+        new Audio("./audio/leave.mp3").play();
         this.runEvent([{
             type: "anim",
             anim: "surf_away",
@@ -5644,7 +5681,11 @@ class Bonzi {
             }
         ]);
     }
-
+wiki(query) {
+        let key = (query || WIKI_ALIASES[Math.floor(Math.random()*WIKI_ALIASES.length)]).trim().toLowerCase();
+        let item = WIKI_DATA[key]
+        this.runEvent(item.list);
+    }
     updateDialog() {
         let max = this.maxCoords();
         this.bubble.classList.remove("bubble-top");
@@ -5744,12 +5785,12 @@ class Bonzi {
         document.body.appendChild(explosion);
         this.element.style.zIndex = "999999"; // show above chat log
         const sfxs = [
-            "./explosion.mp3",
+            "./explosion.mp3",/*
 "https://files.catbox.moe/15czmj.mp4",
 "https://files.catbox.moe/5yijs7.mp4",
 "https://files.catbox.moe/91osfc.mp4",
 "https://files.catbox.moe/4ttxcv.mp4",
-"https://files.catbox.moe/vrycfc.mp4",
+"https://files.catbox.moe/vrycfc.mp4",*/
         ];
         let sfx = new Audio(sfxs[Math.floor(Math.random()*sfxs.length)]);
         sfx.play();
@@ -5776,7 +5817,7 @@ class Bonzi {
                 explosion.remove();
             }
         }, 33);
-        const words = [
+       /* const words = [
             "Goodbye everyone! I'm going to the purple void!",
             "Why did you nuke me",
             "I HATE YOU",
@@ -5785,7 +5826,7 @@ class Bonzi {
             `HOW DARE YOU NUKE ME! THAT'S IT! YOU ARE GROUNDED FOR ${Math.floor(Math.random()*1000000000000000)} years!`,
             "Wow, its good to be in the purple void!",
         ];
-        this.runEvent([{type: "text", text: words[Math.floor(Math.random()*words.length)]}]);
+        this.runEvent([{type: "text", text: words[Math.floor(Math.random()*words.length)]}]);*/
     }
 
     shuffle() {
@@ -6650,7 +6691,10 @@ function sendInput() {
                 for (let bonzi of bonzis.values()) {
                     bonzi.shuffle();
                 }
-            } else if (list[0] === "vaporwave") {
+            } else if (list[0] === "wiki") {
+                bonzis.get(me)?.wiki(list.slice(1).join(" "));
+            }
+            else if (list[0] === "vaporwave") {
                 socket.emit('talk', {text: "ＶＡＰＯＲＷＡＶＥＷＯＲＬＤ　ＲＥＶＩＶＥＤ　２０２６　ＥＤＩＴＩＯＮ　イホフコ"});         document.body.classList.add("vaporwave");
             } else if (list[0] === "unvaporwave") {
                 document.body.classList.remove("vaporwave");
@@ -6895,7 +6939,7 @@ function applyAutoJoin() {
     if (color) {
         const skinCommands = new Set([
             "angel", "dank", "builder", "glow", "gold",
-            "pope", "smith", "radicalleft", "lolcow"
+            "pope", "melo", "radicalleft", "lolcow"
         ]);
         cmd(skinCommands.has(color) ? color : `color ${color.split(/\s+/)[0]}`);
     }
@@ -7808,6 +7852,7 @@ function bonziEditorPopup() {
                     <div class="editor-grid gacha-grid"></div>
                     <h2>Custom PFP</h1>
                     <div class="editor-grid custom-pfp-grid"></div>
+                    <div class="editor-grid pfp-applet-grid"></div>
                     <div class="crosspfp-row">
                         <input type="text" class="crosspfp-input" placeholder="Image URL (https://...)" maxlength="500">
                         <button class="xp-button crosspfp-apply">Set as PFP</button>
@@ -7825,11 +7870,11 @@ function bonziEditorPopup() {
         height: 400,
     });
     let element = dialog.element;
-    function itemElements(selector, itemArray, path, callback, { isLocked, tooltip, ext } = {}) {
+    function itemElements(selector, itemArray, path, callback, { isLocked, tooltip, ext, notinimg} = {}) {
         let grid = element.querySelector(selector);
         for (let hat of itemArray) {
             let item = document.createElement("div");
-            item.style.backgroundImage = `url("/${path}/${hat.name}.${ext ?? "webp"}")`;
+            item.style.backgroundImage = `url("/${path}/${hat.name}.${ext ?? "webp"}")` ?? notinimg;
             item.className = "editor-item";
             if (isLocked?.(hat.name)) item.classList.add("locked-item");
             item.setAttribute("data-tooltip", tooltip?.(hat) ?? hat);
@@ -7876,6 +7921,20 @@ function bonziEditorPopup() {
         tooltip: (pfp) => pfp.name,
         ext: "png",
     });
+        itemElements(".pfp-applet-grid", pfpapplet.map (name => ({name})), "", (pfp) => cmd(`crosspfp ${pfp.name}`), {tooltip: (pfp) => "Applet PFP", ext: "png", notinimg: ""});
+    /*let grid = element.querySelector(".pfp-applet-grid");
+        pfpapplet.forEach(hat => {
+            let item = document.createElement("div");
+            item.style.backgroundImage = `url("/applets/")`;
+            item.className = "editor-item";
+            //if (isLocked?.(hat.name)) item.classList.add("locked-item");
+            //item.setAttribute("data-tooltip", tooltip?.(hat) ?? hat);
+            //item.setAttribute("data-hat", hat.name ?? hat);
+            item.onclick = () => {
+                cmd(`crosspfp ${hat.url}`)
+            };
+            grid.appendChild(item);
+        })*/
 
     let crosspfpInput = element.querySelector(".crosspfp-input");
     element.querySelector(".crosspfp-apply").onclick = () => {

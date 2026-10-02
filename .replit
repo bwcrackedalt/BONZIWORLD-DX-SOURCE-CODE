@@ -15,6 +15,10 @@ expertMode = true
 localPort = 5000
 externalPort = 80
 
+[[ports]]
+localPort = 8000
+externalPort = 8000
+
 [workflows]
 runButton = "Project"
 
@@ -47,3 +51,8 @@ author = 54246837
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "pkill node"
+
+[deployment]
+deploymentTarget = "vm"
+run = ["npm", "--prefix", "server", "start"]
+build = ["npm", "--prefix", "server", "ci", "--omit=dev"]

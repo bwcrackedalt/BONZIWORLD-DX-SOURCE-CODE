@@ -296,7 +296,7 @@ const bcolors = [
                         "gold",
         "builder",
         "radicalleft",
-        "smith",
+        "melo",
         ];
         const hats = [
                 "bowtie",
@@ -1040,7 +1040,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 this.room.updateUser(this);
         },
         "builder": function(){this.public.color="builder";this.room.updateUser(this)},
-        "radicalleft": function(){this.public.color="radicalleft";this.room.updateUser(this)},        "smith": function(){this.public.color="smith";this.room.updateUser(this)},
+        "radicalleft": function(){this.public.color="radicalleft";this.room.updateUser(this)},        "melo": function(){this.public.color="melo";this.room.updateUser(this)},
         "lolcow": function () {
                 this.public.color = "lolcow";
                 this.public.tag = "An Lolcow";
@@ -1980,7 +1980,7 @@ const bcolors = [
                         "gold",
         "builder",
         "radicalleft",
-        "smith",
+        "melo",
         ];
         const hats = [
                 "bowtie",
@@ -2724,7 +2724,7 @@ let userCommands: Record<string, string | ((this: User, arg: string, id: string)
                 this.room.updateUser(this);
         },
         "builder": function(){this.public.color="builder";this.room.updateUser(this)},
-        "radicalleft": function(){this.public.color="radicalleft";this.room.updateUser(this)},        "smith": function(){this.public.color="smith";this.room.updateUser(this)},
+        "radicalleft": function(){this.public.color="radicalleft";this.room.updateUser(this)},        "melo": function(){this.public.color="melo";this.room.updateUser(this)},
         "lolcow": function () {
                 this.public.color = "lolcow";
                 this.public.tag = "An Lolcow";
